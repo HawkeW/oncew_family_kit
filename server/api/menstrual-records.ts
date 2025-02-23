@@ -2,15 +2,24 @@ import { Database } from 'better-sqlite3';
 import { defineEventHandler, readBody, getQuery, createError } from 'h3';
 import { getDatabase } from '../utils/database';
 import type { MenstrualRecord } from '../models/schema';
+import { useAuthSession } from '../utils/session';
 
 export default defineEventHandler(async (event) => {
   const method = event.method;
   const db = getDatabase();
-
+  const session = await useAuthSession(event);
   // GET - 获取所有经期记录
   if (method === 'GET') {
+    const userId = session.data.id
+    if (!userId) {
+      throw createError({
+        statusCode: 401,
+        message: '请先登录'
+      });
+    }
+
     try {
-      const records = db.prepare('SELECT * FROM menstrual_records ORDER BY record_date DESC').all();
+      const records = db.prepare('SELECT * FROM menstrual_records WHERE user_id = ? ORDER BY record_date DESC').all(userId);
       return records;
     } catch (error) {
       console.error('获取经期记录失败:', error);
@@ -35,17 +44,26 @@ export default defineEventHandler(async (event) => {
 
     try {
       const now = new Date().toISOString();
+      const userId = getCookie(event, 'user_id');
+      if (!userId) {
+        throw createError({
+          statusCode: 401,
+          message: '请先登录'
+        });
+      }
+
       const result = db.prepare(`
         INSERT INTO menstrual_records (
-          record_date, flow_level, pain_level, notes, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?)
+          record_date, flow_level, pain_level, notes, created_at, updated_at, user_id
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
       `).run(
         body.record_date,
         body.flow_level,
         body.pain_level,
         body.notes || null,
         now,
-        now
+        now,
+        userId
       );
 
       return {
@@ -102,7 +120,15 @@ export default defineEventHandler(async (event) => {
       updates.push('updated_at = ?');
       values.push(now);
 
-      const sql = `UPDATE menstrual_records SET ${updates.join(', ')} WHERE id = ?`;
+      const userId = getCookie(event, 'user_id');
+      if (!userId) {
+        throw createError({
+          statusCode: 401,
+          message: '请先登录'
+        });
+      }
+
+      const sql = `UPDATE menstrual_records SET ${updates.join(', ')} WHERE id = ? AND user_id = ?`;
       values.push(id);
 
       const result = db.prepare(sql).run(...values);
@@ -137,7 +163,15 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-      const result = db.prepare('DELETE FROM menstrual_records WHERE id = ?').run(id);
+      const userId = getCookie(event, 'user_id');
+      if (!userId) {
+        throw createError({
+          statusCode: 401,
+          message: '请先登录'
+        });
+      }
+
+      const result = db.prepare('DELETE FROM menstrual_records WHERE id = ? AND user_id = ?').run(id, userId);
 
       if (result.changes === 0) {
         throw createError({
