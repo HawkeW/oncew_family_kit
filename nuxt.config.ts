@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     },
   },
   auth: {
-    baseURL: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/auth` : (process.env.AUTH_ORIGIN || 'http://localhost:3000'),
+    baseURL: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : (process.env.AUTH_ORIGIN || 'http://localhost:3000'),
     provider: {
       type: 'local',
       session: {
