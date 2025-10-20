@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   const session = await useAuthSession(event);
   // GET - 获取所有便便记录
   if (method === 'GET') {
-    const userId = session.id
+    const userId = session.data.id
     if (!userId) {
       throw createError({
         statusCode: 401,
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
 
     try {
       const now = new Date().toISOString();
-      const userId = getCookie(event, 'user_id');
+      const userId = session.data.id;
       if (!userId) {
         throw createError({
           statusCode: 401,
@@ -121,7 +121,7 @@ export default defineEventHandler(async (event) => {
       updates.push('updated_at = ?');
       values.push(now);
 
-      const userId = getCookie(event, 'user_id');
+      const userId = session.data.id;
       if (!userId) {
         throw createError({
           statusCode: 401,
@@ -131,6 +131,7 @@ export default defineEventHandler(async (event) => {
 
       const sql = `UPDATE stool_records SET ${updates.join(', ')} WHERE id = ? AND user_id = ?`;
       values.push(id);
+      values.push(userId);
 
       const result = db.prepare(sql).run(...values);
 
@@ -164,7 +165,7 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-      const userId = getCookie(event, 'user_id');
+      const userId = session.data.id;
       if (!userId) {
         throw createError({
           statusCode: 401,
