@@ -10,6 +10,9 @@ export default defineEventHandler(async (event) => {
   const session = await useAuthSession(event);
   // GET - 获取所有经期记录
   if (method === 'GET') {
+    const query = getQuery(event);
+    const type = query.type as string || 'user'; // 默认为用户数据
+    
     const userId = session.data.id
     if (!userId) {
       throw createError({
@@ -19,7 +22,42 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-      const records = db.prepare('SELECT * FROM menstrual_records WHERE user_id = ? ORDER BY record_date DESC').all(userId);
+      let records;
+      
+      if (type === 'all') {
+        // 查询群组成员和当前用户的数据
+        records = db.prepare(`
+          SELECT mr.*, u.username 
+          FROM menstrual_records mr
+          LEFT JOIN users u ON mr.user_id = u.id
+          WHERE mr.user_id = ? 
+          OR mr.user_id IN (
+            SELECT gm2.user_id 
+            FROM group_members gm1
+            JOIN group_members gm2 ON gm1.group_id = gm2.group_id
+            WHERE gm1.user_id = ? AND gm2.user_id != ?
+          )
+          ORDER BY mr.record_date DESC
+        `).all(userId, userId, userId);
+      } else if (type === 'group') {
+        // 仅查询群组成员数据（不包括当前用户）
+        records = db.prepare(`
+          SELECT mr.*, u.username 
+          FROM menstrual_records mr
+          LEFT JOIN users u ON mr.user_id = u.id
+          WHERE mr.user_id IN (
+            SELECT gm2.user_id 
+            FROM group_members gm1
+            JOIN group_members gm2 ON gm1.group_id = gm2.group_id
+            WHERE gm1.user_id = ? AND gm2.user_id != ?
+          )
+          ORDER BY mr.record_date DESC
+        `).all(userId, userId);
+      } else {
+        // 默认：仅查询当前用户数据
+        records = db.prepare('SELECT * FROM menstrual_records WHERE user_id = ? ORDER BY record_date DESC').all(userId);
+      }
+      
       return records;
     } catch (error) {
       console.error('获取经期记录失败:', error);

@@ -11,7 +11,10 @@ export default defineEventHandler(async (event) => {
   const session = await useAuthSession(event);
   // GET - 获取所有便便记录
   if (method === 'GET') {
-    const userId = session.data.id
+    const query = getQuery(event);
+    const type = query.type as string || 'user'; // 默认为用户数据
+    
+    const userId = session.id
     if (!userId) {
       throw createError({
         statusCode: 401,
@@ -20,7 +23,42 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-      const records = db.prepare('SELECT * FROM stool_records WHERE user_id = ? ORDER BY date DESC').all(userId);
+      let records;
+      
+      if (type === 'all') {
+        // 查询群组成员和当前用户的数据
+        records = db.prepare(`
+          SELECT sr.*, u.username 
+          FROM stool_records sr
+          LEFT JOIN users u ON sr.user_id = u.id
+          WHERE sr.user_id = ? 
+          OR sr.user_id IN (
+            SELECT gm2.user_id 
+            FROM group_members gm1
+            JOIN group_members gm2 ON gm1.group_id = gm2.group_id
+            WHERE gm1.user_id = ? AND gm2.user_id != ?
+          )
+          ORDER BY sr.date DESC
+        `).all(userId, userId, userId);
+      } else if (type === 'group') {
+        // 仅查询群组成员数据（不包括当前用户）
+        records = db.prepare(`
+          SELECT sr.*, u.username 
+          FROM stool_records sr
+          LEFT JOIN users u ON sr.user_id = u.id
+          WHERE sr.user_id IN (
+            SELECT gm2.user_id 
+            FROM group_members gm1
+            JOIN group_members gm2 ON gm1.group_id = gm2.group_id
+            WHERE gm1.user_id = ? AND gm2.user_id != ?
+          )
+          ORDER BY sr.date DESC
+        `).all(userId, userId);
+      } else {
+        // 默认：仅查询当前用户数据
+        records = db.prepare('SELECT * FROM stool_records WHERE user_id = ? ORDER BY date DESC').all(userId);
+      }
+      
       return records;
     } catch (error) {
       console.error('获取便便记录失败:', error);

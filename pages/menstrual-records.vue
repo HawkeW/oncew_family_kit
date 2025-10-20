@@ -2,6 +2,31 @@
   <div>
     <h1 class="text-2xl font-bold mb-4">经期记录</h1>
 
+    <!-- 数据类型切换 -->
+    <div class="bg-white p-4 rounded-lg shadow mb-6">
+      <h2 class="text-xl font-semibold mb-4">数据视图</h2>
+      <div class="flex space-x-4">
+        <Button 
+          :variant="dataType === 'user' ? 'default' : 'outline'"
+          @click="switchDataType('user')"
+        >
+          我的记录
+        </Button>
+        <Button 
+          :variant="dataType === 'all' ? 'default' : 'outline'"
+          @click="switchDataType('all')"
+        >
+          全部记录
+        </Button>
+        <Button 
+          :variant="dataType === 'group' ? 'default' : 'outline'"
+          @click="switchDataType('group')"
+        >
+          群组成员记录
+        </Button>
+      </div>
+    </div>
+
     <!-- 添加记录表单 -->
     <div class="bg-white p-4 rounded-lg shadow mb-6">
       <h2 class="text-xl font-semibold mb-4">添加新记录</h2>
@@ -109,7 +134,8 @@
               <TableCell>{{ getPainLevelText(record.pain_level) }}</TableCell>
               <TableCell>{{ record.notes || '-' }}</TableCell>
               <TableCell>
-                <Button variant="outline" size="sm" @click="editRecord(record)">编辑</Button>
+                <span v-if="record.username" class="text-sm text-gray-500 mr-2">{{ record.username }}</span>
+                <Button v-if="!record.username" variant="outline" size="sm" @click="editRecord(record)">编辑</Button>
               </TableCell>
             </TableRow>
           </TableBody>
@@ -186,6 +212,7 @@ import { cn } from '@/lib/utils'
 const records = ref<MenstrualRecord[]>([])
 const isEditDialogOpen = ref(false)
 const editingRecord = ref<Partial<MenstrualRecord>>({})
+const dataType = ref<'user' | 'all' | 'group'>('user')
 
 
 const df = new DateFormatter('en-US', {
@@ -222,11 +249,17 @@ const recordDatePlaceholder = ref(parseDate(nowDate.toISOString().split('T')[0])
 // 获取所有记录
 async function fetchRecords() {
   try {
-    const response = await fetch('/api/menstrual-records')
+    const response = await fetch(`/api/menstrual-records?type=${dataType.value}`)
     records.value = await response.json()
   } catch (error) {
     console.error('获取记录失败:', error)
   }
+}
+
+// 切换数据类型
+function switchDataType(type: 'user' | 'all' | 'group') {
+  dataType.value = type
+  fetchRecords()
 }
 
 // 添加新记录
