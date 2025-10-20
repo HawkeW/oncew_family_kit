@@ -279,6 +279,10 @@ const showInviteModal = ref(false)
 const showInviteManagement = ref(false)
 const inviteExpireDays = ref(7)
 
+useHead({
+  title: computed(() => group.value ? `${group.value.name} - 群组详情 - Oncew Family Kit` : '群组详情 - Oncew Family Kit')
+})
+
 // 计算属性
 const isAdmin = computed(() => userRole.value === 'admin')
 

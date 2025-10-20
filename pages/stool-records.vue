@@ -212,6 +212,14 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import type { StoolRecord } from '~/server/models/schema'
+
+definePageMeta({
+  middleware: 'auth'
+})
+
+useHead({
+  title: '便便记录 - Oncew Family Kit'
+})
 import { CalendarIcon } from 'lucide-vue-next'
 import { toDate } from 'reka-ui/date'
 import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'

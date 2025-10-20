@@ -24,8 +24,18 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useCustomAuthState } from '~/composables/useCustomAuthState'
+
+definePageMeta({
+  middleware: 'auth'
+})
+
+useHead({
+  title: '个人中心 - Oncew Family Kit'
+})
 
 const router = useRouter()
+const { setLoggedIn } = useCustomAuthState()
 const username = ref('')
 
 onMounted(async () => {
@@ -51,6 +61,8 @@ async function handleLogout() {
     })
 
     if (response.ok) {
+      // 更新全局认证状态
+      setLoggedIn(false)
       router.push('/login')
     }
   } catch (error) {

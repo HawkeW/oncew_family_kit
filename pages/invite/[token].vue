@@ -130,6 +130,10 @@ definePageMeta({
   middleware: 'auth'
 })
 
+useHead({
+  title: '群组邀请 - Oncew Family Kit'
+})
+
 interface InvitationDetail {
   id: number
   group_id: number

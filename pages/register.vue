@@ -53,6 +53,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+useHead({
+  title: '注册 - Oncew Family Kit'
+})
+
 const router = useRouter()
 const formData = ref({
   username: '',

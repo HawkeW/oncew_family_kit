@@ -1,40 +1,45 @@
 <template>
-  <div>
-    <header class="bg-gray-800 text-white p-4">
-      <nav class="container mx-auto flex justify-between items-center">
-        <div class="flex space-x-4">
-          <NuxtLink to="/" class="hover:text-gray-300 transition-colors">首页</NuxtLink>
-          <NuxtLink v-if="isLoggedIn" to="/groups" class="hover:text-gray-300 transition-colors">群组</NuxtLink>
+  <div class="min-h-screen bg-background">
+    <!-- 导航栏 -->
+    <nav class="border-b bg-card">
+      <div class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-6">
+            <NuxtLink to="/" class="text-xl font-bold text-primary">
+              Family Kit
+            </NuxtLink>
+            <div class="flex space-x-4">
+              <NuxtLink v-if="isLoggedIn" to="/groups" class="text-muted-foreground hover:text-foreground">
+                群组
+              </NuxtLink>
+            </div>
+          </div>
+          <div class="flex items-center space-x-4">
+            <NuxtLink v-if="isLoggedIn" to="/profile" class="text-muted-foreground hover:text-foreground">
+              {{ user?.username || '个人中心' }}
+            </NuxtLink>
+            <NuxtLink v-else to="/login" class="text-muted-foreground hover:text-foreground">
+              登录
+            </NuxtLink>
+          </div>
         </div>
-        <div>
-          <NuxtLink v-if="isLoggedIn" to="/profile" class="hover:text-gray-300 transition-colors">我的</NuxtLink>
-          <NuxtLink v-else to="/login" class="hover:text-gray-300 transition-colors">我的</NuxtLink>
-        </div>
-      </nav>
-    </header>
-    <main class="container mx-auto p-4">
+      </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 py-8">
       <slot />
     </main>
-    <footer class="bg-gray-800 text-white p-4 mt-8">
-      <div class="container mx-auto">
-        © 2024 Oncew Family Kit
-      </div>
-    </footer>
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
+<script setup>
+import { onMounted } from 'vue'
+import { useCustomAuthState } from '~/composables/useCustomAuthState'
 
-const isLoggedIn = ref(false)
+const { isLoggedIn, user, checkAuthStatus } = useCustomAuthState()
 
 onMounted(async () => {
-  try {
-    const response = await fetch('/api/auth/profile')
-    isLoggedIn.value = response.ok
-  } catch (error) {
-    console.error('检查登录状态失败:', error)
-    isLoggedIn.value = false
-  }
+  await checkAuthStatus()
 })
 </script>

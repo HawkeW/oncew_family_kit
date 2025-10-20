@@ -274,6 +274,10 @@ definePageMeta({
   middleware: 'auth'
 })
 
+useHead({
+  title: '群组 - Oncew Family Kit'
+})
+
 interface Group {
   id: number
   name: string

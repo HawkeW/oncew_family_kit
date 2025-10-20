@@ -43,9 +43,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { useCustomAuthState } from '~/composables/useCustomAuthState'
+
+useHead({
+  title: '登录 - Oncew Family Kit'
+})
 
 const router = useRouter()
+const route = useRoute()
+const { setLoggedIn } = useCustomAuthState()
+
 const formData = ref({
   email: '',
   password: ''
@@ -62,9 +70,17 @@ async function handleLogin() {
     })
 
     if (response.ok) {
-      const user = await response.json()
-      // 登录成功，跳转到首页
-      router.push('/')
+      const userData = await response.json()
+      // 更新全局认证状态
+      setLoggedIn(true, userData)
+      
+      // 检查是否有返回地址参数
+      const redirectUrl = route.query.redirect as string
+      if (redirectUrl) {
+        router.push(redirectUrl)
+      } else {
+        router.push('/')
+      }
     } else {
       const error = await response.json()
       alert(error.message || '登录失败')

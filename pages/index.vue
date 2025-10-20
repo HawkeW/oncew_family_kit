@@ -18,3 +18,9 @@
     </section>
   </div>
 </template>
+
+<script setup>
+useHead({
+  title: 'Oncew Family Kit - 简单记录，快乐生活'
+})
+</script>

@@ -213,6 +213,14 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import type { MenstrualRecord } from '~/server/models/schema'
+
+definePageMeta({
+  middleware: 'auth'
+})
+
+useHead({
+  title: '经期记录 - Oncew Family Kit'
+})
 import { CalendarIcon } from 'lucide-vue-next'
 import { toDate } from 'reka-ui/date'
 import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
