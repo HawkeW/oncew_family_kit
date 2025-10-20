@@ -27,6 +27,9 @@ export interface StoolRecord {
   notes?: string;
   created_at: string;
   updated_at: string;
+
+  user_id: number;
+  username: string;
 }
 
 export interface Group {

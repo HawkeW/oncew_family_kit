@@ -2,31 +2,6 @@
   <div>
     <h1 class="text-2xl font-bold mb-4">经期记录</h1>
 
-    <!-- 数据类型切换 -->
-    <div class="bg-white p-4 rounded-lg shadow mb-6">
-      <h2 class="text-xl font-semibold mb-4">数据视图</h2>
-      <div class="flex space-x-4">
-        <Button 
-          :variant="dataType === 'user' ? 'default' : 'outline'"
-          @click="switchDataType('user')"
-        >
-          我的记录
-        </Button>
-        <Button 
-          :variant="dataType === 'all' ? 'default' : 'outline'"
-          @click="switchDataType('all')"
-        >
-          全部记录
-        </Button>
-        <Button 
-          :variant="dataType === 'group' ? 'default' : 'outline'"
-          @click="switchDataType('group')"
-        >
-          群组成员记录
-        </Button>
-      </div>
-    </div>
-
     <!-- 添加记录表单 -->
     <div class="bg-white p-4 rounded-lg shadow mb-6">
       <h2 class="text-xl font-semibold mb-4">添加新记录</h2>
@@ -114,16 +89,45 @@
 
     <!-- 记录列表 -->
     <div class="bg-white p-4 rounded-lg shadow">
-      <h2 class="text-xl font-semibold mb-4">历史记录</h2>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">历史记录</h2>
+        <!-- 数据类型切换器 -->
+        <div class="flex space-x-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            :class="{ 'bg-blue-100 border-blue-500': dataType === 'user' }"
+            @click="switchDataType('user')"
+          >
+            我的
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            :class="{ 'bg-blue-100 border-blue-500': dataType === 'all' }"
+            @click="switchDataType('all')"
+          >
+            所有
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            :class="{ 'bg-blue-100 border-blue-500': dataType === 'group' }"
+            @click="switchDataType('group')"
+          >
+            群组
+          </Button>
+        </div>
+      </div>
       <div class="w-full">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>开始日期</TableHead>
-              <TableHead>结束日期</TableHead>
               <TableHead>经期量</TableHead>
               <TableHead>疼痛程度</TableHead>
               <TableHead>备注</TableHead>
+              <TableHead v-if="dataType !== 'user'">用户</TableHead>
               <TableHead>操作</TableHead>
             </TableRow>
           </TableHeader>
@@ -133,9 +137,17 @@
               <TableCell>{{ getFlowLevelText(record.flow_level) }}</TableCell>
               <TableCell>{{ getPainLevelText(record.pain_level) }}</TableCell>
               <TableCell>{{ record.notes || '-' }}</TableCell>
+              <TableCell v-if="dataType !== 'user'">{{ record.username || '-' }}</TableCell>
               <TableCell>
-                <span v-if="record.username" class="text-sm text-gray-500 mr-2">{{ record.username }}</span>
-                <Button v-if="!record.username" variant="outline" size="sm" @click="editRecord(record)">编辑</Button>
+                <Button 
+                  v-if="!record.username" 
+                  variant="outline" 
+                  size="sm" 
+                  @click="editRecord(record)"
+                >
+                  编辑
+                </Button>
+                <span v-else class="text-gray-400 text-sm">-</span>
               </TableCell>
             </TableRow>
           </TableBody>
@@ -246,7 +258,7 @@ const recordDate = computed({
 
 const recordDatePlaceholder = ref(parseDate(nowDate.toISOString().split('T')[0]))
 
-// 获取所有记录
+// 获取所有
 async function fetchRecords() {
   try {
     const response = await fetch(`/api/menstrual-records?type=${dataType.value}`)

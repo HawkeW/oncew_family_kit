@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event);
     const type = query.type as string || 'user'; // 默认为用户数据
     
-    const userId = session.id
+    const userId = session.data.id
     if (!userId) {
       throw createError({
         statusCode: 401,

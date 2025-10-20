@@ -88,7 +88,36 @@
 
     <!-- 记录列表 -->
     <div class="bg-white p-4 rounded-lg shadow">
-      <h2 class="text-xl font-semibold mb-4">历史记录</h2>
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold">历史记录</h2>
+        <!-- 数据类型切换器 -->
+        <div class="flex space-x-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            :class="{ 'bg-blue-100 border-blue-500': dataType === 'user' }"
+            @click="switchDataType('user')"
+          >
+            我的
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            :class="{ 'bg-blue-100 border-blue-500': dataType === 'all' }"
+            @click="switchDataType('all')"
+          >
+            所有
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm"
+            :class="{ 'bg-blue-100 border-blue-500': dataType === 'group' }"
+            @click="switchDataType('group')"
+          >
+            群组
+          </Button>
+        </div>
+      </div>
       <div class="w-full">
         <Table>
           <TableHeader>
@@ -97,6 +126,7 @@
               <TableHead>舒适度</TableHead>
               <TableHead>便便性状</TableHead>
               <TableHead>备注</TableHead>
+              <TableHead v-if="dataType !== 'user'">用户</TableHead>
               <TableHead>操作</TableHead>
             </TableRow>
           </TableHeader>
@@ -106,8 +136,17 @@
               <TableCell>{{ getComfortLevelText(record.comfort_level) }}</TableCell>
               <TableCell>{{ getConsistencyText(record.consistency) }}</TableCell>
               <TableCell>{{ record.notes || '-' }}</TableCell>
+              <TableCell v-if="dataType !== 'user'">{{ record.username || '-' }}</TableCell>
               <TableCell>
-                <Button variant="outline" size="sm" @click="editRecord(record)">编辑</Button>
+                <Button 
+                  v-if="!record.username" 
+                  variant="outline" 
+                  size="sm" 
+                  @click="editRecord(record)"
+                >
+                  编辑
+                </Button>
+                <span v-else class="text-gray-400 text-sm">-</span>
               </TableCell>
             </TableRow>
           </TableBody>
@@ -184,6 +223,7 @@ import { cn } from '@/lib/utils'
 const records = ref<StoolRecord[]>([])
 const isEditDialogOpen = ref(false)
 const editingRecord = ref<Partial<StoolRecord>>({})
+const dataType = ref<'user' | 'all' | 'group'>('user')
 
 const nowDate = new Date()
 const newRecord = ref<Partial<StoolRecord>>({
@@ -193,14 +233,20 @@ const newRecord = ref<Partial<StoolRecord>>({
   notes: ''
 })
 
-// 获取所有记录
+// 获取所有
 async function fetchRecords() {
   try {
-    const response = await fetch('/api/stool-records')
+    const response = await fetch(`/api/stool-records?type=${dataType.value}`)
     records.value = await response.json()
   } catch (error) {
     console.error('获取记录失败:', error)
   }
+}
+
+// 切换数据类型
+function switchDataType(type: 'user' | 'all' | 'group') {
+  dataType.value = type
+  fetchRecords()
 }
 
 // 添加新记录
