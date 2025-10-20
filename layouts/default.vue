@@ -4,10 +4,7 @@
       <nav class="container mx-auto flex justify-between items-center">
         <div class="flex space-x-4">
           <NuxtLink to="/" class="hover:text-gray-300 transition-colors">首页</NuxtLink>
-          <NuxtLink to="/menstrual-records" class="hover:text-gray-300 transition-colors">经期记录</NuxtLink>
-          <NuxtLink to="/stool-records" class="hover:text-gray-300 transition-colors">便便记录</NuxtLink>
-          <NuxtLink v-if="isLoggedIn" to="/groups" class="hover:text-gray-300 transition-colors">群组管理</NuxtLink>
-          <NuxtLink to="/about" class="hover:text-gray-300 transition-colors">关于</NuxtLink>
+          <NuxtLink v-if="isLoggedIn" to="/groups" class="hover:text-gray-300 transition-colors">群组</NuxtLink>
         </div>
         <div>
           <NuxtLink v-if="isLoggedIn" to="/profile" class="hover:text-gray-300 transition-colors">我的</NuxtLink>
