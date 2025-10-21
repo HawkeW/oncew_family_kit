@@ -6,45 +6,8 @@
     <div class="bg-white p-4 rounded-lg shadow mb-6">
       <h2 class="text-xl font-semibold mb-4">添加新记录</h2>
       <form @submit.prevent="addRecord" class="space-y-4">
-        <FormField name="date">
-          <FormItem class="space-y-2">
-            <Label>日期</Label>
-            <Popover>
-              <PopoverTrigger as-child>
-                <FormControl>
-                  <Button variant="outline" :class="cn(
-        'w-[240px] ps-3 text-start font-normal',
-        !recordDate && 'text-muted-foreground',
-      )">
-                    <span>{{ recordDate ? df.format(toDate(recordDate)) : "选择日期" }}</span>
-                    <CalendarIcon class="ms-auto h-4 w-4 opacity-50" />
-                  </Button>
-                  <input hidden>
-                </FormControl>
-              </PopoverTrigger>
-              <PopoverContent class="w-auto p-0">
-                <Calendar v-model:placeholder="recordDatePlaceholder" v-model="recordDate" calendar-label="Record Date"
-                  initial-focus :min-value="new CalendarDate(1900, 1, 1)" :max-value="today(getLocalTimeZone())"
-                  @update:model-value="(v) => {
-        if (v) {
-          setFieldValue('date', v.toString())
-        }
-        else {
-          setFieldValue('date', undefined)
-        }
-      }" />
-              </PopoverContent>
-            </Popover>
-          </FormItem>
-        </FormField>
-
-        <!-- 时间选择 -->
-        <FormField name="time">
-          <FormItem class="space-y-2">
-            <Label>时间</Label>
-            <TimePicker v-model="recordTime" />
-          </FormItem>
-        </FormField>
+        <!-- 日期时间选择 -->
+        <DateTimePicker v-model="newRecord.record_time" />
 
         <FormField name="comfort_level">
           <FormItem class="space-y-2">
@@ -140,7 +103,7 @@
           </TableHeader>
           <TableBody>
             <TableRow v-for="record in records" :key="record.id">
-              <TableCell>{{ record.record_time }}</TableCell>
+              <TableCell>{{ formatRecordTime(record.record_time) }}</TableCell>
               <TableCell>{{ getComfortLevelText(record.comfort_level) }}</TableCell>
               <TableCell>{{ getConsistencyText(record.consistency) }}</TableCell>
               <TableCell>{{ record.notes || '-' }}</TableCell>
@@ -169,35 +132,8 @@
           <DialogTitle>编辑记录</DialogTitle>
         </DialogHeader>
         <div class="space-y-4">
-          <FormField name="edit_date">
-            <FormItem class="space-y-2">
-              <Label>日期</Label>
-              <Popover>
-                <PopoverTrigger as-child>
-                  <Button
-                    variant="outline"
-                    :class="cn(
-                      'w-full justify-start text-left font-normal',
-                      !editRecordDate && 'text-muted-foreground'
-                    )"
-                  >
-                    <CalendarIcon class="mr-2 h-4 w-4" />
-                    {{ editRecordDate ? df.format(toDate(editRecordDate)) : '选择日期' }}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent class="w-auto p-0" align="start">
-                  <Calendar v-model="editRecordDate" initial-focus />
-                </PopoverContent>
-              </Popover>
-            </FormItem>
-          </FormField>
-
-          <FormField name="edit_time">
-            <FormItem class="space-y-2">
-              <Label>时间</Label>
-              <TimePicker v-model="editRecordTime" />
-            </FormItem>
-          </FormField>
+          <!-- 日期时间选择 -->
+          <DateTimePicker v-model="editingRecord.record_time" />
 
           <div class="space-y-2">
             <Label>舒适度</Label>
@@ -261,6 +197,7 @@ import { useForm } from 'vee-validate'
 import { z } from 'zod'
 import { cn } from '@/lib/utils'
 import { TimePicker } from '@/components/ui/time-picker'
+import { DateTimePicker } from '@/components/ui/date-time-picker'
 
 const records = ref<StoolRecord[]>([])
 const isEditDialogOpen = ref(false)
@@ -380,6 +317,54 @@ function getConsistencyText(consistency: string) {
     liquid: '液态'
   }
   return map[consistency] || consistency
+}
+
+// 格式化记录时间为人性化显示
+function formatRecordTime(timeString: string) {
+  if (!timeString) return '-'
+  
+  const recordDate = new Date(timeString)
+  const now = new Date()
+  const diffInMs = now.getTime() - recordDate.getTime()
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
+  const diffInHours = Math.floor(diffInMinutes / 60)
+  const diffInDays = Math.floor(diffInHours / 24)
+  
+  // 如果是今天
+  if (diffInDays === 0) {
+    if (diffInMinutes < 1) {
+      return '刚刚'
+    } else if (diffInMinutes < 60) {
+      return `${diffInMinutes}分钟前`
+    } else {
+      return `${diffInHours}小时前`
+    }
+  }
+  // 如果是昨天
+  else if (diffInDays === 1) {
+    const hours = recordDate.getHours().toString().padStart(2, '0')
+    const minutes = recordDate.getMinutes().toString().padStart(2, '0')
+    return `昨天 ${hours}:${minutes}`
+  }
+  // 如果是一周内
+  else if (diffInDays < 7) {
+    return `${diffInDays}天前`
+  }
+  // 超过一周，显示具体日期和时间
+  else {
+    const year = recordDate.getFullYear()
+    const month = (recordDate.getMonth() + 1).toString().padStart(2, '0')
+    const day = recordDate.getDate().toString().padStart(2, '0')
+    const hours = recordDate.getHours().toString().padStart(2, '0')
+    const minutes = recordDate.getMinutes().toString().padStart(2, '0')
+    
+    // 如果是今年，不显示年份
+    if (year === now.getFullYear()) {
+      return `${month}-${day} ${hours}:${minutes}`
+    } else {
+      return `${year}-${month}-${day} ${hours}:${minutes}`
+    }
+  }
 }
 
 // 组件挂载时获取记录
