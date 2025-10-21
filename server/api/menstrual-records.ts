@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
             JOIN group_members gm2 ON gm1.group_id = gm2.group_id
             WHERE gm1.user_id = ? AND gm2.user_id != ?
           )
-          ORDER BY mr.record_date DESC
+          ORDER BY mr.record_time DESC
         `).all(userId, userId, userId);
       } else if (type === 'group') {
         // 仅查询群组成员数据（不包括当前用户）
@@ -51,11 +51,11 @@ export default defineEventHandler(async (event) => {
             JOIN group_members gm2 ON gm1.group_id = gm2.group_id
             WHERE gm1.user_id = ? AND gm2.user_id != ?
           )
-          ORDER BY mr.record_date DESC
+          ORDER BY mr.record_time DESC
         `).all(userId, userId);
       } else {
         // 默认：仅查询当前用户数据
-        records = db.prepare('SELECT * FROM menstrual_records WHERE user_id = ? ORDER BY record_date DESC').all(userId);
+        records = db.prepare('SELECT * FROM menstrual_records WHERE user_id = ? ORDER BY record_time DESC').all(userId);
       }
       
       return records;
@@ -73,7 +73,7 @@ export default defineEventHandler(async (event) => {
     const body = await readBody<Partial<MenstrualRecord>>(event);
 
     // 验证必填字段
-    if (!body.record_date || !body.flow_level || !body.pain_level) {
+    if (!body.record_time || !body.flow_level || !body.pain_level) {
       throw createError({
         statusCode: 400,
         message: '缺少必要字段'
@@ -92,10 +92,10 @@ export default defineEventHandler(async (event) => {
 
       const result = db.prepare(`
         INSERT INTO menstrual_records (
-          record_date, flow_level, pain_level, notes, created_at, updated_at, user_id
+          record_time, flow_level, pain_level, notes, created_at, updated_at, user_id
         ) VALUES (?, ?, ?, ?, ?, ?, ?)
       `).run(
-        body.record_date,
+        body.record_time,
         body.flow_level,
         body.pain_level,
         body.notes || null,
@@ -149,6 +149,10 @@ export default defineEventHandler(async (event) => {
       if (body.pain_level) {
         updates.push('pain_level = ?');
         values.push(body.pain_level);
+      }
+      if (body.record_time) {
+        updates.push('record_time = ?');
+        values.push(body.record_time);
       }
       if ('notes' in body) {
         updates.push('notes = ?');

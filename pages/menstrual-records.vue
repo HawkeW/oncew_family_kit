@@ -8,7 +8,7 @@
       <form @submit.prevent="addRecord" class="space-y-4">
         <FormField name="record_date">
           <FormItem class="space-y-2">
-            <Label>日期</Label>
+            <Label>记录时间</Label>
             <Popover>
               <PopoverTrigger as-child>
                 <FormControl>
@@ -37,6 +37,14 @@
             </Popover>
           </FormItem>
         </FormField>
+        
+        <!-- 时间选择 -->
+        <FormField name="record_time">
+          <FormItem class="space-y-2">
+            <TimePicker v-model="recordTime" />
+          </FormItem>
+        </FormField>
+        
         <FormField name="flow_level">
           <FormItem class="space-y-2">
             <Label>经期量</Label>
@@ -123,7 +131,7 @@
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>开始日期</TableHead>
+              <TableHead>记录时间</TableHead>
               <TableHead>经期量</TableHead>
               <TableHead>疼痛程度</TableHead>
               <TableHead>备注</TableHead>
@@ -133,7 +141,7 @@
           </TableHeader>
           <TableBody>
             <TableRow v-for="record in records" :key="record.id">
-              <TableCell>{{ record.record_date }}</TableCell>
+              <TableCell>{{ record.record_time }}</TableCell>
               <TableCell>{{ getFlowLevelText(record.flow_level) }}</TableCell>
               <TableCell>{{ getPainLevelText(record.pain_level) }}</TableCell>
               <TableCell>{{ record.notes || '-' }}</TableCell>
@@ -162,10 +170,37 @@
           <DialogTitle>编辑记录</DialogTitle>
         </DialogHeader>
         <div class="space-y-4">
-          <div class="space-y-2">
-            <Label>记录日期</Label>
-            <Input type="date" v-model="editingRecord.record_date" required />
-          </div>
+          <!-- 日期选择 -->
+          <FormField name="date">
+            <FormItem class="space-y-2">
+              <Label>日期</Label>
+              <Popover>
+                <PopoverTrigger as-child>
+                  <Button
+                    variant="outline"
+                    :class="cn(
+                      'w-full justify-start text-left font-normal',
+                      !editRecordDate && 'text-muted-foreground'
+                    )"
+                  >
+                    <CalendarIcon class="mr-2 h-4 w-4" />
+                    {{ editRecordDate ? df.format(toDate(editRecordDate)) : '选择日期' }}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-auto p-0" align="start">
+                  <Calendar v-model="editRecordDate" initial-focus />
+                </PopoverContent>
+              </Popover>
+            </FormItem>
+          </FormField>
+
+          <!-- 时间选择 -->
+          <FormField name="time">
+            <FormItem class="space-y-2">
+              <Label>时间</Label>
+              <TimePicker v-model="editRecordTime" />
+            </FormItem>
+          </FormField>
 
           <div class="space-y-2">
             <Label>经期量</Label>
@@ -223,11 +258,12 @@ useHead({
 })
 import { CalendarIcon } from 'lucide-vue-next'
 import { toDate } from 'reka-ui/date'
-import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate, today } from '@internationalized/date'
+import { CalendarDate, DateFormatter, getLocalTimeZone, parseDate, today,  } from '@internationalized/date'
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import { z } from 'zod'
 import { cn } from '@/lib/utils'
+import { TimePicker } from '@/components/ui/time-picker'
 
 const records = ref<MenstrualRecord[]>([])
 const isEditDialogOpen = ref(false)
@@ -252,18 +288,97 @@ const nowDate = new Date()
 const defaultEndDate = new Date(nowDate)
 defaultEndDate.setDate(nowDate.getDate() + 7)
 
+// 获取当前时间并格式化为 HH:mm
+const getCurrentTime = () => {
+  const now = new Date()
+  const hours = now.getHours().toString().padStart(2, '0')
+  const minutes = now.getMinutes().toString().padStart(2, '0')
+  return `${hours}:${minutes}`
+}
+
+// 获取当前日期时间并格式化为 ISO 字符串
+const getCurrentDateTime = () => {
+  const now = new Date()
+  return now.toISOString()
+}
+
 const newRecord = ref<Partial<MenstrualRecord>>({
-  record_date: nowDate.toISOString().split('T')[0],
+  record_time: getCurrentDateTime(), // 使用完整的日期时间作为默认值
   flow_level: 'medium',
   pain_level: 'none',
   notes: ''
 })
 
 const recordDate = computed({
-  get: () => newRecord.value.record_date ? parseDate(newRecord.value.record_date) : undefined,
-  set: val => val,
+  get: () => newRecord.value.record_time ? parseDate(newRecord.value.record_time.split('T')[0]) : undefined,
+  set: (val) => {
+    if (val) {
+      // 保持现有的时间部分，只更新日期部分
+      const currentTime = newRecord.value.record_time ? new Date(newRecord.value.record_time) : new Date()
+      const newDateTime = new Date(val.toString())
+      newDateTime.setHours(currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds(), currentTime.getMilliseconds())
+      newRecord.value.record_time = newDateTime.toISOString()
+    } else {
+      newRecord.value.record_time = getCurrentDateTime()
+    }
+  },
 })
 
+const recordTime = computed({
+  get: () => {
+    if (newRecord.value.record_time) {
+      const date = new Date(newRecord.value.record_time)
+      const hours = date.getHours().toString().padStart(2, '0')
+      const minutes = date.getMinutes().toString().padStart(2, '0')
+      return `${hours}:${minutes}`
+    }
+    return getCurrentTime()
+  },
+  set: (val) => {
+    if (val && newRecord.value.record_time) {
+      const [hours, minutes] = val.split(':')
+      const currentDate = new Date(newRecord.value.record_time)
+      currentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0)
+      newRecord.value.record_time = currentDate.toISOString()
+    }
+  },
+})
+
+// 编辑弹窗的日期和时间计算属性
+const editRecordDate = computed({
+  get: () => editingRecord.value.record_time ? parseDate(editingRecord.value.record_time.split('T')[0]) : undefined,
+  set: (val) => {
+    if (val) {
+      // 保持现有的时间部分，只更新日期部分
+      const currentTime = editingRecord.value.record_time ? new Date(editingRecord.value.record_time) : new Date()
+      const newDateTime = new Date(val.toString())
+      newDateTime.setHours(currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds(), currentTime.getMilliseconds())
+      editingRecord.value.record_time = newDateTime.toISOString()
+    } else {
+      editingRecord.value.record_time = getCurrentDateTime()
+    }
+  },
+})
+
+const editRecordTime = computed({
+  get: () => {
+    if (editingRecord.value.record_time) {
+      const date = new Date(editingRecord.value.record_time)
+      const hours = date.getHours().toString().padStart(2, '0')
+      const minutes = date.getMinutes().toString().padStart(2, '0')
+      return `${hours}:${minutes}`
+    }
+    return getCurrentTime()
+  },
+  set: (val) => {
+    if (val && editingRecord.value.record_time) {
+      const [hours, minutes] = val.split(':')
+      const currentDate = new Date(editingRecord.value.record_time)
+      currentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0)
+      editingRecord.value.record_time = currentDate.toISOString()
+    }
+  },
+})
 const recordDatePlaceholder = ref(parseDate(nowDate.toISOString().split('T')[0]))
 
 // 获取所有
@@ -296,7 +411,7 @@ async function addRecord() {
     if (response.ok) {
       // 重置表单
       newRecord.value = {
-        record_date: nowDate.toISOString().split('T')[0],
+        record_time: getCurrentDateTime(), // 使用当前日期时间重置
         flow_level: 'medium',
         pain_level: 'none',
         notes: ''
@@ -362,4 +477,4 @@ function getPainLevelText(level: string) {
 onMounted(() => {
   fetchRecords()
 })
-</script>~/components
+</script>

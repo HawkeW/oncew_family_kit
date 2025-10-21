@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
             JOIN group_members gm2 ON gm1.group_id = gm2.group_id
             WHERE gm1.user_id = ? AND gm2.user_id != ?
           )
-          ORDER BY sr.date DESC
+          ORDER BY sr.record_time DESC
         `).all(userId, userId, userId);
       } else if (type === 'group') {
         // 仅查询群组成员数据（不包括当前用户）
@@ -52,11 +52,11 @@ export default defineEventHandler(async (event) => {
             JOIN group_members gm2 ON gm1.group_id = gm2.group_id
             WHERE gm1.user_id = ? AND gm2.user_id != ?
           )
-          ORDER BY sr.date DESC
+          ORDER BY sr.record_time DESC
         `).all(userId, userId);
       } else {
         // 默认：仅查询当前用户数据
-        records = db.prepare('SELECT * FROM stool_records WHERE user_id = ? ORDER BY date DESC').all(userId);
+        records = db.prepare('SELECT * FROM stool_records WHERE user_id = ? ORDER BY record_time DESC').all(userId);
       }
       
       return records;
@@ -74,7 +74,7 @@ export default defineEventHandler(async (event) => {
     const body = await readBody<Partial<StoolRecord>>(event);
 
     // 验证必填字段
-    if (!body.date || !body.comfort_level || !body.consistency) {
+    if (!body.record_time || !body.comfort_level || !body.consistency) {
       throw createError({
         statusCode: 400,
         message: '缺少必要字段'
@@ -93,10 +93,10 @@ export default defineEventHandler(async (event) => {
 
       const result = db.prepare(`
         INSERT INTO stool_records (
-          date, comfort_level, consistency, notes, created_at, updated_at, user_id
+          record_time, comfort_level, consistency, notes, created_at, updated_at, user_id
         ) VALUES (?, ?, ?, ?, ?, ?, ?)
       `).run(
-        body.date,
+        body.record_time,
         body.comfort_level,
         body.consistency,
         body.notes || null,
@@ -150,6 +150,10 @@ export default defineEventHandler(async (event) => {
       if (body.consistency) {
         updates.push('consistency = ?');
         values.push(body.consistency);
+      }
+      if (body.record_time) {
+        updates.push('record_time = ?');
+        values.push(body.record_time);
       }
       if ('notes' in body) {
         updates.push('notes = ?');

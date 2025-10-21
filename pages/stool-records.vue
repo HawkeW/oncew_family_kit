@@ -38,6 +38,14 @@
           </FormItem>
         </FormField>
 
+        <!-- 时间选择 -->
+        <FormField name="time">
+          <FormItem class="space-y-2">
+            <Label>时间</Label>
+            <TimePicker v-model="recordTime" />
+          </FormItem>
+        </FormField>
+
         <FormField name="comfort_level">
           <FormItem class="space-y-2">
             <Label>舒适度</Label>
@@ -132,7 +140,7 @@
           </TableHeader>
           <TableBody>
             <TableRow v-for="record in records" :key="record.id">
-              <TableCell>{{ record.date }}</TableCell>
+              <TableCell>{{ record.record_time }}</TableCell>
               <TableCell>{{ getComfortLevelText(record.comfort_level) }}</TableCell>
               <TableCell>{{ getConsistencyText(record.consistency) }}</TableCell>
               <TableCell>{{ record.notes || '-' }}</TableCell>
@@ -161,10 +169,35 @@
           <DialogTitle>编辑记录</DialogTitle>
         </DialogHeader>
         <div class="space-y-4">
-          <div class="space-y-2">
-            <Label>日期</Label>
-            <Input type="date" v-model="editingRecord.date" required />
-          </div>
+          <FormField name="edit_date">
+            <FormItem class="space-y-2">
+              <Label>日期</Label>
+              <Popover>
+                <PopoverTrigger as-child>
+                  <Button
+                    variant="outline"
+                    :class="cn(
+                      'w-full justify-start text-left font-normal',
+                      !editRecordDate && 'text-muted-foreground'
+                    )"
+                  >
+                    <CalendarIcon class="mr-2 h-4 w-4" />
+                    {{ editRecordDate ? df.format(toDate(editRecordDate)) : '选择日期' }}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-auto p-0" align="start">
+                  <Calendar v-model="editRecordDate" initial-focus />
+                </PopoverContent>
+              </Popover>
+            </FormItem>
+          </FormField>
+
+          <FormField name="edit_time">
+            <FormItem class="space-y-2">
+              <Label>时间</Label>
+              <TimePicker v-model="editRecordTime" />
+            </FormItem>
+          </FormField>
 
           <div class="space-y-2">
             <Label>舒适度</Label>
@@ -227,6 +260,7 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
 import { z } from 'zod'
 import { cn } from '@/lib/utils'
+import { TimePicker } from '@/components/ui/time-picker'
 
 const records = ref<StoolRecord[]>([])
 const isEditDialogOpen = ref(false)
@@ -234,8 +268,23 @@ const editingRecord = ref<Partial<StoolRecord>>({})
 const dataType = ref<'user' | 'all' | 'group'>('user')
 
 const nowDate = new Date()
+
+// 获取当前时间并格式化为 HH:mm
+const getCurrentTime = () => {
+  const now = new Date()
+  const hours = now.getHours().toString().padStart(2, '0')
+  const minutes = now.getMinutes().toString().padStart(2, '0')
+  return `${hours}:${minutes}`
+}
+
+// 获取当前日期时间并格式化为 ISO 字符串
+const getCurrentDateTime = () => {
+  const now = new Date()
+  return now.toISOString()
+}
+
 const newRecord = ref<Partial<StoolRecord>>({
-  date: nowDate.toISOString().split('T')[0],
+  record_time: getCurrentDateTime(), // 使用完整的日期时间作为默认值
   comfort_level: 'normal',
   consistency: 'normal',
   notes: ''
@@ -271,7 +320,7 @@ async function addRecord() {
     if (response.ok) {
       // 重置表单
       newRecord.value = {
-        date: nowDate.toISOString().split('T')[0],
+        record_time: getCurrentDateTime(), // 使用当前日期时间重置
         comfort_level: 'normal',
         consistency: 'normal',
         notes: ''
@@ -353,11 +402,75 @@ const { handleSubmit, setFieldValue, values } = useForm({
 
 
 const recordDate = computed({
-  get: () => newRecord.value.date ? parseDate(newRecord.value.date) : undefined,
-  set: val => val,
+  get: () => newRecord.value.record_time ? parseDate(newRecord.value.record_time.split('T')[0]) : undefined,
+  set: (val) => {
+    if (val) {
+      // 保持现有的时间部分，只更新日期部分
+      const currentTime = newRecord.value.record_time ? new Date(newRecord.value.record_time) : new Date()
+      const newDateTime = new Date(val.toString())
+      newDateTime.setHours(currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds(), currentTime.getMilliseconds())
+      newRecord.value.record_time = newDateTime.toISOString()
+    } else {
+      newRecord.value.record_time = getCurrentDateTime()
+    }
+  },
 })
 
+const recordTime = computed({
+  get: () => {
+    if (newRecord.value.record_time) {
+      const date = new Date(newRecord.value.record_time)
+      const hours = date.getHours().toString().padStart(2, '0')
+      const minutes = date.getMinutes().toString().padStart(2, '0')
+      return `${hours}:${minutes}`
+    }
+    return getCurrentTime()
+  },
+  set: (val) => {
+    if (val && newRecord.value.record_time) {
+      const [hours, minutes] = val.split(':')
+      const currentDate = new Date(newRecord.value.record_time)
+      currentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0)
+      newRecord.value.record_time = currentDate.toISOString()
+    }
+  },
+})
 const recordDatePlaceholder = ref(parseDate(nowDate.toISOString().split('T')[0]))
+
+// 编辑弹窗的日期计算属性
+const editRecordDate = computed({
+  get: () => editingRecord.value.record_time ? parseDate(editingRecord.value.record_time.split('T')[0]) : undefined,
+  set: (val) => {
+    if (val) {
+      // 保持现有的时间部分，只更新日期部分
+      const currentTime = editingRecord.value.record_time ? new Date(editingRecord.value.record_time) : new Date()
+      const newDateTime = new Date(val.toString())
+      newDateTime.setHours(currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds(), currentTime.getMilliseconds())
+      editingRecord.value.record_time = newDateTime.toISOString()
+    }
+  },
+})
+
+// 编辑弹窗的时间计算属性
+const editRecordTime = computed({
+  get: () => {
+    if (editingRecord.value.record_time) {
+      const date = new Date(editingRecord.value.record_time)
+      const hours = date.getHours().toString().padStart(2, '0')
+      const minutes = date.getMinutes().toString().padStart(2, '0')
+      return `${hours}:${minutes}`
+    }
+    return getCurrentTime()
+  },
+  set: (val) => {
+    if (val && editingRecord.value.record_time) {
+      const [hours, minutes] = val.split(':')
+      const currentDate = new Date(editingRecord.value.record_time)
+      currentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0)
+      editingRecord.value.record_time = currentDate.toISOString()
+    }
+  },
+})
 
 // 组件挂载时获取记录
 onMounted(() => {
