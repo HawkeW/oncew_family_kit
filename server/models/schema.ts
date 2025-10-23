@@ -84,8 +84,7 @@ export function initializeDatabase(db: Database) {
 
   // 创建经期记录表
   db.exec(`
-    DROP TABLE IF EXISTS menstrual_records;
-    CREATE TABLE menstrual_records (
+    CREATE TABLE IF NOT EXISTS menstrual_records (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       record_time TEXT NOT NULL,
       flow_level TEXT NOT NULL,
@@ -100,8 +99,7 @@ export function initializeDatabase(db: Database) {
 
   // 创建便便记录表
   db.exec(`
-    DROP TABLE IF EXISTS stool_records;
-    CREATE TABLE stool_records (
+    CREATE TABLE IF NOT EXISTS stool_records (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       record_time TEXT NOT NULL,
       comfort_level TEXT NOT NULL,
