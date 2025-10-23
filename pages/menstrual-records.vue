@@ -111,15 +111,25 @@
               <TableCell>{{ record.notes || '-' }}</TableCell>
               <TableCell v-if="dataType !== 'user'">{{ record.username || '-' }}</TableCell>
               <TableCell>
-                <Button 
-                  v-if="!record.username" 
-                  variant="outline" 
-                  size="sm" 
-                  @click="editRecord(record)"
-                >
-                  编辑
-                </Button>
-                <span v-else class="text-gray-400 text-sm">-</span>
+                <div class="flex space-x-2">
+                  <Button 
+                    v-if="!record.username" 
+                    variant="outline" 
+                    size="sm" 
+                    @click="editRecord(record)"
+                  >
+                    编辑
+                  </Button>
+                  <Button 
+                    v-if="!record.username" 
+                    variant="destructive" 
+                    size="sm" 
+                    @click="confirmDeleteRecord(record)"
+                  >
+                    删除
+                  </Button>
+                  <span v-else class="text-gray-400 text-sm">-</span>
+                </div>
               </TableCell>
             </TableRow>
           </TableBody>
@@ -178,6 +188,28 @@
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    <!-- 删除确认对话框 -->
+    <Dialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
+      <DialogContent class="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>确认删除</DialogTitle>
+        </DialogHeader>
+        <div class="py-4">
+          <p class="text-sm text-gray-600">
+            确定要删除这条记录吗？此操作无法撤销。
+          </p>
+          <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+            <p class="text-sm"><strong>记录时间：</strong>{{ formatRecordTime(recordToDelete?.record_time || '') }}</p>
+            <p class="text-sm"><strong>经期量：</strong>{{ getFlowLevelText(recordToDelete?.flow_level || '') }}</p>
+            <p class="text-sm"><strong>疼痛程度：</strong>{{ getPainLevelText(recordToDelete?.pain_level || '') }}</p>
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" @click="isDeleteDialogOpen = false">取消</Button>
+          <Button variant="destructive" @click="deleteRecord">确认删除</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   </div>
 </template>
 
@@ -206,7 +238,8 @@ const records = ref<MenstrualRecord[]>([])
 const isEditDialogOpen = ref(false)
 const editingRecord = ref<Partial<MenstrualRecord>>({})
 const dataType = ref<'user' | 'all' | 'group'>('user')
-
+const isDeleteDialogOpen = ref(false)
+const recordToDelete = ref<MenstrualRecord | null>(null)
 
 const df = new DateFormatter('en-US', {
   dateStyle: 'long',
@@ -458,6 +491,32 @@ function getPainLevelText(level: string) {
   return map[level] || level
 }
 
+// 确认删除记录
+function confirmDeleteRecord(record: MenstrualRecord) {
+  recordToDelete.value = record
+  isDeleteDialogOpen.value = true
+}
+
+// 删除记录
+async function deleteRecord() {
+  if (!recordToDelete.value?.id) return
+
+  try {
+    const response = await fetch(`/api/menstrual-records?id=${recordToDelete.value.id}`, {
+      method: 'DELETE'
+    })
+
+    if (response.ok) {
+      isDeleteDialogOpen.value = false
+      recordToDelete.value = null
+      await fetchRecords()
+    } else {
+      console.error('删除记录失败')
+    }
+  } catch (error) {
+    console.error('删除记录失败:', error)
+  }
+}
 // 组件挂载时获取记录
 onMounted(() => {
   fetchRecords()
