@@ -39,6 +39,7 @@
     
     <!-- 时间制式切换按钮 -->
     <Button
+      type="button"
       variant="outline"
       size="sm"
       @click="toggleTimeFormat"
