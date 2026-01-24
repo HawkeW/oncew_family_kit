@@ -69,6 +69,16 @@ export interface InvitationResponse {
   responded_at: string;
 }
 
+export interface WeddingRsvp {
+  id?: number;
+  name: string;
+  phone: string;
+  count: number;
+  remark?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export function initializeDatabase(db: Database) {
   // 创建用户表
   db.exec(`
@@ -165,6 +175,19 @@ export function initializeDatabase(db: Database) {
       responded_at TEXT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
       UNIQUE(invite_token, user_id)
+    )
+  `);
+
+  // 创建婚礼RSVP表
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS wedding_rsvps (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      phone TEXT,
+      count INTEGER NOT NULL DEFAULT 1,
+      remark TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
     )
   `);
 }

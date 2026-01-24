@@ -87,7 +87,7 @@
             :class="{ 'bg-blue-100 border-blue-500': dataType === 'group' }"
             @click="switchDataType('group')"
           >
-            群组
+            朋友
           </Button>
         </div>
       </div>
