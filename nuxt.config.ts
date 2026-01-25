@@ -38,5 +38,15 @@ export default defineNuxtConfig({
         extend: {}
       }
     }
+  },
+  nitro: {
+    esbuild: {
+      options: {
+        target: 'esnext'
+      }
+    },
+    externals: {
+      external: ['better-sqlite3']
+    }
   }
 })
