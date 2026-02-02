@@ -4,28 +4,29 @@
       <h1 class="text-3xl font-bold">婚礼管理后台</h1>
     </div>
 
-    <div class="flex gap-4 border-b pb-4">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100">
+    <div class="flex gap-4 border-b pb-4 overflow-x-auto">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100">
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
         流程时间轴
       </NuxtLink>
     </div>
 
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">财务概览</h2>
-      <Button @click="openDialog()">记一笔</Button>
+      <Button @click="openDialog()" size="sm" class="md:hidden">记一笔</Button>
+      <Button @click="openDialog()" class="hidden md:inline-flex">记一笔</Button>
     </div>
 
     <!-- Summary Cards -->
-    <div class="grid gap-4 md:grid-cols-3">
+    <div class="grid gap-4 grid-cols-1 md:grid-cols-3">
       <div class="bg-white p-6 rounded-lg shadow space-y-2">
         <h3 class="text-sm font-medium text-gray-500">总收入 (礼金等)</h3>
         <div class="text-2xl font-bold text-green-600">+{{ formatMoney(summary.total_income) }}</div>
@@ -43,20 +44,20 @@
     </div>
 
     <!-- Filters -->
-    <div class="flex gap-2">
+    <div class="flex gap-2 overflow-x-auto pb-2">
       <Button 
         v-for="filter in ['all', 'income', 'expense']" 
         :key="filter"
         :variant="currentFilter === filter ? 'default' : 'outline'"
         @click="currentFilter = filter"
-        class="capitalize"
+        class="capitalize whitespace-nowrap"
       >
         {{ filter === 'all' ? '全部' : (filter === 'income' ? '收入' : '支出') }}
       </Button>
     </div>
 
-    <!-- List -->
-    <div class="bg-white rounded-lg shadow overflow-hidden">
+    <!-- Desktop Table List -->
+    <div class="hidden md:block bg-white rounded-lg shadow overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow>
@@ -93,6 +94,38 @@
           </TableRow>
         </TableBody>
       </Table>
+    </div>
+
+    <!-- Mobile Card List -->
+    <div class="md:hidden space-y-4">
+      <div v-if="filteredList.length === 0" class="text-center py-8 text-gray-500 bg-white rounded-lg shadow">
+        暂无数据
+      </div>
+      <div v-else v-for="item in filteredList" :key="item.id" class="bg-white p-4 rounded-lg shadow space-y-3">
+        <div class="flex justify-between items-start">
+           <div class="flex items-center gap-2">
+              <span :class="item.type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" class="text-xs px-2 py-1 rounded font-medium">
+                {{ item.type === 'income' ? '收入' : '支出' }}
+              </span>
+              <span class="font-medium">{{ item.category }}</span>
+           </div>
+           <div class="font-bold" :class="item.type === 'income' ? 'text-green-600' : 'text-red-600'">
+             {{ item.type === 'income' ? '+' : '-' }}{{ formatMoney(item.amount) }}
+           </div>
+        </div>
+
+        <p v-if="item.description" class="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+          {{ item.description }}
+        </p>
+
+        <div class="flex justify-between items-center pt-2 border-t mt-2">
+          <span class="text-xs text-gray-400">{{ formatDate(item.record_date) }}</span>
+          <div class="flex gap-2">
+            <Button variant="outline" size="sm" class="h-8" @click="openDialog(item)">编辑</Button>
+            <Button variant="destructive" size="sm" class="h-8" @click="deleteItem(item.id)">删除</Button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Add/Edit Dialog -->

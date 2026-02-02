@@ -4,33 +4,35 @@
       <h1 class="text-3xl font-bold">婚礼管理后台</h1>
     </div>
 
-    <div class="flex gap-4 border-b pb-4">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100">
+    <div class="flex gap-4 border-b pb-4 overflow-x-auto">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100">
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
         流程时间轴
       </NuxtLink>
     </div>
 
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">任务列表</h2>
-      <Button @click="openDialog()">添加任务</Button>
+      <Button @click="openDialog()" size="sm" class="md:hidden">添加</Button>
+      <Button @click="openDialog()" class="hidden md:inline-flex">添加任务</Button>
     </div>
 
     <!-- Tabs -->
-    <div class="flex gap-2">
+    <div class="flex gap-2 overflow-x-auto pb-2">
       <Button 
         v-for="cat in ['all', 'preparation', 'wedding_day']" 
         :key="cat"
         :variant="currentCategory === cat ? 'default' : 'outline'"
         @click="currentCategory = cat"
+        class="whitespace-nowrap"
       >
         {{ cat === 'all' ? '全部任务' : (cat === 'preparation' ? '筹备期' : '婚礼当天') }}
       </Button>
@@ -46,32 +48,35 @@
             <div 
                 v-for="task in filteredList" 
                 :key="task.id" 
-                class="bg-white p-4 rounded-lg shadow flex items-start gap-4 transition-all"
+                class="bg-white p-4 rounded-lg shadow flex flex-col md:flex-row md:items-start gap-4 transition-all"
                 :class="{'opacity-60 bg-gray-50': task.status === 'completed'}"
             >
-                <div class="pt-1">
-                    <input 
-                        type="checkbox" 
-                        :checked="task.status === 'completed'" 
-                        @change="toggleStatus(task)"
-                        class="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
-                    />
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                        <h3 class="font-medium text-lg" :class="{'line-through text-gray-500': task.status === 'completed'}">
-                            {{ task.title }}
-                        </h3>
-                        <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                            {{ task.category === 'preparation' ? '筹备期' : '婚礼当天' }}
-                        </span>
-                        <span v-if="task.due_date" class="text-xs px-2 py-0.5 rounded-full" :class="isOverdue(task) ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'">
-                            {{ formatDate(task.due_date) }} 截止
-                        </span>
+                <div class="flex items-start gap-3 w-full">
+                    <div class="pt-1">
+                        <input 
+                            type="checkbox" 
+                            :checked="task.status === 'completed'" 
+                            @change="toggleStatus(task)"
+                            class="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                        />
                     </div>
-                    <p class="text-gray-500 mt-1 whitespace-pre-wrap">{{ task.description }}</p>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h3 class="font-medium text-lg" :class="{'line-through text-gray-500': task.status === 'completed'}">
+                                {{ task.title }}
+                            </h3>
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 whitespace-nowrap">
+                                {{ task.category === 'preparation' ? '筹备期' : '婚礼当天' }}
+                            </span>
+                            <span v-if="task.due_date" class="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" :class="isOverdue(task) ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'">
+                                {{ formatDate(task.due_date) }} 截止
+                            </span>
+                        </div>
+                        <p class="text-gray-500 mt-1 whitespace-pre-wrap text-sm md:text-base">{{ task.description }}</p>
+                    </div>
                 </div>
-                <div class="flex gap-2">
+                
+                <div class="flex gap-2 self-end md:self-start w-full md:w-auto justify-end border-t md:border-t-0 pt-2 md:pt-0 mt-2 md:mt-0">
                     <Button variant="ghost" size="sm" @click="openDialog(task)">编辑</Button>
                     <Button variant="ghost" size="sm" class="text-red-600 hover:text-red-700 hover:bg-red-50" @click="deleteTask(task.id)">删除</Button>
                 </div>
