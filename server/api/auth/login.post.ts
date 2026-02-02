@@ -8,7 +8,7 @@ import { hash, useAuthSession } from '~/server/utils/session';
 
 const db = getDatabase();
 const loginSchema = z.object({
-  email: z.string(),
+  login: z.string(),
   password: z.string()
 });
 
@@ -16,10 +16,10 @@ export default defineEventHandler(async (event) => {
   try {
     const session = await useAuthSession(event)
     const body = await readBody(event);
-    const { email, password } = loginSchema.parse(body);
+    const { login, password } = loginSchema.parse(body);
 
-    // 查找用户
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as User;
+    // 查找用户 (支持邮箱或用户名)
+    const user = db.prepare('SELECT * FROM users WHERE email = ? OR username = ?').get(login, login) as User;
     if (!user) {
       throw createError({
         statusCode: 401,

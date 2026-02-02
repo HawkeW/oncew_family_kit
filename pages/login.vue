@@ -7,10 +7,10 @@
 
       <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
         <div class="rounded-md shadow-sm -space-y-px">
-          <FormField name="email">
+          <FormField name="login">
             <FormItem>
               <FormControl>
-                <Input v-model="formData.email" type="text" placeholder="邮箱" required
+                <Input v-model="formData.login" type="text" placeholder="邮箱或用户名" required
                   class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm" />
               </FormControl>
             </FormItem>
@@ -55,7 +55,7 @@ const route = useRoute()
 const { setLoggedIn } = useCustomAuthState()
 
 const formData = ref({
-  email: '',
+  login: '',
   password: ''
 })
 
