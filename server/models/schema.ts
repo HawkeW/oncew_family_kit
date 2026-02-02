@@ -79,6 +79,40 @@ export interface WeddingRsvp {
   updated_at: string;
 }
 
+export interface WeddingFinance {
+  id?: number;
+  type: 'income' | 'expense';
+  category: string;
+  amount: number;
+  description?: string;
+  record_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WeddingTask {
+  id?: number;
+  title: string;
+  description?: string;
+  due_date?: string;
+  status: 'pending' | 'completed';
+  category: 'preparation' | 'wedding_day';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WeddingTimeline {
+  id?: number;
+  start_time: string;
+  end_time?: string;
+  title: string;
+  description?: string;
+  location?: string;
+  owner?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export function initializeDatabase(db: Database) {
   // 创建用户表
   db.exec(`
@@ -186,6 +220,49 @@ export function initializeDatabase(db: Database) {
       phone TEXT,
       count INTEGER NOT NULL DEFAULT 1,
       remark TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    )
+  `);
+
+  // 创建婚礼财务表
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS wedding_finances (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      type TEXT NOT NULL,
+      category TEXT NOT NULL,
+      amount REAL NOT NULL,
+      description TEXT,
+      record_date TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    )
+  `);
+
+  // 创建婚礼任务表
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS wedding_tasks (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      description TEXT,
+      due_date TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      category TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    )
+  `);
+
+  // 创建婚礼流程时间轴表
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS wedding_timelines (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      start_time TEXT NOT NULL,
+      end_time TEXT,
+      title TEXT NOT NULL,
+      description TEXT,
+      location TEXT,
+      owner TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     )

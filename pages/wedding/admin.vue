@@ -1,7 +1,26 @@
 <template>
   <div class="space-y-6">
     <div class="flex items-center justify-between">
-      <h1 class="text-3xl font-bold">婚礼 RSVP 管理</h1>
+      <h1 class="text-3xl font-bold">婚礼管理后台</h1>
+    </div>
+
+    <div class="flex gap-4 border-b pb-4">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium">
+        宾客名单 (RSVP)
+      </NuxtLink>
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100">
+        财务管理
+      </NuxtLink>
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100">
+        任务清单
+      </NuxtLink>
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100">
+        流程时间轴
+      </NuxtLink>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-semibold">RSVP 列表</h2>
       <div class="flex gap-4">
         <div class="bg-primary/10 text-primary px-4 py-2 rounded-lg font-medium flex items-center">
           总人数: {{ total }}
