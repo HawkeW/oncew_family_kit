@@ -9,9 +9,12 @@
               Family Kit
             </NuxtLink>
             <div class="flex space-x-4">
-              <NuxtLink v-if="isLoggedIn" to="/groups" class="text-muted-foreground hover:text-foreground">
-                群组
+              <NuxtLink v-if="isLoggedIn" to="/wedding/admin" class="text-muted-foreground hover:text-foreground">
+                婚礼筹备
               </NuxtLink>
+              <!-- <NuxtLink v-if="isLoggedIn" to="/records" class="text-muted-foreground hover:text-foreground">
+                生活记录
+              </NuxtLink> -->
             </div>
           </div>
           <div class="flex items-center space-x-4">
