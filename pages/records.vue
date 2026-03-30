@@ -5,7 +5,7 @@
     </div>
 
     <section class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <NuxtLink to="/menstrual-records" class="block group">
+      <NuxtLink to="/records/menstrual-records" class="block group">
         <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all border border-transparent hover:border-pink-200">
           <div class="flex items-center gap-3 mb-3">
             <span class="text-2xl">🩸</span>
@@ -15,7 +15,7 @@
         </div>
       </NuxtLink>
 
-      <NuxtLink to="/stool-records" class="block group">
+      <NuxtLink to="/records/stool-records" class="block group">
         <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all border border-transparent hover:border-yellow-200">
           <div class="flex items-center gap-3 mb-3">
             <span class="text-2xl">💩</span>
