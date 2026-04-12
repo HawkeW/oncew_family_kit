@@ -35,7 +35,7 @@
       </form>
 
       <div class="text-center mt-4">
-        <NuxtLink to="/register" class="text-sm text-primary hover:text-primary/90">没有账号？点击注册</NuxtLink>
+        <!-- <NuxtLink to="/register" class="text-sm text-primary hover:text-primary/90">没有账号？点击注册</NuxtLink> -->
       </div>
     </div>
   </div>
@@ -73,7 +73,7 @@ async function handleLogin() {
       const userData = await response.json()
       // 更新全局认证状态
       setLoggedIn(true, userData)
-      
+
       // 检查是否有返回地址参数
       const redirectUrl = route.query.redirect as string
       if (redirectUrl) {
