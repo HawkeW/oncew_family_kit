@@ -275,7 +275,7 @@ definePageMeta({
 })
 
 useHead({
-  title: '群组 - Oncew Family Kit'
+  title: '群组 - Nestory'
 })
 
 interface Group {

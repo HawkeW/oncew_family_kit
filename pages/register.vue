@@ -54,7 +54,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 useHead({
-  title: '注册 - Oncew Family Kit'
+  title: '注册 - Nestory'
 })
 
 definePageMeta({

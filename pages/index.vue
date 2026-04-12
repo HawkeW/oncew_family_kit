@@ -6,9 +6,9 @@
 
     <div class="relative mx-auto max-w-6xl px-6 py-14 md:py-18">
       <section class="rounded-2xl border border-zinc-800/80 bg-zinc-900/55 p-8 md:p-10 backdrop-blur">
-        <p class="text-xs tracking-[0.22em] text-zinc-500 uppercase">Oncew Family Kit</p>
-        <h1 class="mt-4 text-4xl font-semibold tracking-tight text-zinc-50 md:text-6xl">Datalize your life.</h1>
-        <p class="mt-4 max-w-2xl text-base text-zinc-400 md:text-lg">把日常变成可回看的轨迹，让每次记录都留下意义。</p>
+        <p class="text-xs tracking-[0.22em] text-zinc-500 uppercase">Nestory</p>
+        <h1 class="mt-4 text-4xl font-semibold tracking-tight text-zinc-50 md:text-6xl">Nest your stories.</h1>
+        <p class="mt-4 max-w-2xl text-base text-zinc-400 md:text-lg">让每次记录都留下意义。</p>
       </section>
 
       <section class="pt-10">
@@ -63,6 +63,6 @@
 
 <script setup lang="ts">
 useHead({
-  title: 'Datalize your life. - Oncew Family Kit'
+  title: 'Nest your stories. - Nestory'
 })
 </script>

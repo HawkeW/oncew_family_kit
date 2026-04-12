@@ -23,7 +23,7 @@
 import { ref } from 'vue'
 
 useHead({
-  title: '401错误测试 - Oncew Family Kit'
+  title: '401错误测试 - Nestory'
 })
 
 const result = ref('')

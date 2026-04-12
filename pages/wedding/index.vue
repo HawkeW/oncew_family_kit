@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
 useHead({
-  title: '婚礼筹备 - Oncew Family Kit'
+  title: '婚礼筹备 - Nestory'
 })
 
 definePageMeta({

@@ -6,15 +6,15 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-6">
             <NuxtLink to="/" :class="isHome ? 'text-xl font-bold text-zinc-100' : 'text-xl font-bold text-primary'">
-              Family Kit
+              Nestory
             </NuxtLink>
             <div class="flex space-x-4">
               <NuxtLink v-if="isLoggedIn" to="/wedding/admin" :class="isHome ? 'text-zinc-400 hover:text-zinc-100' : 'text-muted-foreground hover:text-foreground'">
                 婚礼筹备
               </NuxtLink>
-              <!-- <NuxtLink v-if="isLoggedIn" to="/records" class="text-muted-foreground hover:text-foreground">
+              <NuxtLink v-if="isLoggedIn" to="/records" class="text-muted-foreground hover:text-foreground">
                 生活记录
-              </NuxtLink> -->
+              </NuxtLink>
             </div>
           </div>
           <div class="flex items-center space-x-4">

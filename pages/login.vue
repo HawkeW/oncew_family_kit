@@ -47,7 +47,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useCustomAuthState } from '~/composables/useCustomAuthState'
 
 useHead({
-  title: '登录 - Oncew Family Kit'
+  title: '登录 - Nestory'
 })
 
 definePageMeta({

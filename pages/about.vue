@@ -1,13 +1,13 @@
 <template>
   <div class="space-y-8">
     <section class="text-center py-8">
-      <h1 class="text-4xl font-bold mb-4">关于 Oncew Family Kit</h1>
+      <h1 class="text-4xl font-bold mb-4">关于 Nestory</h1>
       <p class="text-xl text-gray-600 max-w-2xl mx-auto">一个专注于家庭健康数据管理的开源工具</p>
     </section>
 
     <section class="bg-white p-6 rounded-lg shadow-md">
       <h2 class="text-2xl font-semibold mb-4">项目背景</h2>
-      <p class="text-gray-600 mb-6">Oncew Family Kit 源于对家庭健康管理需求的深入思考。在现代生活中，跟踪和管理家庭成员的健康数据变得越来越重要，但市面上的工具往往过于复杂或缺乏针对性。我们希望通过这个简单而实用的工具，帮助家庭更好地管理健康数据。</p>
+      <p class="text-gray-600 mb-6">Nestory 源于对家庭健康管理需求的深入思考。在现代生活中，跟踪和管理家庭成员的健康数据变得越来越重要，但市面上的工具往往过于复杂或缺乏针对性。我们希望通过这个简单而实用的工具，帮助家庭更好地管理健康数据。</p>
     </section>
 
     <section class="bg-white p-6 rounded-lg shadow-md">
@@ -61,6 +61,6 @@
 
 <script setup>
 useHead({
-  title: '关于我们 - Oncew Family Kit'
+  title: '关于我们 - Nestory'
 })
 </script>

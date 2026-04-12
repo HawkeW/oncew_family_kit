@@ -31,7 +31,7 @@ definePageMeta({
 })
 
 useHead({
-  title: '个人中心 - Oncew Family Kit'
+  title: '个人中心 - Nestory'
 })
 
 const router = useRouter()

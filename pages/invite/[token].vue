@@ -131,7 +131,7 @@ definePageMeta({
 })
 
 useHead({
-  title: '群组邀请 - Oncew Family Kit'
+  title: '群组邀请 - Nestory'
 })
 
 interface InvitationDetail {

@@ -224,7 +224,7 @@ definePageMeta({
 })
 
 useHead({
-  title: '便便记录 - Oncew Family Kit'
+  title: '便便记录 - Nestory'
 })
 
 const records = ref<StoolRecord[]>([])

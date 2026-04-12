@@ -227,7 +227,7 @@ definePageMeta({
 })
 
 useHead({
-  title: '经期记录 - Oncew Family Kit'
+  title: '经期记录 - Nestory'
 })
 
 

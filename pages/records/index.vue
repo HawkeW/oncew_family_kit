@@ -40,7 +40,7 @@
 
 <script setup lang="ts">
 useHead({
-  title: '生活记录 - Oncew Family Kit'
+  title: '生活记录 - Nestory'
 })
 
 definePageMeta({
