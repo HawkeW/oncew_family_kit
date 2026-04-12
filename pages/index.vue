@@ -9,12 +9,13 @@
     <section>
       <div class="flex items-center gap-3 mb-6">
         <h2 class="text-2xl font-bold">💒 婚礼筹备</h2>
-        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium">进行中</span>
+        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium">Finished</span>
       </div>
-      
+
       <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
         <NuxtLink to="/wedding/admin" class="block group">
-          <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
+          <div
+            class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
             <div class="mb-4 text-3xl">📋</div>
             <h3 class="text-lg font-semibold mb-2 group-hover:text-red-600">宾客名单 (RSVP)</h3>
             <p class="text-sm text-gray-500">管理宾客出席信息、人数统计及备注。</p>
@@ -22,7 +23,8 @@
         </NuxtLink>
 
         <NuxtLink to="/wedding/finance" class="block group">
-          <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
+          <div
+            class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
             <div class="mb-4 text-3xl">💰</div>
             <h3 class="text-lg font-semibold mb-2 group-hover:text-red-600">财务管理</h3>
             <p class="text-sm text-gray-500">记录婚礼收支、礼金及预算控制。</p>
@@ -30,7 +32,8 @@
         </NuxtLink>
 
         <NuxtLink to="/wedding/tasks" class="block group">
-          <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
+          <div
+            class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
             <div class="mb-4 text-3xl">✅</div>
             <h3 class="text-lg font-semibold mb-2 group-hover:text-red-600">任务清单</h3>
             <p class="text-sm text-gray-500">筹备期及婚礼当天的待办事项管理。</p>
@@ -38,7 +41,8 @@
         </NuxtLink>
 
         <NuxtLink to="/wedding/timeline" class="block group">
-          <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
+          <div
+            class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
             <div class="mb-4 text-3xl">⏱️</div>
             <h3 class="text-lg font-semibold mb-2 group-hover:text-red-600">流程时间轴</h3>
             <p class="text-sm text-gray-500">婚礼当天的详细流程安排与人员分工。</p>
