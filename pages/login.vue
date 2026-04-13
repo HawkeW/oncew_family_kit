@@ -50,6 +50,10 @@ useHead({
   title: '登录 - Oncew Family Kit'
 })
 
+definePageMeta({
+  layout: false
+})
+
 const router = useRouter()
 const route = useRoute()
 const { setLoggedIn } = useCustomAuthState()

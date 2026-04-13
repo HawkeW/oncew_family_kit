@@ -1,78 +1,68 @@
 <template>
-  <div class="space-y-12 py-8">
-    <section class="text-center space-y-4">
-      <h1 class="text-4xl font-bold tracking-tight">Oncew Family Kit</h1>
-      <p class="text-xl text-gray-600">简单记录，快乐生活</p>
-    </section>
+  <div class="relative min-h-screen overflow-hidden bg-zinc-950 text-zinc-100">
+    <div class="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(to_right,rgba(63,63,70,0.16)_1px,transparent_1px),linear-gradient(to_bottom,rgba(63,63,70,0.16)_1px,transparent_1px)] [background-size:28px_28px]" />
+    <div class="pointer-events-none absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-cyan-500/10 blur-3xl" />
+    <div class="pointer-events-none absolute right-12 top-1/3 h-56 w-56 rounded-full bg-rose-500/10 blur-3xl" />
 
-    <!-- Wedding Section -->
-    <section>
-      <div class="flex items-center gap-3 mb-6">
-        <h2 class="text-2xl font-bold">💒 婚礼筹备</h2>
-        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-full font-medium">进行中</span>
-      </div>
-      
-      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <NuxtLink to="/wedding/admin" class="block group">
-          <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
-            <div class="mb-4 text-3xl">📋</div>
-            <h3 class="text-lg font-semibold mb-2 group-hover:text-red-600">宾客名单 (RSVP)</h3>
-            <p class="text-sm text-gray-500">管理宾客出席信息、人数统计及备注。</p>
-          </div>
-        </NuxtLink>
+    <div class="relative mx-auto max-w-6xl px-6 py-14 md:py-18">
+      <section class="rounded-2xl border border-zinc-800/80 bg-zinc-900/55 p-8 md:p-10 backdrop-blur">
+        <p class="text-xs tracking-[0.22em] text-zinc-500 uppercase">Oncew Family Kit</p>
+        <h1 class="mt-4 text-4xl font-semibold tracking-tight text-zinc-50 md:text-6xl">Datalize your life.</h1>
+        <p class="mt-4 max-w-2xl text-base text-zinc-400 md:text-lg">把日常变成可回看的轨迹，让每次记录都留下意义。</p>
+      </section>
 
-        <NuxtLink to="/wedding/finance" class="block group">
-          <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
-            <div class="mb-4 text-3xl">💰</div>
-            <h3 class="text-lg font-semibold mb-2 group-hover:text-red-600">财务管理</h3>
-            <p class="text-sm text-gray-500">记录婚礼收支、礼金及预算控制。</p>
-          </div>
-        </NuxtLink>
-
-        <NuxtLink to="/wedding/tasks" class="block group">
-          <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
-            <div class="mb-4 text-3xl">✅</div>
-            <h3 class="text-lg font-semibold mb-2 group-hover:text-red-600">任务清单</h3>
-            <p class="text-sm text-gray-500">筹备期及婚礼当天的待办事项管理。</p>
-          </div>
-        </NuxtLink>
-
-        <NuxtLink to="/wedding/timeline" class="block group">
-          <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-gray-100 hover:border-red-200 h-full">
-            <div class="mb-4 text-3xl">⏱️</div>
-            <h3 class="text-lg font-semibold mb-2 group-hover:text-red-600">流程时间轴</h3>
-            <p class="text-sm text-gray-500">婚礼当天的详细流程安排与人员分工。</p>
-          </div>
-        </NuxtLink>
-      </div>
-    </section>
-
-    <!-- Other Records Section -->
-    <!-- <section>
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-bold">📂 其他记录</h2>
-        <NuxtLink to="/records" class="text-primary hover:underline flex items-center gap-1">
-          查看全部 <span class="i-heroicons-arrow-right w-4 h-4"></span>
-        </NuxtLink>
-      </div>
-
-      <NuxtLink to="/records" class="block">
-        <div class="bg-gray-50 rounded-xl p-8 border border-dashed border-gray-300 hover:border-primary/50 hover:bg-primary/5 transition-colors text-center">
-          <div class="flex justify-center gap-4 mb-4 text-3xl opacity-50">
-            <span>🩸</span>
-            <span>💩</span>
-            <span>👥</span>
-          </div>
-          <h3 class="text-lg font-medium text-gray-900 mb-2">生活记录归档</h3>
-          <p class="text-gray-500 max-w-md mx-auto">包含经期记录、便便记录及群组管理等日常功能。</p>
+      <section class="pt-10">
+        <div class="mb-5 flex items-end justify-between">
+          <h2 class="text-xl font-semibold text-zinc-100 md:text-2xl">记录</h2>
+          <p class="text-sm text-zinc-500">Daily Logs</p>
         </div>
-      </NuxtLink>
-    </section> -->
+        <div class="grid gap-4 md:grid-cols-2">
+          <NuxtLink to="/records/menstrual" class="group block">
+            <article class="h-full rounded-xl border border-zinc-800 bg-zinc-900/70 p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-cyan-300/55 hover:bg-zinc-900/90 hover:shadow-[0_14px_38px_-24px_rgba(34,211,238,0.7)]">
+              <div class="flex items-center justify-between">
+                <p class="text-xs tracking-[0.16em] text-zinc-500 uppercase">Health</p>
+                <span class="inline-flex rounded-md border border-zinc-700 px-2 py-1 text-[11px] text-zinc-400">01</span>
+              </div>
+              <h3 class="mt-5 text-xl font-medium text-zinc-100">经期记录</h3>
+              <p class="mt-2 text-sm leading-6 text-zinc-400">记录经期时间、流量和身体状态，形成连续健康档案。</p>
+            </article>
+          </NuxtLink>
+          <NuxtLink to="/records/stool" class="group block">
+            <article class="h-full rounded-xl border border-zinc-800 bg-zinc-900/70 p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-cyan-300/55 hover:bg-zinc-900/90 hover:shadow-[0_14px_38px_-24px_rgba(34,211,238,0.7)]">
+              <div class="flex items-center justify-between">
+                <p class="text-xs tracking-[0.16em] text-zinc-500 uppercase">Digestive</p>
+                <span class="inline-flex rounded-md border border-zinc-700 px-2 py-1 text-[11px] text-zinc-400">02</span>
+              </div>
+              <h3 class="mt-5 text-xl font-medium text-zinc-100">便便记录</h3>
+              <p class="mt-2 text-sm leading-6 text-zinc-400">记录排便频率、性状和体感，长期观察肠道变化。</p>
+            </article>
+          </NuxtLink>
+        </div>
+      </section>
+
+      <section class="pt-10">
+        <div class="mb-5 flex items-end justify-between">
+          <h2 class="text-xl font-semibold text-zinc-100 md:text-2xl">人生</h2>
+          <p class="text-sm text-zinc-500">Life Projects</p>
+        </div>
+        <NuxtLink to="/wedding" class="group block">
+          <article class="rounded-xl border border-zinc-800 bg-zinc-900/70 p-7 md:p-8 transition-all duration-200 hover:-translate-y-0.5 hover:border-rose-300/55 hover:bg-zinc-900/90 hover:shadow-[0_16px_44px_-26px_rgba(251,113,133,0.7)]">
+            <div class="flex items-center justify-between">
+              <p class="text-xs tracking-[0.16em] text-zinc-500 uppercase">Project</p>
+              <span class="inline-flex rounded-md border border-zinc-700 px-2 py-1 text-[11px] text-zinc-400">03</span>
+            </div>
+            <h3 class="mt-5 text-2xl font-medium text-zinc-100">婚礼筹备</h3>
+            <p class="mt-2 max-w-3xl text-sm leading-6 text-zinc-400">宾客名单、财务管理、任务清单与流程时间轴，统一管理婚礼全周期。</p>
+            <p class="mt-7 inline-flex text-sm text-zinc-300 transition-colors group-hover:text-rose-300">进入模块</p>
+          </article>
+        </NuxtLink>
+      </section>
+    </div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 useHead({
-  title: 'Oncew Family Kit - 简单记录，快乐生活'
+  title: 'Datalize your life. - Oncew Family Kit'
 })
 </script>

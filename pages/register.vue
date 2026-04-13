@@ -57,6 +57,10 @@ useHead({
   title: '注册 - Oncew Family Kit'
 })
 
+definePageMeta({
+  layout: false
+})
+
 const router = useRouter()
 const formData = ref({
   username: '',
