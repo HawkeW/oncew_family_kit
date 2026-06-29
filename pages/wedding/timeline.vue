@@ -21,8 +21,21 @@
 
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">婚礼当天流程</h2>
-      <Button @click="openDialog()" size="sm" class="md:hidden">添加</Button>
-      <Button @click="openDialog()" class="hidden md:inline-flex">添加环节</Button>
+      <div class="flex items-center gap-4">
+        <Select v-model="selectedGroupId" @update:modelValue="fetchData" class="w-[160px]">
+          <SelectTrigger>
+            <SelectValue placeholder="选择家庭" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">全部家庭</SelectItem>
+            <SelectGroup v-for="group in groups" :key="group.id">
+              <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button @click="openDialog()" size="sm" class="md:hidden">添加</Button>
+        <Button @click="openDialog()" class="hidden md:inline-flex">添加环节</Button>
+      </div>
     </div>
 
     <!-- Timeline View -->
@@ -78,6 +91,20 @@
           <DialogTitle>{{ editingId ? '编辑流程' : '添加流程' }}</DialogTitle>
         </DialogHeader>
         <form @submit.prevent="submitForm" class="space-y-4">
+          <div class="grid w-full items-center gap-1.5">
+            <Label>家庭</Label>
+            <Select v-model="form.group_id">
+              <SelectTrigger>
+                <SelectValue placeholder="选择家庭" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup v-for="group in groups" :key="group.id">
+                  <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div class="flex gap-4">
             <div class="grid w-full items-center gap-1.5">
               <Label for="start_time">开始时间</Label>
@@ -140,14 +167,18 @@ interface TimelineItem {
   location?: string;
   owner?: string;
   created_at: string
+  group_id?: number
 }
 
+const groups = ref<any[]>([])
+const selectedGroupId = ref<string>('all')
 const list = ref<TimelineItem[]>([])
 const isDialogOpen = ref(false)
 const isSubmitting = ref(false)
 const editingId = ref<number | null>(null)
 
 const form = reactive({
+  group_id: null as number | null,
   start_time: '',
   end_time: '',
   title: '',
@@ -156,9 +187,24 @@ const form = reactive({
   owner: ''
 })
 
+async function fetchGroups() {
+  try {
+    const data = await $fetch<any[]>('/api/groups')
+    groups.value = data
+    if (groups.value.length > 0 && !form.group_id) {
+      form.group_id = groups.value[0].id
+    }
+  } catch (e) {
+    console.error('获取群组失败', e)
+  }
+}
+
 async function fetchData() {
   try {
-    const data = await $fetch<{ list: TimelineItem[] }>('/api/wedding/timeline')
+    const url = selectedGroupId.value === 'all' 
+      ? '/api/wedding/timeline' 
+      : `/api/wedding/timeline?group_id=${selectedGroupId.value}`
+    const data = await $fetch<{ list: TimelineItem[] }>(url)
     list.value = data.list
   } catch (e) {
     console.error('获取数据失败', e)
@@ -174,6 +220,7 @@ function openDialog(item?: TimelineItem) {
     form.description = item.description || ''
     form.location = item.location || ''
     form.owner = item.owner || ''
+    form.group_id = item.group_id || null
   } else {
     editingId.value = null
     form.start_time = ''
@@ -182,12 +229,17 @@ function openDialog(item?: TimelineItem) {
     form.description = ''
     form.location = ''
     form.owner = ''
+    form.group_id = groups.value.length > 0 ? groups.value[0].id : null
   }
   isDialogOpen.value = true
 }
 
 async function submitForm() {
   if (isSubmitting.value) return
+  if (!form.group_id) {
+    alert('请选择家庭')
+    return
+  }
   isSubmitting.value = true
 
   try {
@@ -227,7 +279,8 @@ async function deleteItem(id: number) {
   }
 }
 
-onMounted(() => {
-  fetchData()
+onMounted(async () => {
+  await fetchGroups()
+  await fetchData()
 })
 </script>

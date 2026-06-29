@@ -21,8 +21,21 @@
 
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">任务列表</h2>
-      <Button @click="openDialog()" size="sm" class="md:hidden">添加</Button>
-      <Button @click="openDialog()" class="hidden md:inline-flex">添加任务</Button>
+      <div class="flex items-center gap-4">
+        <Select v-model="selectedGroupId" @update:modelValue="fetchData" class="w-[160px]">
+          <SelectTrigger>
+            <SelectValue placeholder="选择家庭" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">全部家庭</SelectItem>
+            <SelectGroup v-for="group in groups" :key="group.id">
+              <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button @click="openDialog()" size="sm" class="md:hidden">添加</Button>
+        <Button @click="openDialog()" class="hidden md:inline-flex">添加任务</Button>
+      </div>
     </div>
 
     <!-- Tabs -->
@@ -92,6 +105,20 @@
         </DialogHeader>
         <form @submit.prevent="submitForm" class="space-y-4">
           <div class="grid w-full items-center gap-1.5">
+            <Label>家庭</Label>
+            <Select v-model="form.group_id">
+              <SelectTrigger>
+                <SelectValue placeholder="选择家庭" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup v-for="group in groups" :key="group.id">
+                  <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div class="grid w-full items-center gap-1.5">
             <Label for="title">任务名称</Label>
             <Input id="title" v-model="form.title" required placeholder="例如：预定酒店、联系摄影师" />
           </div>
@@ -150,8 +177,11 @@ interface Task {
   status: 'pending' | 'completed'
   category: 'preparation' | 'wedding_day'
   created_at: string
+  group_id?: number
 }
 
+const groups = ref<any[]>([])
+const selectedGroupId = ref<string>('all')
 const list = ref<Task[]>([])
 const currentCategory = ref('all')
 const isDialogOpen = ref(false)
@@ -159,6 +189,7 @@ const isSubmitting = ref(false)
 const editingId = ref<number | null>(null)
 
 const form = reactive({
+  group_id: null as number | null,
   title: '',
   description: '',
   due_date: '',
@@ -171,7 +202,6 @@ const filteredList = computed(() => {
   if (currentCategory.value !== 'all') {
     result = result.filter(item => item.category === currentCategory.value)
   }
-  // Sort: Pending first, then by due date
   return result.sort((a, b) => {
     if (a.status !== b.status) return a.status === 'pending' ? -1 : 1
     if (a.due_date && b.due_date) return a.due_date.localeCompare(b.due_date)
@@ -188,9 +218,24 @@ function isOverdue(task: Task) {
     return new Date(task.due_date) < new Date(new Date().setHours(0,0,0,0))
 }
 
+async function fetchGroups() {
+  try {
+    const data = await $fetch<any[]>('/api/groups')
+    groups.value = data
+    if (groups.value.length > 0 && !form.group_id) {
+      form.group_id = groups.value[0].id
+    }
+  } catch (e) {
+    console.error('获取群组失败', e)
+  }
+}
+
 async function fetchData() {
   try {
-    const data = await $fetch<{ list: Task[] }>('/api/wedding/tasks')
+    const url = selectedGroupId.value === 'all' 
+      ? '/api/wedding/tasks' 
+      : `/api/wedding/tasks?group_id=${selectedGroupId.value}`
+    const data = await $fetch<{ list: Task[] }>(url)
     list.value = data.list
   } catch (e) {
     console.error('获取数据失败', e)
@@ -205,6 +250,7 @@ function openDialog(item?: Task) {
     form.due_date = item.due_date || ''
     form.category = item.category
     form.status = item.status
+    form.group_id = item.group_id || null
   } else {
     editingId.value = null
     form.title = ''
@@ -212,12 +258,17 @@ function openDialog(item?: Task) {
     form.due_date = ''
     form.category = 'preparation'
     form.status = 'pending'
+    form.group_id = groups.value.length > 0 ? groups.value[0].id : null
   }
   isDialogOpen.value = true
 }
 
 async function submitForm() {
   if (isSubmitting.value) return
+  if (!form.group_id) {
+    alert('请选择家庭')
+    return
+  }
   isSubmitting.value = true
 
   try {
@@ -245,7 +296,6 @@ async function submitForm() {
 
 async function toggleStatus(task: Task) {
     const newStatus = task.status === 'pending' ? 'completed' : 'pending'
-    // Optimistic update
     task.status = newStatus
     
     try {
@@ -255,7 +305,6 @@ async function toggleStatus(task: Task) {
         })
     } catch (e) {
         console.error('更新状态失败', e)
-        // Revert on failure
         task.status = task.status === 'pending' ? 'completed' : 'pending'
         alert('更新状态失败')
     }
@@ -275,7 +324,8 @@ async function deleteTask(id: number) {
   }
 }
 
-onMounted(() => {
-  fetchData()
+onMounted(async () => {
+  await fetchGroups()
+  await fetchData()
 })
 </script>

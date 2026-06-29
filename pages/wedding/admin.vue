@@ -21,7 +21,18 @@
 
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">RSVP 列表</h2>
-      <div class="flex gap-2 md:gap-4">
+      <div class="flex gap-4 items-center">
+        <Select v-model="selectedGroupId" @update:modelValue="fetchData" class="w-[160px]">
+          <SelectTrigger>
+            <SelectValue placeholder="选择家庭" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">全部家庭</SelectItem>
+            <SelectGroup v-for="group in groups" :key="group.id">
+              <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <div class="bg-primary/10 text-primary px-3 py-2 rounded-lg font-medium flex items-center text-sm md:text-base">
           总人数: {{ total }}
         </div>
@@ -106,6 +117,19 @@
         </DialogHeader>
         <form @submit.prevent="submitForm" class="space-y-4">
           <div class="grid w-full items-center gap-1.5">
+            <Label>家庭</Label>
+            <Select v-model="form.group_id">
+              <SelectTrigger>
+                <SelectValue placeholder="选择家庭" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup v-for="group in groups" :key="group.id">
+                  <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <div class="grid w-full items-center gap-1.5">
             <Label for="name">姓名</Label>
             <Input id="name" v-model="form.name" required />
           </div>
@@ -150,8 +174,11 @@ interface Rsvp {
   count: number
   remark: string
   created_at: string
+  group_id?: number
 }
 
+const groups = ref<any[]>([])
+const selectedGroupId = ref<string>('all')
 const list = ref<Rsvp[]>([])
 const total = ref(0)
 const isDialogOpen = ref(false)
@@ -159,15 +186,31 @@ const isSubmitting = ref(false)
 const editingId = ref<number | null>(null)
 
 const form = reactive({
+  group_id: null as number | null,
   name: '',
   phone: '',
   count: 1,
   remark: ''
 })
 
+async function fetchGroups() {
+  try {
+    const data = await $fetch<any[]>('/api/groups')
+    groups.value = data
+    if (groups.value.length > 0 && !form.group_id) {
+      form.group_id = groups.value[0].id
+    }
+  } catch (e) {
+    console.error('获取群组失败', e)
+  }
+}
+
 async function fetchData() {
   try {
-    const data = await $fetch<{ list: Rsvp[], total: number }>('/api/wedding/rsvp')
+    const url = selectedGroupId.value === 'all' 
+      ? '/api/wedding/rsvp' 
+      : `/api/wedding/rsvp?group_id=${selectedGroupId.value}`
+    const data = await $fetch<{ list: Rsvp[], total: number }>(url)
     list.value = data.list
     total.value = data.total
   } catch (e) {
@@ -191,29 +234,33 @@ function openDialog(rsvp?: Rsvp) {
     form.phone = rsvp.phone || ''
     form.count = rsvp.count
     form.remark = rsvp.remark || ''
+    form.group_id = rsvp.group_id || null
   } else {
     editingId.value = null
     form.name = ''
     form.phone = ''
     form.count = 1
     form.remark = ''
+    form.group_id = groups.value.length > 0 ? groups.value[0].id : null
   }
   isDialogOpen.value = true
 }
 
 async function submitForm() {
   if (isSubmitting.value) return
+  if (!form.group_id) {
+    alert('请选择家庭')
+    return
+  }
   isSubmitting.value = true
 
   try {
     if (editingId.value) {
-      // Edit
       await $fetch(`/api/wedding/rsvp/${editingId.value}`, {
         method: 'PUT',
         body: form
       })
     } else {
-      // Add
       await $fetch('/api/wedding/rsvp', {
         method: 'POST',
         body: form
@@ -244,7 +291,8 @@ async function deleteRsvp(id: number) {
   }
 }
 
-onMounted(() => {
-  fetchData()
+onMounted(async () => {
+  await fetchGroups()
+  await fetchData()
 })
 </script>

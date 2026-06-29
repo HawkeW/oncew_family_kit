@@ -77,6 +77,7 @@ export interface WeddingRsvp {
   remark?: string;
   created_at: string;
   updated_at: string;
+  group_id?: number;
 }
 
 export interface WeddingFinance {
@@ -88,6 +89,7 @@ export interface WeddingFinance {
   record_date: string;
   created_at: string;
   updated_at: string;
+  group_id?: number;
 }
 
 export interface WeddingTask {
@@ -99,6 +101,7 @@ export interface WeddingTask {
   category: 'preparation' | 'wedding_day';
   created_at: string;
   updated_at: string;
+  group_id?: number;
 }
 
 export interface WeddingTimeline {
@@ -111,6 +114,7 @@ export interface WeddingTimeline {
   owner?: string;
   created_at: string;
   updated_at: string;
+  group_id?: number;
 }
 
 export function initializeDatabase(db: Database) {
@@ -221,7 +225,8 @@ export function initializeDatabase(db: Database) {
       count INTEGER NOT NULL DEFAULT 1,
       remark TEXT,
       created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
+      updated_at TEXT NOT NULL,
+      group_id INTEGER
     )
   `);
 
@@ -235,7 +240,8 @@ export function initializeDatabase(db: Database) {
       description TEXT,
       record_date TEXT NOT NULL,
       created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
+      updated_at TEXT NOT NULL,
+      group_id INTEGER
     )
   `);
 
@@ -249,7 +255,8 @@ export function initializeDatabase(db: Database) {
       status TEXT NOT NULL DEFAULT 'pending',
       category TEXT NOT NULL,
       created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
+      updated_at TEXT NOT NULL,
+      group_id INTEGER
     )
   `);
 
@@ -264,7 +271,8 @@ export function initializeDatabase(db: Database) {
       location TEXT,
       owner TEXT,
       created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
+      updated_at TEXT NOT NULL,
+      group_id INTEGER
     )
   `);
 }

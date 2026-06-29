@@ -30,7 +30,7 @@
         </div>
 
         <div>
-          <Button type="submit" class="w-full" :disabled="loading">
+          <Button type="submit" class="w-full" :disabled="loading || !form.group_id">
             {{ loading ? '提交中...' : '提交回复' }}
           </Button>
         </div>
@@ -39,33 +39,40 @@
       <div v-if="success" class="mt-4 p-4 bg-green-100 text-green-700 rounded-md text-center">
         🎉 提交成功！感谢您的祝福！
       </div>
+
+      <div v-if="!form.group_id" class="mt-4 p-4 bg-yellow-100 text-yellow-700 rounded-md text-center text-sm">
+        ⚠️ 请通过邀请链接访问，或联系新人获取正确的邀请码
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 useHead({
   title: '婚礼邀请函 - RSVP'
 })
 
 definePageMeta({
-  layout: false // 使用空白布局
+  layout: false
 })
+
+const route = useRoute()
 
 const form = ref({
   name: '',
   phone: '',
   count: 1,
-  remark: ''
+  remark: '',
+  group_id: null as number | null
 })
 
 const loading = ref(false)
 const success = ref(false)
 
 async function handleSubmit() {
-  if (loading.value) return
+  if (loading.value || !form.value.group_id) return
   loading.value = true
   success.value = false
 
@@ -83,7 +90,8 @@ async function handleSubmit() {
         name: '',
         phone: '',
         count: 1,
-        remark: ''
+        remark: '',
+        group_id: form.value.group_id
       }
     }
   } catch (e) {
@@ -92,4 +100,12 @@ async function handleSubmit() {
     loading.value = false
   }
 }
+
+onMounted(() => {
+  // 从 URL query 参数获取 group_id
+  const groupId = route.query.group_id
+  if (groupId) {
+    form.value.group_id = Number(groupId)
+  }
+})
 </script>

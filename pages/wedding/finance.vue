@@ -21,8 +21,21 @@
 
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">财务概览</h2>
-      <Button @click="openDialog()" size="sm" class="md:hidden">记一笔</Button>
-      <Button @click="openDialog()" class="hidden md:inline-flex">记一笔</Button>
+      <div class="flex items-center gap-4">
+        <Select v-model="selectedGroupId" @update:modelValue="fetchData" class="w-[160px]">
+          <SelectTrigger>
+            <SelectValue placeholder="选择家庭" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">全部家庭</SelectItem>
+            <SelectGroup v-for="group in groups" :key="group.id">
+              <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <Button @click="openDialog()" size="sm" class="md:hidden">记一笔</Button>
+        <Button @click="openDialog()" class="hidden md:inline-flex">记一笔</Button>
+      </div>
     </div>
 
     <!-- Summary Cards -->
@@ -136,6 +149,20 @@
         </DialogHeader>
         <form @submit.prevent="submitForm" class="space-y-4">
           <div class="grid w-full items-center gap-1.5">
+            <Label>家庭</Label>
+            <Select v-model="form.group_id">
+              <SelectTrigger>
+                <SelectValue placeholder="选择家庭" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup v-for="group in groups" :key="group.id">
+                  <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div class="grid w-full items-center gap-1.5">
             <Label>类型</Label>
             <div class="flex gap-4">
               <label class="flex items-center space-x-2 cursor-pointer">
@@ -209,6 +236,7 @@ interface FinanceItem {
   description: string
   record_date: string
   created_at: string
+  group_id?: number
 }
 
 interface Summary {
@@ -217,6 +245,8 @@ interface Summary {
   balance: number
 }
 
+const groups = ref<any[]>([])
+const selectedGroupId = ref<string>('all')
 const list = ref<FinanceItem[]>([])
 const summary = ref<Summary>({ total_income: 0, total_expense: 0, balance: 0 })
 const currentFilter = ref('all')
@@ -225,6 +255,7 @@ const isSubmitting = ref(false)
 const editingId = ref<number | null>(null)
 
 const form = reactive({
+  group_id: null as number | null,
   type: 'expense' as 'income' | 'expense',
   category: '',
   amount: 0,
@@ -245,9 +276,24 @@ function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('zh-CN')
 }
 
+async function fetchGroups() {
+  try {
+    const data = await $fetch<any[]>('/api/groups')
+    groups.value = data
+    if (groups.value.length > 0 && !form.group_id) {
+      form.group_id = groups.value[0].id
+    }
+  } catch (e) {
+    console.error('获取群组失败', e)
+  }
+}
+
 async function fetchData() {
   try {
-    const data = await $fetch<{ list: FinanceItem[], summary: Summary }>('/api/wedding/finance')
+    const url = selectedGroupId.value === 'all' 
+      ? '/api/wedding/finance' 
+      : `/api/wedding/finance?group_id=${selectedGroupId.value}`
+    const data = await $fetch<{ list: FinanceItem[], summary: Summary }>(url)
     list.value = data.list
     summary.value = data.summary
   } catch (e) {
@@ -263,6 +309,7 @@ function openDialog(item?: FinanceItem) {
     form.amount = item.amount
     form.description = item.description || ''
     form.record_date = item.record_date
+    form.group_id = item.group_id || null
   } else {
     editingId.value = null
     form.type = 'expense'
@@ -270,12 +317,17 @@ function openDialog(item?: FinanceItem) {
     form.amount = 0
     form.description = ''
     form.record_date = new Date().toISOString().split('T')[0]
+    form.group_id = groups.value.length > 0 ? groups.value[0].id : null
   }
   isDialogOpen.value = true
 }
 
 async function submitForm() {
   if (isSubmitting.value) return
+  if (!form.group_id) {
+    alert('请选择家庭')
+    return
+  }
   isSubmitting.value = true
 
   try {
@@ -315,7 +367,8 @@ async function deleteItem(id: number) {
   }
 }
 
-onMounted(() => {
-  fetchData()
+onMounted(async () => {
+  await fetchGroups()
+  await fetchData()
 })
 </script>
