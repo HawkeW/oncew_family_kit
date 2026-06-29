@@ -1,19 +1,12 @@
-# Build stage
-FROM node:22-bookworm AS builder
+# Build stage - use Ubuntu as base which has better compatibility
+FROM node:22.15.0-bookworm AS builder
 
 # Install build dependencies for native modules (better-sqlite3)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     make \
     g++ \
-    gcc \
-    libc6-dev \
     && rm -rf /var/lib/apt/lists/*
-
-# Enable pnpm
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
 
 WORKDIR /app
 
@@ -21,7 +14,7 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN pnpm install --frozen-lockfile
+RUN corepack enable && pnpm install --frozen-lockfile
 
 # Copy the rest of the application
 COPY . .
@@ -29,14 +22,15 @@ COPY . .
 # Build the application
 RUN pnpm run build
 
-# Production stage - minimal image
-FROM node:22-slim
+# Production stage
+FROM debian:bookworm-slim
 
-# Install only runtime dependencies needed for SQLite
+# Install runtime dependencies for better-sqlite3
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libc6 \
     libsqlite3-0 \
     libstdc++6 \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get autoremove -y \
     && apt-get clean
@@ -51,14 +45,15 @@ WORKDIR /app/.output/server
 RUN npm install --omit=dev --ignore-scripts
 
 # Verify the build artifact exists (better-sqlite3 binary for Linux)
-RUN find node_modules/better-sqlite3 -name "*.node" 2>/dev/null | grep -q . || { \
+RUN if [ ! -f "node_modules/better-sqlite3/build/Release/better_sqlite3.node" ]; then \
     echo "Error: better-sqlite3 binary not found"; \
-    exit 1; }
+    exit 1; \
+    fi
 
 # Cleanup unnecessary files to reduce image size
-RUN find . -name "*.map" -type f -delete && \
-    find . -name "*.ts" -type f -delete && \
-    find . -name "*.d.ts" -type f -delete && \
+RUN find . -name "*.map" -type f -delete 2>/dev/null || true && \
+    find . -name "*.ts" -type f -delete 2>/dev/null || true && \
+    find . -name "*.d.ts" -type f -delete 2>/dev/null || true && \
     find . -name "test" -type d -exec rm -rf {} + 2>/dev/null || true && \
     find . -name "tests" -type d -exec rm -rf {} + 2>/dev/null || true && \
     find . -name ".bin" -type d -exec rm -rf {} + 2>/dev/null || true
