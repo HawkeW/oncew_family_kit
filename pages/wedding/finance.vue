@@ -1,233 +1,255 @@
 <template>
-  <div class="space-y-6">
-    <div class="flex items-center justify-between">
-      <h1 class="text-3xl font-bold">婚礼管理后台</h1>
+  <div class="text-zinc-100">
+    <!-- 页面标题 -->
+    <div class="mb-6">
+      <h1 class="text-lg font-medium">婚礼管理</h1>
+      <p class="text-sm text-zinc-500">财务管理</p>
     </div>
 
-    <div class="flex gap-4 border-b pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
-        宾客名单 (RSVP)
-      </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium whitespace-nowrap">
-        财务管理
-      </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
-        任务清单
-      </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
-        流程时间轴
-      </NuxtLink>
-    </div>
-
-    <div class="flex items-center justify-between">
-      <h2 class="text-xl font-semibold">财务概览</h2>
-      <Button @click="openDialog()" size="sm" class="md:hidden">记一笔</Button>
-      <Button @click="openDialog()" class="hidden md:inline-flex">记一笔</Button>
-    </div>
-
-    <!-- Summary Cards -->
-    <div class="grid gap-4 grid-cols-1 md:grid-cols-3">
-      <div class="bg-white p-6 rounded-lg shadow space-y-2">
-        <h3 class="text-sm font-medium text-gray-500">总收入 (礼金等)</h3>
-        <div class="text-2xl font-bold text-green-600">+{{ formatMoney(summary.total_income) }}</div>
+    <main class="max-w-4xl space-y-6">
+      <!-- 顶部 Tab 导航 -->
+      <div class="flex gap-2 border-b border-zinc-800 pb-4">
+        <NuxtLink
+          to="/wedding/admin"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap"
+          :class="route.path === '/wedding/admin' ? 'bg-rose-500/20 text-rose-400' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'"
+        >
+          宾客名单 (RSVP)
+        </NuxtLink>
+        <NuxtLink
+          to="/wedding/finance"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap"
+          :class="route.path === '/wedding/finance' ? 'bg-rose-500/20 text-rose-400' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'"
+        >
+          财务管理
+        </NuxtLink>
+        <NuxtLink
+          to="/wedding/tasks"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap"
+          :class="route.path === '/wedding/tasks' ? 'bg-rose-500/20 text-rose-400' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'"
+        >
+          任务清单
+        </NuxtLink>
+        <NuxtLink
+          to="/wedding/timeline"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap"
+          :class="route.path === '/wedding/timeline' ? 'bg-rose-500/20 text-rose-400' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'"
+        >
+          流程时间轴
+        </NuxtLink>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow space-y-2">
-        <h3 class="text-sm font-medium text-gray-500">总支出</h3>
-        <div class="text-2xl font-bold text-red-600">-{{ formatMoney(summary.total_expense) }}</div>
+
+      <!-- 操作栏 -->
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-medium">财务概览</h2>
+        <button
+          @click="openDialog()"
+          class="flex items-center gap-2 rounded-lg bg-rose-500 px-4 py-2 text-sm font-medium text-zinc-950 transition-all hover:bg-rose-400 active:scale-95"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          记一笔
+        </button>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow space-y-2">
-        <h3 class="text-sm font-medium text-gray-500">结余</h3>
-        <div class="text-2xl font-bold" :class="summary.balance >= 0 ? 'text-green-600' : 'text-red-600'">
-          {{ summary.balance >= 0 ? '+' : '' }}{{ formatMoney(summary.balance) }}
+
+      <!-- 统计卡片 -->
+      <div class="grid gap-4 grid-cols-3">
+        <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-1">
+          <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">总收入</h3>
+          <div class="text-2xl font-bold text-green-400">+{{ formatMoney(summary.total_income) }}</div>
         </div>
-      </div>
-    </div>
-
-    <!-- Filters -->
-    <div class="flex gap-2 overflow-x-auto pb-2">
-      <Button 
-        v-for="filter in ['all', 'income', 'expense']" 
-        :key="filter"
-        :variant="currentFilter === filter ? 'default' : 'outline'"
-        @click="currentFilter = filter"
-        class="capitalize whitespace-nowrap"
-      >
-        {{ filter === 'all' ? '全部' : (filter === 'income' ? '收入' : '支出') }}
-      </Button>
-    </div>
-
-    <!-- Desktop Table List -->
-    <div class="hidden md:block bg-white rounded-lg shadow overflow-hidden">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>日期</TableHead>
-            <TableHead>类型</TableHead>
-            <TableHead>分类</TableHead>
-            <TableHead>描述</TableHead>
-            <TableHead class="text-right">金额</TableHead>
-            <TableHead class="text-right">操作</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow v-for="item in filteredList" :key="item.id">
-            <TableCell>{{ formatDate(item.record_date) }}</TableCell>
-            <TableCell>
-              <span :class="item.type === 'income' ? 'text-green-600 bg-green-50 px-2 py-1 rounded' : 'text-red-600 bg-red-50 px-2 py-1 rounded'">
-                {{ item.type === 'income' ? '收入' : '支出' }}
-              </span>
-            </TableCell>
-            <TableCell>{{ item.category }}</TableCell>
-            <TableCell class="max-w-xs truncate" :title="item.description">{{ item.description || '-' }}</TableCell>
-            <TableCell class="text-right font-medium">
-              {{ item.type === 'income' ? '+' : '-' }}{{ formatMoney(item.amount) }}
-            </TableCell>
-            <TableCell class="text-right space-x-2">
-              <Button variant="outline" size="sm" @click="openDialog(item)">编辑</Button>
-              <Button variant="destructive" size="sm" @click="deleteItem(item.id)">删除</Button>
-            </TableCell>
-          </TableRow>
-          <TableRow v-if="filteredList.length === 0">
-            <TableCell colspan="6" class="text-center py-8 text-gray-500">
-              暂无数据
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </div>
-
-    <!-- Mobile Card List -->
-    <div class="md:hidden space-y-4">
-      <div v-if="filteredList.length === 0" class="text-center py-8 text-gray-500 bg-white rounded-lg shadow">
-        暂无数据
-      </div>
-      <div v-else v-for="item in filteredList" :key="item.id" class="bg-white p-4 rounded-lg shadow space-y-3">
-        <div class="flex justify-between items-start">
-           <div class="flex items-center gap-2">
-              <span :class="item.type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" class="text-xs px-2 py-1 rounded font-medium">
-                {{ item.type === 'income' ? '收入' : '支出' }}
-              </span>
-              <span class="font-medium">{{ item.category }}</span>
-           </div>
-           <div class="font-bold" :class="item.type === 'income' ? 'text-green-600' : 'text-red-600'">
-             {{ item.type === 'income' ? '+' : '-' }}{{ formatMoney(item.amount) }}
-           </div>
+        <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-1">
+          <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">总支出</h3>
+          <div class="text-2xl font-bold text-red-400">-{{ formatMoney(summary.total_expense) }}</div>
         </div>
-
-        <p v-if="item.description" class="text-sm text-gray-600 bg-gray-50 p-2 rounded">
-          {{ item.description }}
-        </p>
-
-        <div class="flex justify-between items-center pt-2 border-t mt-2">
-          <span class="text-xs text-gray-400">{{ formatDate(item.record_date) }}</span>
-          <div class="flex gap-2">
-            <Button variant="outline" size="sm" class="h-8" @click="openDialog(item)">编辑</Button>
-            <Button variant="destructive" size="sm" class="h-8" @click="deleteItem(item.id)">删除</Button>
+        <div class="rounded-xl border border-zinc-800 bg-zinc-900/50 p-4 space-y-1">
+          <h3 class="text-xs font-medium text-zinc-500 uppercase tracking-wider">结余</h3>
+          <div class="text-2xl font-bold" :class="summary.balance >= 0 ? 'text-green-400' : 'text-red-400'">
+            {{ summary.balance >= 0 ? '+' : '' }}{{ formatMoney(summary.balance) }}
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Add/Edit Dialog -->
-    <Dialog :open="isDialogOpen" @update:open="isDialogOpen = $event">
-      <DialogContent class="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>{{ editingId ? '编辑记录' : '添加记录' }}</DialogTitle>
-        </DialogHeader>
-        <form @submit.prevent="submitForm" class="space-y-4">
-          <div class="grid w-full items-center gap-1.5">
-            <Label>类型</Label>
-            <div class="flex gap-4">
-              <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="radio" v-model="form.type" value="expense" class="accent-primary" />
-                <span>支出</span>
-              </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="radio" v-model="form.type" value="income" class="accent-primary" />
-                <span>收入</span>
-              </label>
+      <!-- 筛选 -->
+      <div class="flex gap-2">
+        <button
+          v-for="filter in ['all', 'income', 'expense']"
+          :key="filter"
+          @click="currentFilter = filter"
+          class="px-4 py-2 rounded-lg text-sm font-medium transition-all capitalize"
+          :class="currentFilter === filter ? 'bg-rose-500/20 text-rose-400' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800'"
+        >
+          {{ filter === 'all' ? '全部' : (filter === 'income' ? '收入' : '支出') }}
+        </button>
+      </div>
+
+      <!-- 空状态 -->
+      <div v-if="filteredList.length === 0" class="rounded-xl border border-zinc-800 bg-zinc-900/30 p-12 text-center">
+        <div class="mx-auto h-16 w-16 rounded-full bg-zinc-800/50 flex items-center justify-center mb-4">
+          <span class="text-3xl">💰</span>
+        </div>
+        <h3 class="text-lg font-medium text-zinc-300">还没有财务记录</h3>
+        <p class="mt-2 text-sm text-zinc-500">点击右上角「记一笔」开始记录</p>
+      </div>
+
+      <!-- 记录列表 -->
+      <div v-else class="rounded-xl border border-zinc-800/60 bg-zinc-900/30 divide-y divide-zinc-800/50">
+        <div
+          v-for="item in filteredList"
+          :key="item.id"
+          class="flex items-center gap-4 p-4 hover:bg-zinc-800/30 transition-colors"
+        >
+          <div class="flex h-12 w-12 items-center justify-center rounded-full" :class="item.type === 'income' ? 'bg-green-500/20' : 'bg-red-500/20'">
+            <span class="text-xl">{{ item.type === 'income' ? '💵' : '🛒' }}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <p class="font-medium text-zinc-200">{{ item.description || item.category }}</p>
+              <span class="text-xs px-2 py-0.5 rounded-full" :class="item.type === 'income' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'">
+                {{ item.type === 'income' ? '收入' : '支出' }}
+              </span>
             </div>
+            <p class="text-sm text-zinc-500 mt-0.5">{{ formatDate(item.record_date) }} · {{ item.category }}</p>
           </div>
-          
-          <div class="grid w-full items-center gap-1.5">
-            <Label for="category">分类</Label>
-            <Input id="category" v-model="form.category" placeholder="例如：酒席、装饰、礼金" list="categories" required />
-            <datalist id="categories">
-              <option value="礼金"></option>
-              <option value="酒席"></option>
-              <option value="装饰"></option>
-              <option value="婚庆"></option>
-              <option value="服饰"></option>
-              <option value="礼品"></option>
-              <option value="交通"></option>
-              <option value="其他"></option>
-            </datalist>
+          <div class="text-right">
+            <p class="font-medium" :class="item.type === 'income' ? 'text-green-400' : 'text-red-400'">
+              {{ item.type === 'income' ? '+' : '-' }}{{ formatMoney(item.amount) }}
+            </p>
           </div>
+          <div class="flex items-center gap-1">
+            <button @click="openDialog(item)" class="p-2 text-zinc-400 hover:text-zinc-200 transition-colors">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </button>
+            <button @click="deleteFinance(item.id)" class="p-2 text-zinc-400 hover:text-red-400 transition-colors">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
 
-          <div class="grid w-full items-center gap-1.5">
-            <Label for="amount">金额</Label>
-            <Input id="amount" type="number" step="0.01" v-model.number="form.amount" required />
-          </div>
-
-          <div class="grid w-full items-center gap-1.5">
-            <Label for="date">日期</Label>
-            <Input id="date" type="date" v-model="form.record_date" required />
-          </div>
-
-          <div class="grid w-full items-center gap-1.5">
-            <Label for="description">备注</Label>
-            <Textarea id="description" v-model="form.description" />
-          </div>
-
-          <DialogFooter>
-            <Button type="submit" :disabled="isSubmitting">
-              {{ isSubmitting ? '保存中...' : '保存' }}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+    <!-- 添加/编辑弹窗 -->
+    <Transition name="modal">
+      <div v-if="showDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60" @click="closeDialog"></div>
+        <div class="relative w-full max-w-md rounded-2xl bg-zinc-900 border border-zinc-800 p-6">
+          <h2 class="text-lg font-medium mb-4">{{ editingId ? '编辑记录' : '记一笔' }}</h2>
+          <form @submit.prevent="saveFinance" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-zinc-300 mb-2">类型</label>
+              <select
+                v-model="form.type"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+              >
+                <option value="income">收入</option>
+                <option value="expense">支出</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-zinc-300 mb-2">分类</label>
+              <select
+                v-model="form.category"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+              >
+                <option value="礼金">礼金</option>
+                <option value="餐饮">餐饮</option>
+                <option value="场地">场地</option>
+                <option value="服装">服装</option>
+                <option value="摄影">摄影</option>
+                <option value="婚车">婚车</option>
+                <option value="化妆">化妆</option>
+                <option value="其他">其他</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-zinc-300 mb-2">金额</label>
+              <input
+                v-model.number="form.amount"
+                type="number"
+                step="0.01"
+                min="0"
+                required
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-zinc-300 mb-2">日期</label>
+              <input
+                v-model="form.record_date"
+                type="date"
+                required
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-zinc-300 mb-2">描述</label>
+              <textarea
+                v-model="form.description"
+                rows="2"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                placeholder="输入描述信息"
+              ></textarea>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button
+                type="button"
+                @click="closeDialog"
+                class="flex-1 rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800 transition-colors"
+              >
+                取消
+              </button>
+              <button
+                type="submit"
+                class="flex-1 rounded-lg bg-rose-500 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-rose-400 transition-colors"
+              >
+                保存
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, reactive, computed } from 'vue'
-
-useHead({
-  title: '婚礼财务管理'
-})
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
 definePageMeta({
   layout: 'dashboard',
   middleware: 'auth'
 })
 
-interface FinanceItem {
-  id: number
+useHead({
+  title: '财务管理 - 婚礼管理 - Nestory'
+})
+
+const route = useRoute()
+
+interface Finance {
+  id?: number
   type: 'income' | 'expense'
   category: string
   amount: number
-  description: string
+  description?: string
   record_date: string
-  created_at: string
+  created_at?: string
 }
 
-interface Summary {
-  total_income: number
-  total_expense: number
-  balance: number
-}
-
-const list = ref<FinanceItem[]>([])
-const summary = ref<Summary>({ total_income: 0, total_expense: 0, balance: 0 })
+const list = ref<Finance[]>([])
+const summary = ref({ total_income: 0, total_expense: 0, balance: 0 })
 const currentFilter = ref('all')
-const isDialogOpen = ref(false)
-const isSubmitting = ref(false)
+const showDialog = ref(false)
 const editingId = ref<number | null>(null)
-
-const form = reactive({
-  type: 'expense' as 'income' | 'expense',
-  category: '',
+const form = ref<Partial<Finance>>({
+  type: 'expense',
+  category: '其他',
   amount: 0,
   description: '',
   record_date: new Date().toISOString().split('T')[0]
@@ -238,85 +260,103 @@ const filteredList = computed(() => {
   return list.value.filter(item => item.type === currentFilter.value)
 })
 
+async function fetchFinances() {
+  try {
+    const res = await $fetch('/api/wedding/finance')
+    list.value = res.list || []
+    summary.value = res.summary || { total_income: 0, total_expense: 0, balance: 0 }
+  } catch (error) {
+    console.error('获取财务列表失败:', error)
+  }
+}
+
+function openDialog(item?: Finance) {
+  if (item) {
+    editingId.value = item.id!
+    form.value = { ...item }
+  } else {
+    editingId.value = null
+    form.value = {
+      type: 'expense',
+      category: '其他',
+      amount: 0,
+      description: '',
+      record_date: new Date().toISOString().split('T')[0]
+    }
+  }
+  showDialog.value = true
+}
+
+function closeDialog() {
+  showDialog.value = false
+  editingId.value = null
+}
+
+async function saveFinance() {
+  try {
+    if (editingId.value) {
+      await $fetch(`/api/wedding/finance/${editingId.value}`, {
+        method: 'PUT',
+        body: form.value
+      })
+    } else {
+      await $fetch('/api/wedding/finance', {
+        method: 'POST',
+        body: form.value
+      })
+    }
+    closeDialog()
+    await fetchFinances()
+  } catch (error) {
+    console.error('保存失败:', error)
+    alert('保存失败')
+  }
+}
+
+async function deleteFinance(id: number) {
+  if (!confirm('确定要删除这条记录吗？')) return
+  try {
+    await $fetch(`/api/wedding/finance/${id}`, { method: 'DELETE' })
+    await fetchFinances()
+  } catch (error) {
+    console.error('删除失败:', error)
+    alert('删除失败')
+  }
+}
+
 function formatMoney(amount: number) {
   return amount.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 function formatDate(dateStr: string) {
+  if (!dateStr) return '-'
   return new Date(dateStr).toLocaleDateString('zh-CN')
 }
 
-async function fetchData() {
-  try {
-    const data = await $fetch<{ list: FinanceItem[], summary: Summary }>('/api/wedding/finance')
-    list.value = data.list
-    summary.value = data.summary
-  } catch (e) {
-    console.error('获取数据失败', e)
-  }
-}
-
-function openDialog(item?: FinanceItem) {
-  if (item) {
-    editingId.value = item.id
-    form.type = item.type
-    form.category = item.category
-    form.amount = item.amount
-    form.description = item.description || ''
-    form.record_date = item.record_date
-  } else {
-    editingId.value = null
-    form.type = 'expense'
-    form.category = ''
-    form.amount = 0
-    form.description = ''
-    form.record_date = new Date().toISOString().split('T')[0]
-  }
-  isDialogOpen.value = true
-}
-
-async function submitForm() {
-  if (isSubmitting.value) return
-  isSubmitting.value = true
-
-  try {
-    if (editingId.value) {
-      await $fetch(`/api/wedding/finance/${editingId.value}`, {
-        method: 'PUT',
-        body: form
-      })
-    } else {
-      await $fetch('/api/wedding/finance', {
-        method: 'POST',
-        body: form
-      })
-    }
-
-    isDialogOpen.value = false
-    await fetchData()
-  } catch (e) {
-    console.error('保存失败', e)
-    alert('保存失败，请重试')
-  } finally {
-    isSubmitting.value = false
-  }
-}
-
-async function deleteItem(id: number) {
-  if (!confirm('确定要删除这条记录吗？')) return
-
-  try {
-    await $fetch(`/api/wedding/finance/${id}`, {
-      method: 'DELETE'
-    })
-    await fetchData()
-  } catch (e) {
-    console.error('删除失败', e)
-    alert('删除失败，请重试')
-  }
-}
-
 onMounted(() => {
-  fetchData()
+  fetchFinances()
 })
 </script>
+
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active > div:last-child,
+.modal-leave-active > div:last-child {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.modal-enter-from > div:last-child,
+.modal-leave-to > div:last-child {
+  transform: scale(0.95);
+  opacity: 0;
+}
+</style>
