@@ -27,6 +27,7 @@ import { useRouter } from 'vue-router'
 import { useCustomAuthState } from '~/composables/useCustomAuthState'
 
 definePageMeta({
+  layout: 'dashboard',
   middleware: 'auth'
 })
 

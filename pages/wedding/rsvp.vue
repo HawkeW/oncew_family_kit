@@ -51,7 +51,8 @@ useHead({
 })
 
 definePageMeta({
-  layout: false // 使用空白布局
+  layout: 'dashboard',
+  middleware: 'auth'
 })
 
 const form = ref({

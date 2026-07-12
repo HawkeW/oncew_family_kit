@@ -73,12 +73,52 @@ module.exports = {
           from: { height: 'var(--reka-collapsible-content-height)' },
           to: { height: 0 },
         },
+        'fade-in': {
+          from: { opacity: 0 },
+          to: { opacity: 1 },
+        },
+        'fade-out': {
+          from: { opacity: 1 },
+          to: { opacity: 0 },
+        },
+        'slide-up': {
+          from: { opacity: 0, transform: 'translateY(10px)' },
+          to: { opacity: 1, transform: 'translateY(0)' },
+        },
+        'slide-down': {
+          from: { opacity: 0, transform: 'translateY(-10px)' },
+          to: { opacity: 1, transform: 'translateY(0)' },
+        },
+        'slide-in-right': {
+          from: { opacity: 0, transform: 'translateX(100%)' },
+          to: { opacity: 1, transform: 'translateX(0)' },
+        },
+        'slide-out-right': {
+          from: { opacity: 1, transform: 'translateX(0)' },
+          to: { opacity: 0, transform: 'translateX(100%)' },
+        },
+        'scale-in': {
+          from: { opacity: 0, transform: 'scale(0.95)' },
+          to: { opacity: 1, transform: 'scale(1)' },
+        },
+        'pulse-subtle': {
+          '0%, 100%': { opacity: 1 },
+          '50%': { opacity: 0.8 },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'collapsible-down': 'collapsible-down 0.2s ease-in-out',
         'collapsible-up': 'collapsible-up 0.2s ease-in-out',
+        'fade-in': 'fade-in 0.2s ease-out',
+        'fade-out': 'fade-out 0.2s ease-in',
+        'slide-up': 'slide-up 0.3s ease-out',
+        'slide-down': 'slide-down 0.3s ease-out',
+        'slide-in-right': 'slide-in-right 0.3s ease-out',
+        'slide-out-right': 'slide-out-right 0.3s ease-in',
+        'scale-in': 'scale-in 0.2s ease-out',
+        'pulse-subtle': 'pulse-subtle 2s ease-in-out infinite',
       },
     },
   },

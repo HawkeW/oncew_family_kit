@@ -220,6 +220,7 @@ import { z } from 'zod'
 import { DateTimePicker } from '@/components/ui/date-time-picker'
 
 definePageMeta({
+  layout: 'dashboard',
   middleware: 'auth'
 })
 
