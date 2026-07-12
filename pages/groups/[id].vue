@@ -137,6 +137,83 @@
         </div>
       </div>
 
+      <!-- 共享记录 -->
+      <div class="bg-white rounded-lg shadow-md border border-gray-200 mt-6">
+        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <span class="text-2xl">📋</span>
+            <h2 class="text-xl font-semibold text-gray-900">群组共享记录</h2>
+          </div>
+          <div class="flex items-center space-x-2">
+            <select 
+              v-model="selectedRecordType" 
+              class="border border-gray-300 rounded-md px-3 py-1.5 text-sm"
+              @change="loadGroupRecords"
+            >
+              <option value="">全部记录类型</option>
+              <option v-for="rt in recordTypes" :key="rt.id" :value="rt.id">
+                {{ rt.icon }} {{ rt.name }}
+              </option>
+            </select>
+            <button
+              @click="showCreateRecordModal = true"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm flex items-center space-x-1"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+              </svg>
+              <span>添加记录</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- 加载状态 -->
+        <div v-if="loadingRecords" class="p-8 text-center text-gray-500">
+          加载中...
+        </div>
+        
+        <!-- 记录列表 -->
+        <div v-else-if="groupRecords.length > 0" class="divide-y divide-gray-200 max-h-96 overflow-y-auto">
+          <div
+            v-for="record in groupRecords"
+            :key="record.id"
+            class="px-6 py-4 hover:bg-gray-50"
+          >
+            <div class="flex items-start justify-between">
+              <div class="flex items-start space-x-3">
+                <span class="text-2xl">{{ record.icon }}</span>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h3 class="font-medium text-gray-900">{{ record.record_type_name }}</h3>
+                    <span class="text-sm text-gray-500">by {{ record.username }}</span>
+                  </div>
+                  <p class="text-sm text-gray-600 mt-1">
+                    {{ record.record_date }}
+                    <span v-if="record.record_time"> {{ record.record_time }}</span>
+                  </p>
+                  <div v-if="record.notes" class="text-sm text-gray-500 mt-1">
+                    {{ record.notes }}
+                  </div>
+                </div>
+              </div>
+              <span 
+                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                :style="{ backgroundColor: record.color + '20', color: record.color }"
+              >
+                {{ record.record_type_name }}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 空状态 -->
+        <div v-else class="p-8 text-center text-gray-500">
+          <span class="text-4xl mb-2 block">📝</span>
+          <p>暂无共享记录</p>
+          <p class="text-sm mt-1">点击"添加记录"创建第一条共享记录</p>
+        </div>
+      </div>
+
       <!-- 邀请弹窗 -->
       <div v-if="showInviteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg p-6 w-full max-w-md">
@@ -277,7 +354,14 @@ const userRole = ref<string>('')
 const loading = ref(false)
 const showInviteModal = ref(false)
 const showInviteManagement = ref(false)
+const showCreateRecordModal = ref(false)
 const inviteExpireDays = ref(7)
+
+// 共享记录相关
+const groupRecords = ref<any[]>([])
+const recordTypes = ref<any[]>([])
+const selectedRecordType = ref('')
+const loadingRecords = ref(false)
 
 useHead({
   title: computed(() => group.value ? `${group.value.name} - 群组详情 - Nestory` : '群组详情 - Nestory')
@@ -303,6 +387,8 @@ onMounted(async () => {
   await loadGroupDetails()
   await loadGroupMembers()
   await loadUserRole()
+  await loadRecordTypes()
+  await loadGroupRecords()
 })
 
 // 加载当前用户信息
@@ -527,4 +613,31 @@ watch(showInviteManagement, (newValue) => {
     loadInvitations()
   }
 })
+
+// 加载记录类型
+const loadRecordTypes = async () => {
+  try {
+    const data = await $fetch<any>('/api/record-types?includeSystem=true')
+    recordTypes.value = data.recordTypes || []
+  } catch (error) {
+    console.error('加载记录类型失败:', error)
+  }
+}
+
+// 加载群组共享记录
+const loadGroupRecords = async () => {
+  loadingRecords.value = true
+  try {
+    let url = `/api/universal-records?groupId=${groupId}`
+    if (selectedRecordType.value) {
+      url += `&recordTypeId=${selectedRecordType.value}`
+    }
+    const data = await $fetch<any>(url)
+    groupRecords.value = data.records || []
+  } catch (error) {
+    console.error('加载群组记录失败:', error)
+  } finally {
+    loadingRecords.value = false
+  }
+}
 </script>

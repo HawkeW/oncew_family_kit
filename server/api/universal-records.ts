@@ -29,6 +29,7 @@ export default defineEventHandler(async (event) => {
     const query = getQuery(event);
     const recordTypeId = query.recordTypeId as string;
     const recordId = query.recordId as string;
+    const groupId = query.groupId as string; // 指定群组ID
     const type = query.type as string || 'user'; // user, group, all
     const page = parseInt(query.page as string) || 1;
     const limit = parseInt(query.limit as string) || 20;
@@ -42,11 +43,11 @@ export default defineEventHandler(async (event) => {
 
       // 如果指定了recordTypeId，返回该类型的记录列表
       if (recordTypeId) {
-        return await getRecordsByType(db, recordTypeId, userId, type, limit, offset);
+        return await getRecordsByType(db, recordTypeId, userId, groupId, type, limit, offset);
       }
 
       // 否则返回所有记录
-      return await getAllRecords(db, userId, type, limit, offset);
+      return await getAllRecords(db, userId, groupId, type, limit, offset);
 
     } catch (error) {
       console.error('获取记录失败:', error);
@@ -60,13 +61,27 @@ export default defineEventHandler(async (event) => {
   // POST - 创建新记录
   if (method === 'POST') {
     const body = await readBody(event);
-    const { recordTypeId, recordDate, recordTime, location, moodContext, notes, tags, fieldValues } = body;
+    const { recordTypeId, recordDate, recordTime, location, moodContext, notes, tags, fieldValues, groupId } = body;
 
     if (!recordTypeId || !recordDate || !fieldValues) {
       throw createError({
         statusCode: 400,
         message: '缺少必要字段'
       });
+    }
+
+    // 如果指定了groupId，验证用户是否属于该群组
+    if (groupId) {
+      const memberCheck = db.prepare(`
+        SELECT 1 FROM group_members WHERE group_id = ? AND user_id = ?
+      `).get(groupId, userId);
+      
+      if (!memberCheck) {
+        throw createError({
+          statusCode: 403,
+          message: '您不是该群组成员，无法向该群组添加共享记录'
+        });
+      }
     }
 
     try {
@@ -79,7 +94,8 @@ export default defineEventHandler(async (event) => {
         moodContext,
         notes,
         tags: tags || [],
-        fieldValues
+        fieldValues,
+        groupId
       });
     } catch (error) {
       console.error('创建记录失败:', error);
@@ -182,11 +198,15 @@ async function getRecordDetail(db: Database, recordId: string, userId: number) {
 }
 
 // 根据类型获取记录
-async function getRecordsByType(db: Database, recordTypeId: string, userId: number, type: string, limit: number, offset: number) {
+async function getRecordsByType(db: Database, recordTypeId: string, userId: number, groupId: string | undefined, type: string, limit: number, offset: number) {
   let whereClause = 'WHERE ur.record_type_id = ?';
-  let params = [recordTypeId];
+  let params: any[] = [recordTypeId];
 
-  if (type === 'user') {
+  // 如果指定了groupId，只查询该群组的共享记录
+  if (groupId) {
+    whereClause += ' AND ur.group_id = ?';
+    params.push(groupId);
+  } else if (type === 'user') {
     whereClause += ' AND ur.user_id = ?';
     params.push(userId);
   } else if (type === 'group') {
@@ -241,11 +261,15 @@ async function getRecordsByType(db: Database, recordTypeId: string, userId: numb
 }
 
 // 获取所有记录
-async function getAllRecords(db: Database, userId: number, type: string, limit: number, offset: number) {
+async function getAllRecords(db: Database, userId: number, groupId: string | undefined, type: string, limit: number, offset: number) {
   let whereClause = 'WHERE 1=1';
   let params: any[] = [];
 
-  if (type === 'user') {
+  // 如果指定了groupId，只查询该群组的共享记录
+  if (groupId) {
+    whereClause += ' AND ur.group_id = ?';
+    params.push(groupId);
+  } else if (type === 'user') {
     whereClause += ' AND ur.user_id = ?';
     params.push(userId);
   } else if (type === 'group') {
@@ -309,6 +333,7 @@ async function createRecord(db: Database, data: {
   notes?: string;
   tags: string[];
   fieldValues: Record<string, any>;
+  groupId?: string;
 }) {
   const recordId = generateId();
   const now = new Date().toISOString();
@@ -338,8 +363,8 @@ async function createRecord(db: Database, data: {
     db.prepare(`
       INSERT INTO user_records (
         id, user_id, record_type_id, record_date, record_time, 
-        location, mood_context, notes, tags, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        location, mood_context, notes, tags, group_id, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       recordId,
       parseInt(data.userId),
@@ -350,6 +375,7 @@ async function createRecord(db: Database, data: {
       data.moodContext ? JSON.stringify(data.moodContext) : null,
       data.notes || null,
       JSON.stringify(data.tags),
+      data.groupId ? parseInt(data.groupId) : null,
       now,
       now
     );

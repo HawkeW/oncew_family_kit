@@ -164,12 +164,25 @@ export function initializeUniversalDatabase(db: Database) {
       mood_context TEXT, -- JSON字符串存储情绪上下文
       notes TEXT,
       tags TEXT NOT NULL DEFAULT '[]', -- JSON数组
+      group_id INTEGER, -- 所属群组ID，用于群组内共享记录
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
       FOREIGN KEY (record_type_id) REFERENCES record_types(id)
     )
   `);
+
+  // 迁移：为已存在的 user_records 表添加 group_id 字段（如果不存在）
+  try {
+    db.exec(`
+      ALTER TABLE user_records ADD COLUMN group_id INTEGER
+    `);
+  } catch (e: any) {
+    // 字段已存在，忽略错误
+    if (!e.message?.includes('duplicate column name')) {
+      console.log('group_id 字段添加跳过或已完成');
+    }
+  }
 
   // 动态数据存储表
   db.exec(`

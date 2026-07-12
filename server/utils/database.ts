@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import { resolve } from 'path';
 import { initializeDatabase } from '../models/schema';
+import { initializeUniversalDatabase } from '../models/universal-schema';
 
 let db: Database.Database;
 
@@ -13,6 +14,7 @@ export function getDatabase() {
     
     db = new Database(dbPath);
     initializeDatabase(db);
+    initializeUniversalDatabase(db);
   }
   return db;
 }
