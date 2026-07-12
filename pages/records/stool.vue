@@ -1,208 +1,211 @@
 <template>
-  <div>
-    <h1 class="text-2xl font-bold mb-4">便便记录</h1>
-
-    <!-- 添加记录表单 -->
-    <div class="bg-white p-4 rounded-lg shadow mb-6">
-      <h2 class="text-xl font-semibold mb-4">添加新记录</h2>
-      <form @submit.prevent="addRecord" class="space-y-4">
-        <!-- 日期时间选择 -->
-        <DateTimePicker v-model="newRecord.record_time" />
-
-        <FormField name="comfort_level">
-          <FormItem class="space-y-2">
-            <Label>舒适度</Label>
-            <Select v-model="newRecord.comfort_level">
-              <SelectTrigger>
-                <SelectValue placeholder="选择舒适度" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="uncomfortable">不适</SelectItem>
-                <SelectItem value="normal">正常</SelectItem>
-                <SelectItem value="comfortable">舒适</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        </FormField>
-
-        <FormField name="consistency">
-          <FormItem class="space-y-2">
-            <Label>便便性状</Label>
-            <Select v-model="newRecord.consistency">
-              <SelectTrigger>
-                <SelectValue placeholder="选择性状" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="hard">硬</SelectItem>
-                <SelectItem value="normal">正常</SelectItem>
-                <SelectItem value="soft">软</SelectItem>
-                <SelectItem value="liquid">液态</SelectItem>
-              </SelectContent>
-            </Select>
-          </FormItem>
-        </FormField>
-
-        <FormField name="notes">
-          <FormItem class="space-y-2">
-            <Label>备注</Label>
-            <Textarea v-model="newRecord.notes" placeholder="输入备注信息" rows="3" />
-          </FormItem>
-        </FormField>
-
-        <FormItem>
-          <Button type="submit" class="w-full">
-            添加记录
-          </Button>
-        </FormItem>
-      </form>
+  <div class="text-zinc-100">
+    <!-- 页面标题 -->
+    <div class="mb-6">
+      <h1 class="text-lg font-medium">便便记录</h1>
+      <p class="text-sm text-zinc-500">{{ records.length }} 条记录</p>
     </div>
 
-    <!-- 记录列表 -->
-    <div class="bg-white p-4 rounded-lg shadow">
-      <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-semibold">历史记录</h2>
-        <!-- 数据类型切换器 -->
-        <div class="flex space-x-2">
-          <Button 
-            variant="outline" 
-            size="sm"
-            :class="{ 'bg-blue-100 border-blue-500': dataType === 'user' }"
-            @click="switchDataType('user')"
+    <main class="max-w-4xl">
+      <!-- 顶部操作栏 -->
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex gap-2">
+          <button
+            v-for="tab in tabs"
+            :key="tab.value"
+            @click="switchDataType(tab.value)"
+            class="px-3 py-1.5 rounded-lg text-sm transition-all"
+            :class="dataType === tab.value ? 'bg-amber-500/20 text-amber-400' : 'text-zinc-400 hover:text-zinc-200'"
           >
-            我的
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm"
-            :class="{ 'bg-blue-100 border-blue-500': dataType === 'all' }"
-            @click="switchDataType('all')"
-          >
-            所有
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm"
-            :class="{ 'bg-blue-100 border-blue-500': dataType === 'group' }"
-            @click="switchDataType('group')"
-          >
-            朋友
-          </Button>
+            {{ tab.label }}
+          </button>
+        </div>
+        <button
+          @click="openAddDialog"
+          class="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-zinc-950 transition-all hover:bg-amber-400 active:scale-95"
+        >
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          添加
+        </button>
+      </div>
+
+      <!-- 空状态 -->
+      <div v-if="records.length === 0" class="rounded-xl border border-zinc-800 bg-zinc-900/30 p-12 text-center">
+        <div class="mx-auto h-16 w-16 rounded-full bg-zinc-800/50 flex items-center justify-center mb-4">
+          <span class="text-3xl">💩</span>
+        </div>
+        <h3 class="text-lg font-medium text-zinc-300">还没有记录</h3>
+        <p class="mt-2 text-sm text-zinc-500">点击右上角「添加」开始记录</p>
+      </div>
+
+      <!-- 记录列表 -->
+      <div v-else class="rounded-xl border border-zinc-800/60 bg-zinc-900/30 divide-y divide-zinc-800/50">
+        <div
+          v-for="record in records"
+          :key="record.id"
+          class="flex items-center gap-4 p-4 hover:bg-zinc-800/30 transition-colors"
+        >
+          <div class="flex h-12 w-12 items-center justify-center rounded-full" :style="{ backgroundColor: getConsistencyColor(record.consistency) }">
+            <span class="text-xl">💩</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <p class="font-medium text-zinc-200">{{ formatRecordTime(record.record_time) }}</p>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">{{ getComfortLevelText(record.comfort_level) }}</span>
+            </div>
+            <p class="text-sm text-zinc-500 mt-0.5">
+              {{ getConsistencyText(record.consistency) }} · {{ record.notes || '无备注' }}
+            </p>
+          </div>
+          <div class="flex items-center gap-1">
+            <button @click="editRecord(record)" class="p-2 text-zinc-400 hover:text-zinc-200 transition-colors">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </button>
+            <button @click="confirmDeleteRecord(record)" class="p-2 text-zinc-400 hover:text-red-400 transition-colors">
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-      <div class="w-full">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>日期</TableHead>
-              <TableHead>舒适度</TableHead>
-              <TableHead>便便性状</TableHead>
-              <TableHead>备注</TableHead>
-              <TableHead v-if="dataType !== 'user'">用户</TableHead>
-              <TableHead>操作</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow v-for="record in records" :key="record.id">
-              <TableCell>{{ formatRecordTime(record.record_time) }}</TableCell>
-              <TableCell>{{ getComfortLevelText(record.comfort_level) }}</TableCell>
-              <TableCell>{{ getConsistencyText(record.consistency) }}</TableCell>
-              <TableCell>{{ record.notes || '-' }}</TableCell>
-              <TableCell v-if="dataType !== 'user'">{{ record.username || '-' }}</TableCell>
-              <TableCell>
-                <div class="flex space-x-2">
-                  <Button 
-                    v-if="!record.username" 
-                    variant="outline" 
-                    size="sm" 
-                    @click="editRecord(record)"
-                  >
-                    编辑
-                  </Button>
-                  <Button 
-                    v-if="!record.username" 
-                    variant="destructive" 
-                    size="sm" 
-                    @click="confirmDeleteRecord(record)"
-                  >
-                    删除
-                  </Button>
-                  <span v-else class="text-gray-400 text-sm">-</span>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+    </main>
+
+    <!-- 添加记录弹窗 -->
+    <Transition name="modal">
+      <div v-if="showAddDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/60" @click="showAddDialog = false"></div>
+        <div class="relative w-full max-w-md rounded-2xl bg-zinc-900 border border-zinc-800 p-6">
+          <h2 class="text-lg font-medium mb-4">添加便便记录</h2>
+          <form @submit.prevent="addRecord" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-zinc-300 mb-2">日期时间</label>
+              <input
+                type="datetime-local"
+                v-model="newRecordDateTime"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-zinc-300 mb-2">舒适度</label>
+              <select
+                v-model="newRecord.comfort_level"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              >
+                <option value="uncomfortable">不适</option>
+                <option value="normal">正常</option>
+                <option value="comfortable">舒适</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-zinc-300 mb-2">便便性状</label>
+              <select
+                v-model="newRecord.consistency"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              >
+                <option value="hard">硬</option>
+                <option value="normal">正常</option>
+                <option value="soft">软</option>
+                <option value="liquid">液态</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-zinc-300 mb-2">备注</label>
+              <textarea
+                v-model="newRecord.notes"
+                rows="3"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              ></textarea>
+            </div>
+            <div class="flex gap-3 pt-2">
+              <button
+                type="button"
+                @click="showAddDialog = false"
+                class="flex-1 rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800 transition-colors"
+              >
+                取消
+              </button>
+              <button
+                type="submit"
+                class="flex-1 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-amber-400 transition-colors"
+              >
+                保存
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </Transition>
 
     <!-- 编辑记录对话框 -->
     <Dialog :open="isEditDialogOpen" @update:open="isEditDialogOpen = $event">
-      <DialogContent class="sm:max-w-[425px]">
+      <DialogContent class="sm:max-w-[425px] bg-zinc-900 border-zinc-800">
         <DialogHeader>
-          <DialogTitle>编辑记录</DialogTitle>
+          <DialogTitle class="text-zinc-100">编辑记录</DialogTitle>
         </DialogHeader>
         <div class="space-y-4">
-          <!-- 日期时间选择 -->
-          <DateTimePicker v-model="editingRecord.record_time" />
-
-          <div class="space-y-2">
-            <Label>舒适度</Label>
-            <Select v-model="editingRecord.comfort_level">
-              <SelectTrigger>
-                <SelectValue placeholder="选择舒适度" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="uncomfortable">不适</SelectItem>
-                <SelectItem value="normal">正常</SelectItem>
-                <SelectItem value="comfortable">舒适</SelectItem>
-              </SelectContent>
-            </Select>
+          <div>
+            <label class="block text-sm font-medium text-zinc-300 mb-2">日期时间</label>
+            <input
+              type="datetime-local"
+              v-model="editRecordDateTime"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            />
           </div>
-
-          <div class="space-y-2">
-            <Label>便便性状</Label>
-            <Select v-model="editingRecord.consistency">
-              <SelectTrigger>
-                <SelectValue placeholder="选择性状" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="hard">硬</SelectItem>
-                <SelectItem value="normal">正常</SelectItem>
-                <SelectItem value="soft">软</SelectItem>
-                <SelectItem value="liquid">液态</SelectItem>
-              </SelectContent>
-            </Select>
+          <div>
+            <label class="block text-sm font-medium text-zinc-300 mb-2">舒适度</label>
+            <select
+              v-model="editingRecord.comfort_level"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            >
+              <option value="uncomfortable">不适</option>
+              <option value="normal">正常</option>
+              <option value="comfortable">舒适</option>
+            </select>
           </div>
-
-          <div class="space-y-2">
-            <Label>备注</Label>
-            <Textarea v-model="editingRecord.notes" placeholder="输入备注信息" rows="3" />
+          <div>
+            <label class="block text-sm font-medium text-zinc-300 mb-2">便便性状</label>
+            <select
+              v-model="editingRecord.consistency"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            >
+              <option value="hard">硬</option>
+              <option value="normal">正常</option>
+              <option value="soft">软</option>
+              <option value="liquid">液态</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-zinc-300 mb-2">备注</label>
+            <textarea
+              v-model="editingRecord.notes"
+              rows="3"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+            ></textarea>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" @click="isEditDialogOpen = false">取消</Button>
-          <Button @click="updateRecord">保存</Button>
+          <Button variant="outline" @click="isEditDialogOpen = false" class="bg-zinc-800 border-zinc-700 text-zinc-300">取消</Button>
+          <Button @click="updateRecord" class="bg-amber-500 hover:bg-amber-400 text-zinc-950">保存</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
+
     <!-- 删除确认对话框 -->
     <Dialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
-      <DialogContent class="sm:max-w-[425px]">
+      <DialogContent class="sm:max-w-[425px] bg-zinc-900 border-zinc-800">
         <DialogHeader>
-          <DialogTitle>确认删除</DialogTitle>
+          <DialogTitle class="text-zinc-100">确认删除</DialogTitle>
         </DialogHeader>
         <div class="py-4">
-          <p class="text-sm text-gray-600">
-            确定要删除这条记录吗？此操作无法撤销。
-          </p>
-          <div class="mt-4 p-3 bg-gray-50 rounded-lg">
-            <p class="text-sm"><strong>记录时间：</strong>{{ formatRecordTime(recordToDelete?.record_time || '') }}</p>
-            <p class="text-sm"><strong>舒适度：</strong>{{ getComfortLevelText(recordToDelete?.comfort_level || '') }}</p>
-            <p class="text-sm"><strong>便便性状：</strong>{{ getConsistencyText(recordToDelete?.consistency || '') }}</p>
-          </div>
+          <p class="text-sm text-zinc-400">确定要删除这条记录吗？此操作无法撤销。</p>
         </div>
         <DialogFooter>
-          <Button variant="outline" @click="isDeleteDialogOpen = false">取消</Button>
+          <Button variant="outline" @click="isDeleteDialogOpen = false" class="bg-zinc-800 border-zinc-700 text-zinc-300">取消</Button>
           <Button variant="destructive" @click="deleteRecord">确认删除</Button>
         </DialogFooter>
       </DialogContent>
@@ -211,13 +214,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import type { StoolRecord } from '~/server/models/schema'
-import { DateFormatter, parseDate } from '@internationalized/date'
-import { toTypedSchema } from '@vee-validate/zod'
-import { useForm } from 'vee-validate'
-import { z } from 'zod'
-import { DateTimePicker } from '@/components/ui/date-time-picker'
 
 definePageMeta({
   layout: 'dashboard',
@@ -234,7 +232,14 @@ const editingRecord = ref<Partial<StoolRecord>>({})
 const dataType = ref<'user' | 'all' | 'group'>('user')
 const isDeleteDialogOpen = ref(false)
 const recordToDelete = ref<StoolRecord | null>(null)
-const nowDate = new Date()
+const showAddDialog = ref(false)
+
+// 标签页选项
+const tabs = [
+  { label: '我的', value: 'user' as const },
+  { label: '全部', value: 'all' as const },
+  { label: '朋友', value: 'group' as const },
+]
 
 // 获取当前时间并格式化为 HH:mm
 const getCurrentTime = () => {
@@ -251,17 +256,68 @@ const getCurrentDateTime = () => {
 }
 
 const newRecord = ref<Partial<StoolRecord>>({
-  record_time: getCurrentDateTime(), // 使用完整的日期时间作为默认值
+  record_time: getCurrentDateTime(),
   comfort_level: 'normal',
   consistency: 'normal',
   notes: ''
 })
 
-// 获取所有
+// 用于 v-model 绑定日期时间输入框
+const newRecordDateTime = ref('')
+const editRecordDateTime = ref('')
+
+// 初始化日期时间
+const updateNewRecordDateTime = () => {
+  if (newRecord.value.record_time) {
+    const date = new Date(newRecord.value.record_time)
+    newRecordDateTime.value = date.toISOString().slice(0, 16)
+  } else {
+    newRecordDateTime.value = new Date().toISOString().slice(0, 16)
+  }
+}
+
+const updateEditRecordDateTime = () => {
+  if (editingRecord.value.record_time) {
+    const date = new Date(editingRecord.value.record_time)
+    editRecordDateTime.value = date.toISOString().slice(0, 16)
+  } else {
+    editRecordDateTime.value = new Date().toISOString().slice(0, 16)
+  }
+}
+
+// 监听日期时间变化
+const onNewRecordDateTimeChange = () => {
+  if (newRecordDateTime.value) {
+    newRecord.value.record_time = new Date(newRecordDateTime.value).toISOString()
+  }
+}
+
+const onEditRecordDateTimeChange = () => {
+  if (editRecordDateTime.value) {
+    editingRecord.value.record_time = new Date(editRecordDateTime.value).toISOString()
+  }
+}
+
+// 打开添加弹窗
+const openAddDialog = () => {
+  newRecord.value = {
+    record_time: getCurrentDateTime(),
+    comfort_level: 'normal',
+    consistency: 'normal',
+    notes: ''
+  }
+  updateNewRecordDateTime()
+  showAddDialog.value = true
+}
+
+// 获取记录列表
 async function fetchRecords() {
   try {
     const response = await fetch(`/api/stool-records?type=${dataType.value}`)
-    records.value = await response.json()
+    if (response.ok) {
+      const data = await response.json()
+      records.value = data
+    }
   } catch (error) {
     console.error('获取记录失败:', error)
   }
@@ -285,14 +341,7 @@ async function addRecord() {
     })
 
     if (response.ok) {
-      // 重置表单
-      newRecord.value = {
-        record_time: getCurrentDateTime(), // 使用当前日期时间重置
-        comfort_level: 'normal',
-        consistency: 'normal',
-        notes: ''
-      }
-      // 刷新记录列表
+      showAddDialog.value = false
       await fetchRecords()
     }
   } catch (error) {
@@ -303,6 +352,7 @@ async function addRecord() {
 // 编辑记录
 function editRecord(record: StoolRecord) {
   editingRecord.value = { ...record }
+  updateEditRecordDateTime()
   isEditDialogOpen.value = true
 }
 
@@ -328,6 +378,68 @@ async function updateRecord() {
   }
 }
 
+// 格式化记录时间
+function formatRecordTime(timeString: string) {
+  if (!timeString) return '-'
+  const recordDate = new Date(timeString)
+  const now = new Date()
+  const diffInMs = now.getTime() - recordDate.getTime()
+  const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
+  const diffInHours = Math.floor(diffInMinutes / 60)
+  const diffInDays = Math.floor(diffInHours / 24)
+
+  if (diffInDays === 0) {
+    if (diffInMinutes < 1) return '刚刚'
+    if (diffInMinutes < 60) return `${diffInMinutes}分钟前`
+    return `${diffInHours}小时前`
+  } else if (diffInDays === 1) {
+    return `昨天 ${recordDate.getHours().toString().padStart(2, '0')}:${recordDate.getMinutes().toString().padStart(2, '0')}`
+  } else if (diffInDays < 7) {
+    return `${diffInDays}天前`
+  } else {
+    const month = (recordDate.getMonth() + 1).toString().padStart(2, '0')
+    const day = recordDate.getDate().toString().padStart(2, '0')
+    const hours = recordDate.getHours().toString().padStart(2, '0')
+    const minutes = recordDate.getMinutes().toString().padStart(2, '0')
+    if (recordDate.getFullYear() === now.getFullYear()) {
+      return `${month}-${day} ${hours}:${minutes}`
+    }
+    return `${recordDate.getFullYear()}-${month}-${day}`
+  }
+}
+
+// 获取舒适度文本
+function getComfortLevelText(level: string) {
+  const map: Record<string, string> = {
+    uncomfortable: '不适',
+    normal: '正常',
+    comfortable: '舒适'
+  }
+  return map[level] || level
+}
+
+// 获取便便性状文本
+function getConsistencyText(consistency: string) {
+  const map: Record<string, string> = {
+    hard: '硬',
+    normal: '正常',
+    soft: '软',
+    liquid: '液态'
+  }
+  return map[consistency] || consistency
+}
+
+// 获取便便性状颜色
+function getConsistencyColor(consistency: string) {
+  const map: Record<string, string> = {
+    hard: 'rgba(239, 68, 68, 0.2)',
+    normal: 'rgba(34, 197, 94, 0.2)',
+    soft: 'rgba(251, 191, 36, 0.2)',
+    liquid: 'rgba(139, 92, 246, 0.2)'
+  }
+  return map[consistency] || 'rgba(161, 161, 170, 0.2)'
+}
+
 // 确认删除记录
 function confirmDeleteRecord(record: StoolRecord) {
   recordToDelete.value = record
@@ -347,175 +459,38 @@ async function deleteRecord() {
       isDeleteDialogOpen.value = false
       recordToDelete.value = null
       await fetchRecords()
-    } else {
-      console.error('删除记录失败')
     }
   } catch (error) {
     console.error('删除记录失败:', error)
   }
 }
 
-// 获取舒适度显示文本
-function getComfortLevelText(level: string) {
-  const map: Record<string, string> = {
-    uncomfortable: '不适',
-    normal: '正常',
-    comfortable: '舒适'
-  }
-  return map[level] || level
-}
-
-// 获取便便性状显示文本
-function getConsistencyText(consistency: string) {
-  const map: Record<string, string> = {
-    hard: '硬',
-    normal: '正常',
-    soft: '软',
-    liquid: '液态'
-  }
-  return map[consistency] || consistency
-}
-
-// 格式化记录时间为人性化显示
-function formatRecordTime(timeString: string) {
-  if (!timeString) return '-'
-  
-  const recordDate = new Date(timeString)
-  const now = new Date()
-  const diffInMs = now.getTime() - recordDate.getTime()
-  const diffInMinutes = Math.floor(diffInMs / (1000 * 60))
-  const diffInHours = Math.floor(diffInMinutes / 60)
-  const diffInDays = Math.floor(diffInHours / 24)
-  
-  // 如果是今天
-  if (diffInDays === 0) {
-    if (diffInMinutes < 1) {
-      return '刚刚'
-    } else if (diffInMinutes < 60) {
-      return `${diffInMinutes}分钟前`
-    } else {
-      return `${diffInHours}小时前`
-    }
-  }
-  // 如果是昨天
-  else if (diffInDays === 1) {
-    const hours = recordDate.getHours().toString().padStart(2, '0')
-    const minutes = recordDate.getMinutes().toString().padStart(2, '0')
-    return `昨天 ${hours}:${minutes}`
-  }
-  // 如果是一周内
-  else if (diffInDays < 7) {
-    return `${diffInDays}天前`
-  }
-  // 超过一周，显示具体日期和时间
-  else {
-    const year = recordDate.getFullYear()
-    const month = (recordDate.getMonth() + 1).toString().padStart(2, '0')
-    const day = recordDate.getDate().toString().padStart(2, '0')
-    const hours = recordDate.getHours().toString().padStart(2, '0')
-    const minutes = recordDate.getMinutes().toString().padStart(2, '0')
-    
-    // 如果是今年，不显示年份
-    if (year === now.getFullYear()) {
-      return `${month}-${day} ${hours}:${minutes}`
-    } else {
-      return `${year}-${month}-${day} ${hours}:${minutes}`
-    }
-  }
-}
-
 // 组件挂载时获取记录
 onMounted(() => {
-  fetchRecords()
-})
-
-const df = new DateFormatter('en-US', {
-  dateStyle: 'long',
-})
-
-const formSchema = toTypedSchema(z.object({
-  date: z
-    .string()
-    .refine(v => v, { message: '日期是必填项。' }),
-}))
-const { handleSubmit, setFieldValue, values } = useForm({
-  validationSchema: formSchema,
-})
-
-
-const recordDate = computed({
-  get: () => newRecord.value.record_time ? parseDate(newRecord.value.record_time.split('T')[0]) : undefined,
-  set: (val) => {
-    if (val) {
-      // 保持现有的时间部分，只更新日期部分
-      const currentTime = newRecord.value.record_time ? new Date(newRecord.value.record_time) : new Date()
-      const newDateTime = new Date(val.toString())
-      newDateTime.setHours(currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds(), currentTime.getMilliseconds())
-      newRecord.value.record_time = newDateTime.toISOString()
-    } else {
-      newRecord.value.record_time = getCurrentDateTime()
-    }
-  },
-})
-
-const recordTime = computed({
-  get: () => {
-    if (newRecord.value.record_time) {
-      const date = new Date(newRecord.value.record_time)
-      const hours = date.getHours().toString().padStart(2, '0')
-      const minutes = date.getMinutes().toString().padStart(2, '0')
-      return `${hours}:${minutes}`
-    }
-    return getCurrentTime()
-  },
-  set: (val) => {
-    if (val && newRecord.value.record_time) {
-      const [hours, minutes] = val.split(':')
-      const currentDate = new Date(newRecord.value.record_time)
-      currentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0)
-      newRecord.value.record_time = currentDate.toISOString()
-    }
-  },
-})
-const recordDatePlaceholder = ref(parseDate(nowDate.toISOString().split('T')[0]))
-
-// 编辑弹窗的日期计算属性
-const editRecordDate = computed({
-  get: () => editingRecord.value.record_time ? parseDate(editingRecord.value.record_time.split('T')[0]) : undefined,
-  set: (val) => {
-    if (val) {
-      // 保持现有的时间部分，只更新日期部分
-      const currentTime = editingRecord.value.record_time ? new Date(editingRecord.value.record_time) : new Date()
-      const newDateTime = new Date(val.toString())
-      newDateTime.setHours(currentTime.getHours(), currentTime.getMinutes(), currentTime.getSeconds(), currentTime.getMilliseconds())
-      editingRecord.value.record_time = newDateTime.toISOString()
-    }
-  },
-})
-
-// 编辑弹窗的时间计算属性
-const editRecordTime = computed({
-  get: () => {
-    if (editingRecord.value.record_time) {
-      const date = new Date(editingRecord.value.record_time)
-      const hours = date.getHours().toString().padStart(2, '0')
-      const minutes = date.getMinutes().toString().padStart(2, '0')
-      return `${hours}:${minutes}`
-    }
-    return getCurrentTime()
-  },
-  set: (val) => {
-    if (val && editingRecord.value.record_time) {
-      const [hours, minutes] = val.split(':')
-      const currentDate = new Date(editingRecord.value.record_time)
-      currentDate.setHours(parseInt(hours), parseInt(minutes), 0, 0)
-      editingRecord.value.record_time = currentDate.toISOString()
-    }
-  },
-})
-
-// 组件挂载时获取记录
-onMounted(() => {
+  updateNewRecordDateTime()
   fetchRecords()
 })
 </script>
+
+<style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active > div:last-child,
+.modal-leave-active > div:last-child {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.modal-enter-from > div:last-child,
+.modal-leave-to > div:last-child {
+  transform: scale(0.95);
+  opacity: 0;
+}
+</style>

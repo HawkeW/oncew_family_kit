@@ -116,6 +116,7 @@ const navItems = [
   { path: '/records/menstrual', label: '经期记录', icon: '🩸' },
   { path: '/records/stool', label: '便便记录', icon: '💩' },
   { path: '/wedding/admin', label: '婚礼筹备', icon: '💒' },
+  { path: '/migrate', label: '数据迁移', icon: '🔄' },
   { path: '/profile', label: '个人中心', icon: '👤' },
 ]
 
