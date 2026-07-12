@@ -144,9 +144,10 @@ export default defineEventHandler(async (event) => {
       };
     } catch (error) {
       console.error('创建邀请失败:', error);
+      const message = error instanceof Error ? error.message : '未知错误';
       throw createError({
         statusCode: 500,
-        message: '创建邀请失败'
+        message: `创建邀请失败: ${message}`
       });
     }
   }

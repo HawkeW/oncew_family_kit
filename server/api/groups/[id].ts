@@ -1,5 +1,5 @@
 import { Database } from 'better-sqlite3';
-import { defineEventHandler, getQuery, createError } from 'h3';
+import { defineEventHandler, getQuery, getRouterParam, createError } from 'h3';
 import { getDatabase } from '../../utils/database';
 import { useAuthSession } from '../../utils/session';
 

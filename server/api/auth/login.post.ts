@@ -1,10 +1,8 @@
-import { getServerSession } from '#auth'
 import { compare } from 'bcryptjs';
 import { z } from 'zod';
 import { getDatabase } from '../../utils/database';
 import { User } from '~/server/models/schema';
-import { useAuth } from '~/composable/auth';
-import { hash, useAuthSession } from '~/server/utils/session';
+import { useAuthSession } from '~/server/utils/session';
 
 const db = getDatabase();
 const loginSchema = z.object({
