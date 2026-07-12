@@ -1,7 +1,17 @@
 import type { H3Event, SessionConfig } from 'h3'
 import crypto from 'uncrypto'
 
-const sessionConfig: SessionConfig = useRuntimeConfig().auth || {}
+// Session 配置
+const sessionConfig: SessionConfig = {
+  name: 'nuxt-session',
+  password: process.env.NUXT_AUTH_PASSWORD || 'default-password-that-is-at-least-32-chars!',
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 7, // 7 days
+  },
+}
 
 export type AuthSession = {
   id: string | number
