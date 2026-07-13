@@ -8,13 +8,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
+# Enable pnpm and allow native module builds
+RUN corepack enable && corepack prepare pnpm@9 --activate
+
 WORKDIR /app
 
 # Copy package files first to leverage Docker cache
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN corepack enable && pnpm install --frozen-lockfile
+# Install dependencies (allow scripts for native modules)
+RUN pnpm install
 
 # Copy the rest of the application
 COPY . .
