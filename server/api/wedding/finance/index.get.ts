@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  // 没指定 group_id：返回用户所有群组的财务
+  // 没指定 group_id：返回用户所有群组的财务（不包括旧数据，NULL group_id 需要迁移）
   const finances = db.prepare(`
     SELECT * FROM wedding_finances 
     WHERE group_id IN (SELECT group_id FROM group_members WHERE user_id = ?)
