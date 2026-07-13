@@ -216,6 +216,17 @@ export function initializeDatabase(db: Database) {
     )
   `);
 
+  // 迁移：为已存在的 wedding 表添加 group_id 字段
+  const addGroupIdIfNotExists = (tableName: string) => {
+    try {
+      db.exec(`ALTER TABLE ${tableName} ADD COLUMN group_id INTEGER`);
+    } catch (e: any) {
+      if (!e.message?.includes('duplicate column name')) {
+        // ignore - column already exists
+      }
+    }
+  };
+
   // 创建婚礼RSVP表
   db.exec(`
     CREATE TABLE IF NOT EXISTS wedding_rsvps (
@@ -229,6 +240,8 @@ export function initializeDatabase(db: Database) {
       group_id INTEGER
     )
   `);
+
+  addGroupIdIfNotExists('wedding_rsvps');
 
   // 创建婚礼财务表
   db.exec(`
@@ -245,6 +258,8 @@ export function initializeDatabase(db: Database) {
     )
   `);
 
+  addGroupIdIfNotExists('wedding_finances');
+
   // 创建婚礼任务表
   db.exec(`
     CREATE TABLE IF NOT EXISTS wedding_tasks (
@@ -259,6 +274,8 @@ export function initializeDatabase(db: Database) {
       group_id INTEGER
     )
   `);
+
+  addGroupIdIfNotExists('wedding_tasks');
 
   // 创建婚礼流程时间轴表
   db.exec(`
@@ -275,4 +292,6 @@ export function initializeDatabase(db: Database) {
       group_id INTEGER
     )
   `);
+
+  addGroupIdIfNotExists('wedding_timelines');
 }
