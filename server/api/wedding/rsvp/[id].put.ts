@@ -4,6 +4,13 @@ import { useAuthSession } from '../../../utils/session';
 
 const db = getDatabase();
 
+function checkGroupMembership(db: any, groupId: number, userId: number): boolean {
+  const member = db.prepare(`
+    SELECT id FROM group_members WHERE group_id = ? AND user_id = ?
+  `).get(groupId, userId);
+  return !!member;
+}
+
 const rsvpUpdateSchema = z.object({
   name: z.string().min(1, '姓名不能为空'),
   phone: z.string().optional().nullable(),
@@ -12,7 +19,6 @@ const rsvpUpdateSchema = z.object({
 });
 
 export default defineEventHandler(async (event) => {
-  // 鉴权
   const session = await useAuthSession(event);
   if (!session?.data?.id) {
     throw createError({
@@ -32,6 +38,23 @@ export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event);
     const { name, phone, count, remark } = rsvpUpdateSchema.parse(body);
+
+    // 检查记录是否存在
+    const existing = db.prepare('SELECT group_id FROM wedding_rsvps WHERE id = ?').get(id) as { group_id: number } | undefined;
+    if (!existing) {
+      throw createError({
+        statusCode: 404,
+        message: '记录未找到'
+      });
+    }
+
+    // 检查权限：群组成员可修改
+    if (!checkGroupMembership(db, existing.group_id, session.data.id)) {
+      throw createError({
+        statusCode: 403,
+        message: '无权修改此记录'
+      });
+    }
 
     const now = new Date().toISOString();
 

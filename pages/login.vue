@@ -35,7 +35,7 @@
       </form>
 
       <div class="text-center mt-4">
-        <NuxtLink to="/register" class="text-sm text-primary hover:text-primary/90">没有账号？点击注册</NuxtLink>
+        <!-- <NuxtLink to="/register" class="text-sm text-primary hover:text-primary/90">没有账号？点击注册</NuxtLink> -->
       </div>
     </div>
   </div>
