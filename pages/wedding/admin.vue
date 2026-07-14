@@ -4,17 +4,17 @@
       <h1 class="text-3xl font-bold">婚礼管理后台</h1>
     </div>
 
-    <div class="flex gap-4 border-b pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium whitespace-nowrap">
+    <div class="flex gap-4 border-b border-zinc-800 pb-4 overflow-x-auto">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 bg-primary text-primary-foreground font-medium whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
         流程时间轴
       </NuxtLink>
     </div>
@@ -42,7 +42,7 @@
     </div>
 
     <!-- Desktop Table View -->
-    <div class="hidden md:block bg-white rounded-lg shadow overflow-hidden">
+    <div class="hidden md:block bg-zinc-900/50 rounded-xl border border-zinc-800 overflow-hidden">
       <Table>
         <TableCaption>婚礼出席名单</TableCaption>
         <TableHeader>
@@ -68,7 +68,7 @@
             </TableCell>
           </TableRow>
           <TableRow v-if="list.length === 0">
-            <TableCell colspan="6" class="text-center py-8 text-gray-500">
+            <TableCell colspan="6" class="text-center py-8 text-zinc-500">
               暂无数据
             </TableCell>
           </TableRow>
@@ -78,26 +78,26 @@
 
     <!-- Mobile Card View -->
     <div class="md:hidden space-y-4">
-      <div v-if="list.length === 0" class="text-center py-8 text-gray-500 bg-white rounded-lg shadow">
+      <div v-if="list.length === 0" class="text-center py-8 text-zinc-500 bg-zinc-900/50 rounded-xl border border-zinc-800">
         暂无数据
       </div>
-      <div v-else v-for="rsvp in list" :key="rsvp.id" class="bg-white p-4 rounded-lg shadow space-y-3">
+      <div v-else v-for="rsvp in list" :key="rsvp.id" class="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 space-y-3">
         <div class="flex justify-between items-start">
           <div>
             <h3 class="font-semibold text-lg">{{ rsvp.name }}</h3>
-            <p class="text-sm text-gray-500" v-if="rsvp.phone">{{ rsvp.phone }}</p>
+            <p class="text-sm text-zinc-500" v-if="rsvp.phone">{{ rsvp.phone }}</p>
           </div>
           <div class="bg-primary/10 text-primary px-2 py-1 rounded text-sm font-medium">
             {{ rsvp.count }}人
           </div>
         </div>
         
-        <div v-if="rsvp.remark" class="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+        <div v-if="rsvp.remark" class="text-sm text-zinc-400 bg-zinc-800/50 p-2 rounded">
           备注：{{ rsvp.remark }}
         </div>
         
         <div class="flex justify-between items-center pt-2 border-t mt-2">
-          <span class="text-xs text-gray-400">{{ formatDate(rsvp.created_at) }}</span>
+          <span class="text-xs text-zinc-400">{{ formatDate(rsvp.created_at) }}</span>
           <div class="flex gap-2">
             <Button variant="outline" size="sm" class="h-8" @click="openDialog(rsvp)">编辑</Button>
             <Button variant="destructive" size="sm" class="h-8" @click="deleteRsvp(rsvp.id)">删除</Button>
@@ -164,6 +164,7 @@ useHead({
 })
 
 definePageMeta({
+  layout: 'dashboard',
   middleware: 'auth'
 })
 

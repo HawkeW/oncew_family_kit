@@ -4,17 +4,17 @@
       <h1 class="text-3xl font-bold">婚礼管理后台</h1>
     </div>
 
-    <div class="flex gap-4 border-b pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+    <div class="flex gap-4 border-b border-zinc-800 pb-4 overflow-x-auto">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium whitespace-nowrap">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 bg-primary text-primary-foreground font-medium whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
         流程时间轴
       </NuxtLink>
     </div>
@@ -40,16 +40,16 @@
 
     <!-- Summary Cards -->
     <div class="grid gap-4 grid-cols-1 md:grid-cols-3">
-      <div class="bg-white p-6 rounded-lg shadow space-y-2">
-        <h3 class="text-sm font-medium text-gray-500">总收入 (礼金等)</h3>
+      <div class="bg-zinc-900/50 p-6 rounded-xl border border-zinc-800 space-y-2">
+        <h3 class="text-sm font-medium text-zinc-500">总收入 (礼金等)</h3>
         <div class="text-2xl font-bold text-green-600">+{{ formatMoney(summary.total_income) }}</div>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow space-y-2">
-        <h3 class="text-sm font-medium text-gray-500">总支出</h3>
+      <div class="bg-zinc-900/50 p-6 rounded-xl border border-zinc-800 space-y-2">
+        <h3 class="text-sm font-medium text-zinc-500">总支出</h3>
         <div class="text-2xl font-bold text-red-600">-{{ formatMoney(summary.total_expense) }}</div>
       </div>
-      <div class="bg-white p-6 rounded-lg shadow space-y-2">
-        <h3 class="text-sm font-medium text-gray-500">结余</h3>
+      <div class="bg-zinc-900/50 p-6 rounded-xl border border-zinc-800 space-y-2">
+        <h3 class="text-sm font-medium text-zinc-500">结余</h3>
         <div class="text-2xl font-bold" :class="summary.balance >= 0 ? 'text-green-600' : 'text-red-600'">
           {{ summary.balance >= 0 ? '+' : '' }}{{ formatMoney(summary.balance) }}
         </div>
@@ -70,7 +70,7 @@
     </div>
 
     <!-- Desktop Table List -->
-    <div class="hidden md:block bg-white rounded-lg shadow overflow-hidden">
+    <div class="hidden md:block bg-zinc-900/50 rounded-xl border border-zinc-800 overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow>
@@ -101,7 +101,7 @@
             </TableCell>
           </TableRow>
           <TableRow v-if="filteredList.length === 0">
-            <TableCell colspan="6" class="text-center py-8 text-gray-500">
+            <TableCell colspan="6" class="text-center py-8 text-zinc-500">
               暂无数据
             </TableCell>
           </TableRow>
@@ -111,10 +111,10 @@
 
     <!-- Mobile Card List -->
     <div class="md:hidden space-y-4">
-      <div v-if="filteredList.length === 0" class="text-center py-8 text-gray-500 bg-white rounded-lg shadow">
+      <div v-if="filteredList.length === 0" class="text-center py-8 text-zinc-500 bg-zinc-900/50 rounded-xl border border-zinc-800">
         暂无数据
       </div>
-      <div v-else v-for="item in filteredList" :key="item.id" class="bg-white p-4 rounded-lg shadow space-y-3">
+      <div v-else v-for="item in filteredList" :key="item.id" class="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 space-y-3">
         <div class="flex justify-between items-start">
            <div class="flex items-center gap-2">
               <span :class="item.type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" class="text-xs px-2 py-1 rounded font-medium">
@@ -127,12 +127,12 @@
            </div>
         </div>
 
-        <p v-if="item.description" class="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+        <p v-if="item.description" class="text-sm text-zinc-400 bg-zinc-800/50 p-2 rounded">
           {{ item.description }}
         </p>
 
         <div class="flex justify-between items-center pt-2 border-t mt-2">
-          <span class="text-xs text-gray-400">{{ formatDate(item.record_date) }}</span>
+          <span class="text-xs text-zinc-400">{{ formatDate(item.record_date) }}</span>
           <div class="flex gap-2">
             <Button variant="outline" size="sm" class="h-8" @click="openDialog(item)">编辑</Button>
             <Button variant="destructive" size="sm" class="h-8" @click="deleteItem(item.id)">删除</Button>
@@ -225,6 +225,7 @@ useHead({
 })
 
 definePageMeta({
+  layout: 'dashboard',
   middleware: 'auth'
 })
 

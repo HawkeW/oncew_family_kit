@@ -2,9 +2,9 @@
   <div class="max-w-4xl mx-auto py-8 px-4">
     <h1 class="text-3xl font-bold mb-8">个人信息</h1>
 
-    <div class="bg-white rounded-lg shadow p-6 space-y-6">
+    <div class="bg-zinc-900/50 rounded-xl border border-zinc-800 p-6 space-y-6">
       <div class="flex items-center space-x-4">
-        <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+        <div class="w-20 h-20 bg-zinc-800 rounded-full flex items-center justify-center text-zinc-500">
           我的
         </div>
         <div>

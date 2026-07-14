@@ -2,7 +2,7 @@
   <div class="container mx-auto px-4 py-8">
     <div class="max-w-6xl mx-auto">
       <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">群组</h1>
+        <h1 class="text-3xl font-bold text-zinc-100">群组</h1>
         <button
           @click="showCreateModal = true"
           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
@@ -19,13 +19,13 @@
         <div
           v-for="group in groups"
           :key="group.id"
-          class="bg-white rounded-lg shadow-md p-6 border border-gray-200 cursor-pointer hover:shadow-lg transition-shadow"
+          class="bg-zinc-900/50 rounded-xl border border-zinc-800 p-6 cursor-pointer hover:border-zinc-700 transition-all"
           @click="navigateToGroupDetail(group.id)"
         >
           <div class="flex justify-between items-start mb-4">
             <div>
-              <h3 class="text-xl font-semibold text-gray-900">{{ group.name }}</h3>
-              <p class="text-gray-600 text-sm mt-1">{{ group.description || '暂无描述' }}</p>
+              <h3 class="text-xl font-semibold text-zinc-100">{{ group.name }}</h3>
+              <p class="text-zinc-400 text-sm mt-1">{{ group.description || '暂无描述' }}</p>
             </div>
             <div class="flex gap-2">
               <!-- 只有管理员才能看到邀请成员按钮 -->
@@ -74,7 +74,7 @@
               </button>
             </div>
           </div>
-          <div class="flex justify-between items-center text-sm text-gray-500">
+          <div class="flex justify-between items-center text-sm text-zinc-500">
             <span>{{ group.member_count }} 名成员</span>
             <span>创建于 {{ formatDate(group.created_at) }}</span>
           </div>
@@ -84,12 +84,12 @@
       <!-- 邀请管理 -->
       <div v-if="selectedGroup" class="space-y-6">
         <!-- 邀请码列表 -->
-        <div class="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+        <div class="bg-zinc-900/50 rounded-xl border border-zinc-800 p-6">
           <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold text-gray-900">{{ selectedGroup.name }} - 邀请码列表</h2>
+            <h2 class="text-xl font-semibold text-zinc-100">{{ selectedGroup.name }} - 邀请码列表</h2>
             <button
               @click="selectedGroup = null"
-              class="text-gray-500 hover:text-gray-700"
+              class="text-zinc-500 hover:text-zinc-300"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -98,24 +98,24 @@
           </div>
           
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
+            <table class="min-w-full divide-y divide-zinc-800">
+              <thead class="bg-zinc-800/50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">邀请码</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">过期时间</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">邀请码</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">创建时间</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">过期时间</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">操作</th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
+              <tbody class="bg-zinc-900/50 divide-y divide-zinc-800">
                 <tr v-for="invitation in invitations" :key="invitation.id">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-zinc-100">
                     {{ invitation.invite_token }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500">
                     {{ formatDate(invitation.created_at) }}
                   </td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500">
                     {{ formatDate(invitation.expires_at) }}
                   </td>
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -139,26 +139,26 @@
         </div>
 
         <!-- 响应列表 -->
-        <div class="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">{{ selectedGroup.name }} - 响应记录</h2>
+        <div class="bg-zinc-900/50 rounded-xl border border-zinc-800 p-6">
+          <h2 class="text-xl font-semibold text-zinc-100 mb-4">{{ selectedGroup.name }} - 响应记录</h2>
           
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
+            <table class="min-w-full divide-y divide-zinc-800">
+              <thead class="bg-zinc-800/50">
                 <tr>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">邀请码</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
-                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">响应时间</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">邀请码</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">用户</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">操作</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">响应时间</th>
                 </tr>
               </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
+              <tbody class="bg-zinc-900/50 divide-y divide-zinc-800">
                 <template v-for="invitation in invitations" :key="invitation.id">
                   <tr v-for="response in invitation.responses" :key="response.id" v-if="invitation.responses && invitation.responses.length > 0">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-zinc-100">
                       {{ invitation.invite_token }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-zinc-100">
                       {{ response.user_name }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
@@ -166,13 +166,13 @@
                         {{ response.action === 'accept' ? '已接受' : '已拒绝' }}
                       </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500">
                       {{ formatDate(response.responded_at) }}
                     </td>
                   </tr>
                 </template>
                 <tr v-if="!hasAnyResponses">
-                  <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500 italic">
+                  <td colspan="4" class="px-6 py-4 text-center text-sm text-zinc-500 italic">
                     暂无响应记录
                   </td>
                 </tr>
@@ -184,25 +184,25 @@
 
       <!-- 创建群组模态框 -->
       <div v-if="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 w-full max-w-md">
-          <h2 class="text-xl font-semibold mb-4">创建新群组</h2>
+        <div class="bg-zinc-900/50 rounded-lg p-6 w-full max-w-md border border-zinc-800">
+          <h2 class="text-xl font-semibold text-zinc-100 mb-4">创建新群组</h2>
           <form @submit.prevent="createGroup">
             <div class="mb-4">
-              <label class="block text-sm font-medium text-gray-700 mb-2">群组名称</label>
+              <label class="block text-sm font-medium text-zinc-400 mb-2">群组名称</label>
               <input
                 v-model="newGroup.name"
                 type="text"
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500-blue-500"
                 placeholder="请输入群组名称"
               >
             </div>
             <div class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">群组描述</label>
+              <label class="block text-sm font-medium text-zinc-400 mb-2">群组描述</label>
               <textarea
                 v-model="newGroup.description"
                 rows="3"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500-blue-500"
                 placeholder="请输入群组描述（可选）"
               ></textarea>
             </div>
@@ -210,7 +210,7 @@
               <button
                 type="button"
                 @click="showCreateModal = false"
-                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                class="px-4 py-2 text-zinc-400 border border-zinc-700 rounded-md hover:bg-zinc-800/50"
               >
                 取消
               </button>
@@ -228,14 +228,14 @@
 
       <!-- 邀请成员模态框 -->
       <div v-if="showInviteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 w-full max-w-md">
-          <h2 class="text-xl font-semibold mb-4">邀请成员到 "{{ inviteGroup?.name }}"</h2>
+        <div class="bg-zinc-900/50 rounded-lg p-6 w-full max-w-md border border-zinc-800">
+          <h2 class="text-xl font-semibold text-zinc-100 mb-4">邀请成员到 "{{ inviteGroup?.name }}"</h2>
           <form @submit.prevent="createInvitation">
             <div class="mb-6">
-              <label class="block text-sm font-medium text-gray-700 mb-2">邀请链接有效期</label>
+              <label class="block text-sm font-medium text-zinc-400 mb-2">邀请链接有效期</label>
               <select
                 v-model="inviteForm.expires_hours"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500-blue-500"
               >
                 <option :value="1">1小时</option>
                 <option :value="6">6小时</option>
@@ -248,7 +248,7 @@
               <button
                 type="button"
                 @click="showInviteModal = false"
-                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                class="px-4 py-2 text-zinc-400 border border-zinc-700 rounded-md hover:bg-zinc-800/50"
               >
                 取消
               </button>
@@ -543,6 +543,6 @@ const getStatusClass = (status: string) => {
     accepted: 'bg-green-100 text-green-800',
     rejected: 'bg-red-100 text-red-800'
   }
-  return classMap[status as keyof typeof classMap] || 'bg-gray-100 text-gray-800'
+  return classMap[status as keyof typeof classMap] || 'bg-zinc-800 text-zinc-300'
 }
 </script>

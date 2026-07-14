@@ -4,17 +4,17 @@
       <h1 class="text-3xl font-bold">婚礼管理后台</h1>
     </div>
 
-    <div class="flex gap-4 border-b pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+    <div class="flex gap-4 border-b border-zinc-800 pb-4 overflow-x-auto">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 bg-primary text-primary-foreground font-medium whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
         流程时间轴
       </NuxtLink>
     </div>
@@ -53,7 +53,7 @@
 
     <!-- Task List -->
     <div class="space-y-4">
-        <div v-if="filteredList.length === 0" class="text-center py-10 text-gray-500 bg-white rounded-lg shadow">
+        <div v-if="filteredList.length === 0" class="text-center py-10 text-zinc-500 bg-zinc-900/50 rounded-xl border border-zinc-800">
             暂无任务，快去添加吧！
         </div>
 
@@ -61,8 +61,8 @@
             <div 
                 v-for="task in filteredList" 
                 :key="task.id" 
-                class="bg-white p-4 rounded-lg shadow flex flex-col md:flex-row md:items-start gap-4 transition-all"
-                :class="{'opacity-60 bg-gray-50': task.status === 'completed'}"
+                class="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 flex flex-col md:flex-row md:items-start gap-4 transition-all"
+                :class="{'opacity-60 bg-zinc-800/50': task.status === 'completed'}"
             >
                 <div class="flex items-start gap-3 w-full">
                     <div class="pt-1">
@@ -70,22 +70,22 @@
                             type="checkbox" 
                             :checked="task.status === 'completed'" 
                             @change="toggleStatus(task)"
-                            class="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                            class="w-5 h-5 rounded border-zinc-700 text-primary focus:ring-primary cursor-pointer"
                         />
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex flex-wrap items-center gap-2">
-                            <h3 class="font-medium text-lg" :class="{'line-through text-gray-500': task.status === 'completed'}">
+                            <h3 class="font-medium text-lg" :class="{'line-through text-zinc-500': task.status === 'completed'}">
                                 {{ task.title }}
                             </h3>
-                            <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 whitespace-nowrap">
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
                                 {{ task.category === 'preparation' ? '筹备期' : '婚礼当天' }}
                             </span>
                             <span v-if="task.due_date" class="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" :class="isOverdue(task) ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'">
                                 {{ formatDate(task.due_date) }} 截止
                             </span>
                         </div>
-                        <p class="text-gray-500 mt-1 whitespace-pre-wrap text-sm md:text-base">{{ task.description }}</p>
+                        <p class="text-zinc-500 mt-1 whitespace-pre-wrap text-sm md:text-base">{{ task.description }}</p>
                     </div>
                 </div>
                 
@@ -166,6 +166,7 @@ useHead({
 })
 
 definePageMeta({
+  layout: 'dashboard',
   middleware: 'auth'
 })
 

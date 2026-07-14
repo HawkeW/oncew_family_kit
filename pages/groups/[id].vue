@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
+  <div class="min-h-screen bg-zinc-950 py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- 页面头部 -->
       <div class="mb-8">
@@ -7,7 +7,7 @@
           <div class="flex items-center space-x-4">
             <button
               @click="$router.back()"
-              class="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100"
+              class="text-zinc-400 hover:text-zinc-200 p-2 rounded-lg hover:bg-zinc-800/50"
               title="返回"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,8 +15,8 @@
               </svg>
             </button>
             <div>
-              <h1 class="text-3xl font-bold text-gray-900">{{ group?.name || '群组详情' }}</h1>
-              <p class="text-gray-600 mt-1">{{ members.length }} 名成员</p>
+              <h1 class="text-3xl font-bold text-zinc-100">{{ group?.name || '群组详情' }}</h1>
+              <p class="text-zinc-400 mt-1">{{ members.length }} 名成员</p>
             </div>
           </div>
           
@@ -72,16 +72,16 @@
       </div>
 
       <!-- 群成员列表 -->
-      <div class="bg-white rounded-lg shadow-md border border-gray-200">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h2 class="text-xl font-semibold text-gray-900">群成员</h2>
+      <div class="bg-zinc-900/50 rounded-xl border border-zinc-800">
+        <div class="px-6 py-4 border-b border-zinc-800">
+          <h2 class="text-xl font-semibold text-zinc-100">群成员</h2>
         </div>
         
-        <div class="divide-y divide-gray-200">
+        <div class="divide-y divide-zinc-800">
           <div
             v-for="member in sortedMembers"
             :key="member.user_id"
-            class="px-6 py-4 flex items-center justify-between hover:bg-gray-50"
+            class="px-6 py-4 flex items-center justify-between hover:bg-zinc-800/50"
           >
             <div class="flex items-center space-x-4">
               <!-- 用户头像 -->
@@ -92,7 +92,7 @@
               <!-- 用户信息 -->
               <div>
                 <div class="flex items-center space-x-2">
-                  <h3 class="text-lg font-medium text-gray-900">{{ member.username }}</h3>
+                  <h3 class="text-lg font-medium text-zinc-100">{{ member.username }}</h3>
                   <span
                     v-if="member.role === 'admin'"
                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
@@ -106,7 +106,7 @@
                     创建者
                   </span>
                 </div>
-                <p class="text-sm text-gray-500">加入时间：{{ formatDate(member.joined_at) }}</p>
+                <p class="text-sm text-zinc-500">加入时间：{{ formatDate(member.joined_at) }}</p>
               </div>
             </div>
             
@@ -138,16 +138,16 @@
       </div>
 
       <!-- 共享记录 -->
-      <div class="bg-white rounded-lg shadow-md border border-gray-200 mt-6">
-        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+      <div class="bg-zinc-900/50 rounded-xl border border-zinc-800 mt-6">
+        <div class="px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
           <div class="flex items-center space-x-3">
             <span class="text-2xl">📋</span>
-            <h2 class="text-xl font-semibold text-gray-900">群组共享记录</h2>
+            <h2 class="text-xl font-semibold text-zinc-100">群组共享记录</h2>
           </div>
           <div class="flex items-center space-x-2">
             <select 
               v-model="selectedRecordType" 
-              class="border border-gray-300 rounded-md px-3 py-1.5 text-sm"
+              class="border border-zinc-700 rounded-md px-3 py-1.5 text-sm"
               @change="loadGroupRecords"
             >
               <option value="">全部记录类型</option>
@@ -168,7 +168,7 @@
         </div>
         
         <!-- 加载状态 -->
-        <div v-if="loadingRecords" class="p-8 text-center text-gray-500">
+        <div v-if="loadingRecords" class="p-8 text-center text-zinc-500">
           加载中...
         </div>
         
@@ -177,21 +177,21 @@
           <div
             v-for="record in groupRecords"
             :key="record.id"
-            class="px-6 py-4 hover:bg-gray-50"
+            class="px-6 py-4 hover:bg-zinc-800/50"
           >
             <div class="flex items-start justify-between">
               <div class="flex items-start space-x-3">
                 <span class="text-2xl">{{ record.icon }}</span>
                 <div>
                   <div class="flex items-center space-x-2">
-                    <h3 class="font-medium text-gray-900">{{ record.record_type_name }}</h3>
-                    <span class="text-sm text-gray-500">by {{ record.username }}</span>
+                    <h3 class="font-medium text-zinc-100">{{ record.record_type_name }}</h3>
+                    <span class="text-sm text-zinc-500">by {{ record.username }}</span>
                   </div>
-                  <p class="text-sm text-gray-600 mt-1">
+                  <p class="text-sm text-zinc-400 mt-1">
                     {{ record.record_date }}
                     <span v-if="record.record_time"> {{ record.record_time }}</span>
                   </p>
-                  <div v-if="record.notes" class="text-sm text-gray-500 mt-1">
+                  <div v-if="record.notes" class="text-sm text-zinc-500 mt-1">
                     {{ record.notes }}
                   </div>
                 </div>
@@ -207,7 +207,7 @@
         </div>
         
         <!-- 空状态 -->
-        <div v-else class="p-8 text-center text-gray-500">
+        <div v-else class="p-8 text-center text-zinc-500">
           <span class="text-4xl mb-2 block">📝</span>
           <p>暂无共享记录</p>
           <p class="text-sm mt-1">点击"添加记录"创建第一条共享记录</p>
@@ -216,10 +216,10 @@
 
       <!-- 邀请弹窗 -->
       <div v-if="showInviteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+        <div class="bg-zinc-900/50 rounded-lg p-6 w-full max-w-md border border-zinc-800">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold">邀请成员</h3>
-            <button @click="showInviteModal = false" class="text-gray-500 hover:text-gray-700">
+            <button @click="showInviteModal = false" class="text-zinc-500 hover:text-zinc-300">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
@@ -228,8 +228,8 @@
           
           <div class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">邀请链接有效期</label>
-              <select v-model="inviteExpireDays" class="w-full border border-gray-300 rounded-md px-3 py-2">
+              <label class="block text-sm font-medium text-zinc-400 mb-2">邀请链接有效期</label>
+              <select v-model="inviteExpireDays" class="w-full border border-zinc-700 rounded-md px-3 py-2">
                 <option value="1">1天</option>
                 <option value="3">3天</option>
                 <option value="7">7天</option>
@@ -240,7 +240,7 @@
             <div class="flex justify-end space-x-3">
               <button
                 @click="showInviteModal = false"
-                class="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
+                class="px-4 py-2 text-zinc-400 border border-zinc-700 rounded-md hover:bg-zinc-800/50"
               >
                 取消
               </button>
@@ -258,10 +258,10 @@
 
       <!-- 邀请管理弹窗 -->
       <div v-if="showInviteManagement" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
+        <div class="bg-zinc-900/50 rounded-lg p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto border border-zinc-800">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-semibold">邀请管理</h3>
-            <button @click="showInviteManagement = false" class="text-gray-500 hover:text-gray-700">
+            <button @click="showInviteManagement = false" class="text-zinc-500 hover:text-zinc-300">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
@@ -273,23 +273,23 @@
             <h4 class="text-md font-medium mb-3">邀请码列表</h4>
             <div class="overflow-x-auto">
               <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+                <thead class="bg-zinc-800/50">
                   <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">邀请码</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">创建时间</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">过期时间</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">邀请码</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">创建时间</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">过期时间</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-zinc-500 uppercase tracking-wider">操作</th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
+                <tbody class="bg-zinc-900/50 divide-y divide-zinc-800">
                   <tr v-for="invitation in invitations" :key="invitation.id">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-zinc-100">
                       {{ invitation.invite_token }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500">
                       {{ formatDate(invitation.created_at) }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-zinc-500">
                       {{ formatDate(invitation.expires_at) }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -365,6 +365,11 @@ const loadingRecords = ref(false)
 
 useHead({
   title: computed(() => group.value ? `${group.value.name} - 群组详情 - Nestory` : '群组详情 - Nestory')
+})
+
+definePageMeta({
+  layout: 'dashboard',
+  middleware: 'auth'
 })
 
 // 计算属性
