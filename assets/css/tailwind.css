@@ -75,4 +75,21 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* 日期/时间输入框在深色模式下强制覆盖 UA 样式 */
+  .dark input[type="date"],
+  .dark input[type="time"],
+  .dark input[type="datetime-local"] {
+    background-color: #18181b;
+    color: #f4f4f5;
+    border-color: #3f3f46;
+    color-scheme: dark;
+  }
+
+  /* Select 下拉框深色覆盖 */
+  .dark select {
+    background-color: #27272a;
+    color: #f4f4f5;
+    border-color: #3f3f46;
+  }
 }

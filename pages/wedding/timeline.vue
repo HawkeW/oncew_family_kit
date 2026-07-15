@@ -33,8 +33,8 @@
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Button @click="openDialog()" size="sm" class="md:hidden">添加</Button>
-        <Button @click="openDialog()" class="hidden md:inline-flex">添加环节</Button>
+        <Button @click="openDialog()" size="sm" variant="secondary" class="md:hidden">添加</Button>
+        <Button @click="openDialog()" variant="secondary" class="hidden md:inline-flex">添加环节</Button>
       </div>
     </div>
 
@@ -53,9 +53,9 @@
             <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div class="flex-1">
                 <div class="flex items-center gap-3 mb-1">
-                  <span class="text-lg font-bold text-primary font-mono">
+                  <span class="text-lg font-bold text-amber-400 font-mono">
                     {{ item.start_time }}
-                    <span v-if="item.end_time" class="text-zinc-400 font-normal text-sm">- {{ item.end_time }}</span>
+                    <span v-if="item.end_time" class="text-zinc-500 font-normal text-sm">- {{ item.end_time }}</span>
                   </span>
                   <h3 class="font-semibold text-lg">{{ item.title }}</h3>
                 </div>

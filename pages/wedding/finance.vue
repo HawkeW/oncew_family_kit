@@ -33,8 +33,8 @@
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Button @click="openDialog()" size="sm" class="md:hidden">记一笔</Button>
-        <Button @click="openDialog()" class="hidden md:inline-flex">记一笔</Button>
+        <Button @click="openDialog()" size="sm" variant="secondary" class="md:hidden">记一笔</Button>
+        <Button @click="openDialog()" variant="secondary" class="hidden md:inline-flex">记一笔</Button>
       </div>
     </div>
 
@@ -61,7 +61,7 @@
       <Button 
         v-for="filter in ['all', 'income', 'expense']" 
         :key="filter"
-        :variant="currentFilter === filter ? 'default' : 'outline'"
+        :variant="currentFilter === filter ? 'secondary' : 'outline'"
         @click="currentFilter = filter"
         class="capitalize whitespace-nowrap"
       >

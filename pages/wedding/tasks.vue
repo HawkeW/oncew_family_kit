@@ -33,8 +33,8 @@
             </SelectGroup>
           </SelectContent>
         </Select>
-        <Button @click="openDialog()" size="sm" class="md:hidden">添加</Button>
-        <Button @click="openDialog()" class="hidden md:inline-flex">添加任务</Button>
+        <Button @click="openDialog()" size="sm" variant="secondary" class="md:hidden">添加</Button>
+        <Button @click="openDialog()" variant="secondary" class="hidden md:inline-flex">添加任务</Button>
       </div>
     </div>
 
@@ -43,7 +43,7 @@
       <Button 
         v-for="cat in ['all', 'preparation', 'wedding_day']" 
         :key="cat"
-        :variant="currentCategory === cat ? 'default' : 'outline'"
+        :variant="currentCategory === cat ? 'secondary' : 'outline'"
         @click="currentCategory = cat"
         class="whitespace-nowrap"
       >

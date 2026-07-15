@@ -36,8 +36,8 @@
         <div class="bg-rose-500/20 text-rose-400 px-3 py-2 rounded-lg font-medium flex items-center text-sm md:text-base">
           总人数: {{ total }}
         </div>
-        <Button @click="openDialog()" size="sm" class="md:hidden">添加</Button>
-        <Button @click="openDialog()" class="hidden md:inline-flex">添加 RSVP</Button>
+        <Button @click="openDialog()" size="sm" variant="secondary" class="md:hidden">添加</Button>
+        <Button @click="openDialog()" variant="secondary" class="hidden md:inline-flex">添加 RSVP</Button>
       </div>
     </div>
 
