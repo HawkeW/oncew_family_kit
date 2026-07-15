@@ -40,16 +40,16 @@
         <div class="border-t border-zinc-800 pt-4">
           <h3 class="text-sm font-medium mb-3">按类型导出</h3>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <Button @click="exportData('rsvp')" variant="outline" size="sm">
+            <Button @click="exportData('rsvp')" variant="secondary" size="sm">
               导出宾客名单
             </Button>
-            <Button @click="exportData('finance')" variant="outline" size="sm">
+            <Button @click="exportData('finance')" variant="secondary" size="sm">
               导出财务
             </Button>
-            <Button @click="exportData('tasks')" variant="outline" size="sm">
+            <Button @click="exportData('tasks')" variant="secondary" size="sm">
               导出任务
             </Button>
-            <Button @click="exportData('timeline')" variant="outline" size="sm">
+            <Button @click="exportData('timeline')" variant="secondary" size="sm">
               导出时间轴
             </Button>
           </div>
@@ -81,10 +81,10 @@
         <div class="border-t border-zinc-800 pt-4 mt-4">
           <h3 class="text-sm font-medium mb-3">按类型导出</h3>
           <div class="grid grid-cols-2 gap-3">
-            <Button @click="exportData('menstrual')" variant="outline" size="sm">
+            <Button @click="exportData('menstrual')" variant="secondary" size="sm">
               导出经期记录
             </Button>
-            <Button @click="exportData('stool')" variant="outline" size="sm">
+            <Button @click="exportData('stool')" variant="secondary" size="sm">
               导出便便记录
             </Button>
           </div>
@@ -105,7 +105,7 @@
             class="hidden"
             ref="fileInput"
           />
-          <Button @click="$refs.fileInput.click()" variant="outline" size="sm">
+          <Button @click="$refs.fileInput.click()" variant="secondary" size="sm">
             选择 JSON 文件
           </Button>
           <span v-if="importFileName" class="text-sm text-zinc-400">{{ importFileName }}</span>

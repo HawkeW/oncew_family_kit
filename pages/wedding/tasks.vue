@@ -43,7 +43,7 @@
       <Button 
         v-for="cat in ['all', 'preparation', 'wedding_day']" 
         :key="cat"
-        :variant="currentCategory === cat ? 'secondary' : 'outline'"
+        :variant="currentCategory === cat ? 'secondary' : 'ghost'"
         @click="currentCategory = cat"
         class="whitespace-nowrap"
       >

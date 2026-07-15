@@ -53,9 +53,9 @@
             <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div class="flex-1">
                 <div class="flex items-center gap-3 mb-1">
-                  <span class="text-lg font-bold text-amber-400 font-mono">
+                  <span class="text-lg font-bold text-orange-300 font-mono">
                     {{ item.start_time }}
-                    <span v-if="item.end_time" class="text-zinc-500 font-normal text-sm">- {{ item.end_time }}</span>
+                    <span v-if="item.end_time" class="text-zinc-400 font-normal text-sm">- {{ item.end_time }}</span>
                   </span>
                   <h3 class="font-semibold text-lg">{{ item.title }}</h3>
                 </div>
@@ -108,11 +108,11 @@
           <div class="flex gap-4">
             <div class="grid w-full items-center gap-1.5">
               <Label for="start_time">开始时间</Label>
-              <Input id="start_time" type="time" v-model="form.start_time" required />
+              <Input id="start_time" type="time" v-model="form.start_time" class="dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100" required />
             </div>
             <div class="grid w-full items-center gap-1.5">
               <Label for="end_time">结束时间 (可选)</Label>
-              <Input id="end_time" type="time" v-model="form.end_time" />
+              <Input id="end_time" type="time" v-model="form.end_time" class="dark:bg-zinc-800 dark:border-zinc-600 dark:text-zinc-100" />
             </div>
           </div>
 

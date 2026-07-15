@@ -13,7 +13,7 @@
       </div>
 
       <div class="space-y-4">
-        <Button @click="handleLogout" variant="outline" class="w-full">
+        <Button @click="handleLogout" variant="destructive" class="w-full">
           退出登录
         </Button>
       </div>

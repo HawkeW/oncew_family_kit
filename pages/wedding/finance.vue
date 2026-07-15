@@ -61,7 +61,7 @@
       <Button 
         v-for="filter in ['all', 'income', 'expense']" 
         :key="filter"
-        :variant="currentFilter === filter ? 'secondary' : 'outline'"
+        :variant="currentFilter === filter ? 'secondary' : 'ghost'"
         @click="currentFilter = filter"
         class="capitalize whitespace-nowrap"
       >
