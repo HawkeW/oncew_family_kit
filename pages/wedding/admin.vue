@@ -5,16 +5,16 @@
     </div>
 
     <div class="flex gap-4 border-b border-zinc-800 pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 bg-primary text-primary-foreground font-medium whitespace-nowrap">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg whitespace-nowrap font-medium bg-primary text-primary-foreground">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         流程时间轴
       </NuxtLink>
     </div>
@@ -33,7 +33,7 @@
             </SelectGroup>
           </SelectContent>
         </Select>
-        <div class="bg-primary/10 text-primary px-3 py-2 rounded-lg font-medium flex items-center text-sm md:text-base">
+        <div class="bg-rose-500/20 text-rose-400 px-3 py-2 rounded-lg font-medium flex items-center text-sm md:text-base">
           总人数: {{ total }}
         </div>
         <Button @click="openDialog()" size="sm" class="md:hidden">添加</Button>
@@ -87,7 +87,7 @@
             <h3 class="font-semibold text-lg">{{ rsvp.name }}</h3>
             <p class="text-sm text-zinc-500" v-if="rsvp.phone">{{ rsvp.phone }}</p>
           </div>
-          <div class="bg-primary/10 text-primary px-2 py-1 rounded text-sm font-medium">
+          <div class="bg-rose-500/20 text-rose-400 px-2 py-1 rounded text-sm font-medium">
             {{ rsvp.count }}人
           </div>
         </div>

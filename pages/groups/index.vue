@@ -32,7 +32,7 @@
               <button
                 v-if="isGroupAdmin(group.id)"
                 @click.stop="openInviteModal(group)"
-                class="text-blue-600 hover:text-blue-800 p-1"
+                class="text-blue-400 hover:text-blue-300 p-1"
                 title="邀请成员"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,7 +43,7 @@
               <button
                 v-if="isGroupAdmin(group.id)"
                 @click.stop="viewGroupInvitations(group)"
-                class="text-green-600 hover:text-green-800 p-1"
+                class="text-green-400 hover:text-green-300 p-1"
                 :title="'邀请管理'"
               >
                 <svg  class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +54,7 @@
               <button
                 v-if="isGroupAdmin(group.id)"
                 @click.stop="dissolveGroup(group)"
-                class="text-red-600 hover:text-red-800 p-1"
+                class="text-red-400 hover:text-red-300 p-1"
                 title="解散群组"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -65,7 +65,7 @@
               <button
                 v-else
                 @click.stop="leaveGroup(group)"
-                class="text-red-600 hover:text-red-800 p-1"
+                class="text-red-400 hover:text-red-300 p-1"
                 title="退出群组"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,13 +121,13 @@
                   <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
                       @click="copyInviteLink(invitation.invite_token)"
-                      class="text-blue-600 hover:text-blue-900 mr-3"
+                      class="text-blue-400 hover:text-blue-300 mr-3"
                     >
                       复制链接
                     </button>
                     <button
                       @click="deleteInvitation(invitation.id)"
-                      class="text-red-600 hover:text-red-900"
+                      class="text-red-400 hover:text-red-300"
                     >
                       删除
                     </button>
@@ -162,7 +162,7 @@
                       {{ response.user_name }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm">
-                      <span :class="response.action === 'accept' ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800' : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800'">
+                      <span :class="response.action === 'accept' ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-900/50 text-green-400' : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-900/50 text-red-400'">
                         {{ response.action === 'accept' ? '已接受' : '已拒绝' }}
                       </span>
                     </td>
@@ -193,7 +193,7 @@
                 v-model="newGroup.name"
                 type="text"
                 required
-                class="w-full px-3 py-2 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500-blue-500"
+                class="w-full px-3 py-2 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-zinc-100 bg-zinc-800 placeholder-zinc-500"
                 placeholder="请输入群组名称"
               >
             </div>
@@ -202,7 +202,7 @@
               <textarea
                 v-model="newGroup.description"
                 rows="3"
-                class="w-full px-3 py-2 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500-blue-500"
+                class="w-full px-3 py-2 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-zinc-100 bg-zinc-800 placeholder-zinc-500"
                 placeholder="请输入群组描述（可选）"
               ></textarea>
             </div>
@@ -235,7 +235,7 @@
               <label class="block text-sm font-medium text-zinc-400 mb-2">邀请链接有效期</label>
               <select
                 v-model="inviteForm.expires_hours"
-                class="w-full px-3 py-2 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500-blue-500"
+                class="w-full px-3 py-2 border border-zinc-700 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-zinc-100 bg-zinc-800"
               >
                 <option :value="1">1小时</option>
                 <option :value="6">6小时</option>
@@ -539,9 +539,9 @@ const getStatusText = (status: string) => {
 
 const getStatusClass = (status: string) => {
   const classMap = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    accepted: 'bg-green-100 text-green-800',
-    rejected: 'bg-red-100 text-red-800'
+    pending: 'bg-yellow-900/50 text-yellow-400',
+    accepted: 'bg-green-900/50 text-green-400',
+    rejected: 'bg-red-900/50 text-red-400'
   }
   return classMap[status as keyof typeof classMap] || 'bg-zinc-800 text-zinc-300'
 }

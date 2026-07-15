@@ -26,46 +26,46 @@
             <button
               v-if="isAdmin"
               @click="openInviteModal"
-              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg flex items-center space-x-2 text-sm"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
-              <span>邀请成员</span>
+              <span class="hidden sm:inline">邀请成员</span>
             </button>
-            
+
             <!-- 管理员：邀请管理 -->
             <button
               v-if="isAdmin"
               @click="showInviteManagement = true"
-              class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg flex items-center space-x-2 text-sm"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg>
-              <span>邀请管理</span>
+              <span class="hidden sm:inline">邀请管理</span>
             </button>
-            
+
             <!-- 退出/解散群组 -->
             <button
               v-if="group.created_by === currentUserId"
               @click="dissolveGroup"
-              class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center space-x-2 text-sm"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
               </svg>
-              <span>解散群组</span>
+              <span class="hidden sm:inline">解散群组</span>
             </button>
             <button
               v-else
               @click="leaveGroup"
-              class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2"
+              class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center space-x-2 text-sm"
             >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
               </svg>
-              <span>退出群组</span>
+              <span class="hidden sm:inline">退出群组</span>
             </button>
           </div>
         </div>
@@ -95,13 +95,13 @@
                   <h3 class="text-lg font-medium text-zinc-100">{{ member.username }}</h3>
                   <span
                     v-if="member.role === 'admin'"
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-900/50 text-blue-400"
                   >
                     管理员
                   </span>
                   <span
                     v-if="member.user_id === group?.created_by"
-                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800"
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-900/50 text-yellow-400"
                   >
                     创建者
                   </span>
@@ -115,102 +115,25 @@
               <button
                 v-if="member.role !== 'admin'"
                 @click="promoteToAdmin(member.user_id)"
-                class="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                class="text-blue-400 hover:text-blue-300 text-sm font-medium px-3 py-1.5 rounded-md hover:bg-blue-900/30"
               >
                 设为管理员
               </button>
               <button
                 v-else-if="group?.created_by === currentUserId"
                 @click="demoteFromAdmin(member.user_id)"
-                class="text-orange-600 hover:text-orange-800 text-sm font-medium"
+                class="text-orange-400 hover:text-orange-300 text-sm font-medium px-3 py-1.5 rounded-md hover:bg-orange-900/30"
               >
                 取消管理员
               </button>
               <button
                 @click="removeMember(member.user_id)"
-                class="text-red-600 hover:text-red-800 text-sm font-medium ml-2"
+                class="text-red-400 hover:text-red-300 text-sm font-medium px-3 py-1.5 rounded-md hover:bg-red-900/30 ml-1"
               >
                 移除
               </button>
             </div>
           </div>
-        </div>
-      </div>
-
-      <!-- 共享记录 -->
-      <div class="bg-zinc-900/50 rounded-xl border border-zinc-800 mt-6">
-        <div class="px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <span class="text-2xl">📋</span>
-            <h2 class="text-xl font-semibold text-zinc-100">群组共享记录</h2>
-          </div>
-          <div class="flex items-center space-x-2">
-            <select 
-              v-model="selectedRecordType" 
-              class="border border-zinc-700 rounded-md px-3 py-1.5 text-sm"
-              @change="loadGroupRecords"
-            >
-              <option value="">全部记录类型</option>
-              <option v-for="rt in recordTypes" :key="rt.id" :value="rt.id">
-                {{ rt.icon }} {{ rt.name }}
-              </option>
-            </select>
-            <button
-              @click="showCreateRecordModal = true"
-              class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-md text-sm flex items-center space-x-1"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-              </svg>
-              <span>添加记录</span>
-            </button>
-          </div>
-        </div>
-        
-        <!-- 加载状态 -->
-        <div v-if="loadingRecords" class="p-8 text-center text-zinc-500">
-          加载中...
-        </div>
-        
-        <!-- 记录列表 -->
-        <div v-else-if="groupRecords.length > 0" class="divide-y divide-gray-200 max-h-96 overflow-y-auto">
-          <div
-            v-for="record in groupRecords"
-            :key="record.id"
-            class="px-6 py-4 hover:bg-zinc-800/50"
-          >
-            <div class="flex items-start justify-between">
-              <div class="flex items-start space-x-3">
-                <span class="text-2xl">{{ record.icon }}</span>
-                <div>
-                  <div class="flex items-center space-x-2">
-                    <h3 class="font-medium text-zinc-100">{{ record.record_type_name }}</h3>
-                    <span class="text-sm text-zinc-500">by {{ record.username }}</span>
-                  </div>
-                  <p class="text-sm text-zinc-400 mt-1">
-                    {{ record.record_date }}
-                    <span v-if="record.record_time"> {{ record.record_time }}</span>
-                  </p>
-                  <div v-if="record.notes" class="text-sm text-zinc-500 mt-1">
-                    {{ record.notes }}
-                  </div>
-                </div>
-              </div>
-              <span 
-                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                :style="{ backgroundColor: record.color + '20', color: record.color }"
-              >
-                {{ record.record_type_name }}
-              </span>
-            </div>
-          </div>
-        </div>
-        
-        <!-- 空状态 -->
-        <div v-else class="p-8 text-center text-zinc-500">
-          <span class="text-4xl mb-2 block">📝</span>
-          <p>暂无共享记录</p>
-          <p class="text-sm mt-1">点击"添加记录"创建第一条共享记录</p>
         </div>
       </div>
 
@@ -229,7 +152,7 @@
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-zinc-400 mb-2">邀请链接有效期</label>
-              <select v-model="inviteExpireDays" class="w-full border border-zinc-700 rounded-md px-3 py-2">
+              <select v-model="inviteExpireDays" class="w-full border border-zinc-700 rounded-md px-3 py-2 text-zinc-100 bg-zinc-800">
                 <option value="1">1天</option>
                 <option value="3">3天</option>
                 <option value="7">7天</option>
@@ -295,13 +218,13 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         @click="copyInviteLink(invitation.invite_token)"
-                        class="text-blue-600 hover:text-blue-900 mr-3"
+                        class="text-blue-400 hover:text-blue-300 mr-3"
                       >
                         复制链接
                       </button>
                       <button
                         @click="deleteInvitation(invitation.id)"
-                        class="text-red-600 hover:text-red-900"
+                        class="text-red-400 hover:text-red-300"
                       >
                         删除
                       </button>
@@ -354,14 +277,7 @@ const userRole = ref<string>('')
 const loading = ref(false)
 const showInviteModal = ref(false)
 const showInviteManagement = ref(false)
-const showCreateRecordModal = ref(false)
 const inviteExpireDays = ref(7)
-
-// 共享记录相关
-const groupRecords = ref<any[]>([])
-const recordTypes = ref<any[]>([])
-const selectedRecordType = ref('')
-const loadingRecords = ref(false)
 
 useHead({
   title: computed(() => group.value ? `${group.value.name} - 群组详情 - Nestory` : '群组详情 - Nestory')
@@ -392,8 +308,6 @@ onMounted(async () => {
   await loadGroupDetails()
   await loadGroupMembers()
   await loadUserRole()
-  await loadRecordTypes()
-  await loadGroupRecords()
 })
 
 // 加载当前用户信息
@@ -618,31 +532,4 @@ watch(showInviteManagement, (newValue) => {
     loadInvitations()
   }
 })
-
-// 加载记录类型
-const loadRecordTypes = async () => {
-  try {
-    const data = await $fetch<any>('/api/record-types?includeSystem=true')
-    recordTypes.value = data.recordTypes || []
-  } catch (error) {
-    console.error('加载记录类型失败:', error)
-  }
-}
-
-// 加载群组共享记录
-const loadGroupRecords = async () => {
-  loadingRecords.value = true
-  try {
-    let url = `/api/universal-records?groupId=${groupId}`
-    if (selectedRecordType.value) {
-      url += `&recordTypeId=${selectedRecordType.value}`
-    }
-    const data = await $fetch<any>(url)
-    groupRecords.value = data.records || []
-  } catch (error) {
-    console.error('加载群组记录失败:', error)
-  } finally {
-    loadingRecords.value = false
-  }
-}
 </script>

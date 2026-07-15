@@ -5,16 +5,16 @@
     </div>
 
     <div class="flex gap-4 border-b border-zinc-800 pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 bg-primary text-primary-foreground font-medium whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg whitespace-nowrap font-medium bg-primary text-primary-foreground">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         流程时间轴
       </NuxtLink>
     </div>
@@ -81,7 +81,7 @@
                             <span class="text-xs px-2 py-0.5 rounded-full bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
                                 {{ task.category === 'preparation' ? '筹备期' : '婚礼当天' }}
                             </span>
-                            <span v-if="task.due_date" class="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" :class="isOverdue(task) ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'">
+                            <span v-if="task.due_date" class="text-xs px-2 py-0.5 rounded-full whitespace-nowrap" :class="isOverdue(task) ? 'bg-red-900/50 text-red-400' : 'bg-blue-900/50 text-blue-400'">
                                 {{ formatDate(task.due_date) }} 截止
                             </span>
                         </div>
@@ -91,7 +91,7 @@
                 
                 <div class="flex gap-2 self-end md:self-start w-full md:w-auto justify-end border-t md:border-t-0 pt-2 md:pt-0 mt-2 md:mt-0">
                     <Button variant="ghost" size="sm" @click="openDialog(task)">编辑</Button>
-                    <Button variant="ghost" size="sm" class="text-red-600 hover:text-red-700 hover:bg-red-50" @click="deleteTask(task.id)">删除</Button>
+                    <Button variant="ghost" size="sm" class="text-red-400 hover:text-red-300 hover:bg-red-900/50" @click="deleteTask(task.id)">删除</Button>
                 </div>
             </div>
         </div>

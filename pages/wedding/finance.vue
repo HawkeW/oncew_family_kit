@@ -5,16 +5,16 @@
     </div>
 
     <div class="flex gap-4 border-b border-zinc-800 pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 bg-primary text-primary-foreground font-medium whitespace-nowrap">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg whitespace-nowrap font-medium bg-primary text-primary-foreground">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         流程时间轴
       </NuxtLink>
     </div>
@@ -42,15 +42,15 @@
     <div class="grid gap-4 grid-cols-1 md:grid-cols-3">
       <div class="bg-zinc-900/50 p-6 rounded-xl border border-zinc-800 space-y-2">
         <h3 class="text-sm font-medium text-zinc-500">总收入 (礼金等)</h3>
-        <div class="text-2xl font-bold text-green-600">+{{ formatMoney(summary.total_income) }}</div>
+        <div class="text-2xl font-bold text-green-400">+{{ formatMoney(summary.total_income) }}</div>
       </div>
       <div class="bg-zinc-900/50 p-6 rounded-xl border border-zinc-800 space-y-2">
         <h3 class="text-sm font-medium text-zinc-500">总支出</h3>
-        <div class="text-2xl font-bold text-red-600">-{{ formatMoney(summary.total_expense) }}</div>
+        <div class="text-2xl font-bold text-red-400">-{{ formatMoney(summary.total_expense) }}</div>
       </div>
       <div class="bg-zinc-900/50 p-6 rounded-xl border border-zinc-800 space-y-2">
         <h3 class="text-sm font-medium text-zinc-500">结余</h3>
-        <div class="text-2xl font-bold" :class="summary.balance >= 0 ? 'text-green-600' : 'text-red-600'">
+        <div class="text-2xl font-bold" :class="summary.balance >= 0 ? 'text-green-400' : 'text-red-400'">
           {{ summary.balance >= 0 ? '+' : '' }}{{ formatMoney(summary.balance) }}
         </div>
       </div>
@@ -86,7 +86,7 @@
           <TableRow v-for="item in filteredList" :key="item.id">
             <TableCell>{{ formatDate(item.record_date) }}</TableCell>
             <TableCell>
-              <span :class="item.type === 'income' ? 'text-green-600 bg-green-50 px-2 py-1 rounded' : 'text-red-600 bg-red-50 px-2 py-1 rounded'">
+              <span :class="item.type === 'income' ? 'text-green-400 bg-green-900/50 px-2 py-1 rounded' : 'text-red-400 bg-red-900/50 px-2 py-1 rounded'">
                 {{ item.type === 'income' ? '收入' : '支出' }}
               </span>
             </TableCell>
@@ -117,12 +117,12 @@
       <div v-else v-for="item in filteredList" :key="item.id" class="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 space-y-3">
         <div class="flex justify-between items-start">
            <div class="flex items-center gap-2">
-              <span :class="item.type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" class="text-xs px-2 py-1 rounded font-medium">
+              <span :class="item.type === 'income' ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'" class="text-xs px-2 py-1 rounded font-medium">
                 {{ item.type === 'income' ? '收入' : '支出' }}
               </span>
               <span class="font-medium">{{ item.category }}</span>
            </div>
-           <div class="font-bold" :class="item.type === 'income' ? 'text-green-600' : 'text-red-600'">
+           <div class="font-bold" :class="item.type === 'income' ? 'text-green-400' : 'text-red-400'">
              {{ item.type === 'income' ? '+' : '-' }}{{ formatMoney(item.amount) }}
            </div>
         </div>

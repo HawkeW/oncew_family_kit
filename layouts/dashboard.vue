@@ -1,10 +1,11 @@
 <template>
   <div class="min-h-screen bg-zinc-950 text-zinc-100">
-    <!-- 侧边抽屉 -->
+    <!-- 侧边栏 - PC端固定显示，移动端作为抽屉 -->
     <div
       ref="drawerRef"
-      class="fixed inset-y-0 left-0 z-50 w-72 transform border-r border-zinc-800/80 bg-zinc-950/95 backdrop-blur-xl transition-transform duration-300"
-      :class="isDrawerOpen ? 'translate-x-0' : '-translate-x-full'"
+      class="fixed inset-y-0 left-0 z-50 w-72 border-r border-zinc-800/80 bg-zinc-950/95 backdrop-blur-xl transition-transform duration-300
+        -translate-x-full lg:translate-x-0"
+      :class="{ 'translate-x-0': isDrawerOpen }"
     >
       <div class="flex h-full flex-col">
         <!-- Logo 区域 -->
@@ -45,20 +46,21 @@
       </div>
     </div>
 
-    <!-- 遮罩层 -->
+    <!-- 遮罩层 - 仅移动端 -->
     <div
       v-if="isDrawerOpen"
-      class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+      class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
       @click="closeDrawer"
     />
 
     <!-- 主内容区 -->
-    <div class="min-h-screen" :class="isDrawerOpen ? 'lg:pl-72' : ''">
+    <div class="min-h-screen lg:pl-72">
       <!-- 顶部栏 -->
       <header class="sticky top-0 z-30 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-xl">
         <div class="flex h-16 items-center gap-4 px-6">
-          <!-- 移动端菜单按钮 -->
+          <!-- 移动端菜单按钮（侧边栏隐藏时显示） -->
           <button
+            v-show="!isDrawerOpen"
             class="lg:hidden"
             @click="toggleDrawer"
           >

@@ -5,16 +5,16 @@
     </div>
 
     <div class="flex gap-4 border-b border-zinc-800 pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 bg-primary text-primary-foreground font-medium whitespace-nowrap">
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg whitespace-nowrap font-medium bg-primary text-primary-foreground">
         流程时间轴
       </NuxtLink>
     </div>
@@ -47,7 +47,7 @@
       <div v-else class="relative border-l-2 border-primary/20 ml-4 md:ml-6 space-y-8 py-4">
         <div v-for="(item, index) in list" :key="item.id" class="relative pl-8 md:pl-10">
           <!-- Dot -->
-          <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-primary border-4 border-zinc-700"></div>
+          <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-rose-500 border-4 border-zinc-950"></div>
           
           <div class="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 hover:border-zinc-700 transition-shadow">
             <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
@@ -76,7 +76,7 @@
 
               <div class="flex gap-2 self-end md:self-start">
                 <Button variant="ghost" size="sm" @click="openDialog(item)">编辑</Button>
-                <Button variant="ghost" size="sm" class="text-red-600 hover:text-red-700 hover:bg-red-50" @click="deleteItem(item.id)">删除</Button>
+                <Button variant="ghost" size="sm" class="text-red-400 hover:text-red-300 hover:bg-red-900/50" @click="deleteItem(item.id)">删除</Button>
               </div>
             </div>
           </div>
