@@ -15,14 +15,14 @@
             :key="tab.value"
             @click="switchDataType(tab.value)"
             class="px-3 py-1.5 rounded-lg text-sm transition-all"
-            :class="dataType === tab.value ? 'bg-pink-500/20 text-pink-400' : 'text-zinc-400 hover:text-zinc-200'"
+            :class="dataType === tab.value ? 'bg-theme-menstrual-light text-theme-menstrual' : 'text-zinc-400 hover:text-zinc-200'"
           >
             {{ tab.label }}
           </button>
         </div>
         <button
           @click="openAddDialog"
-          class="flex items-center gap-2 rounded-lg bg-pink-500 px-4 py-2 text-sm font-medium text-zinc-950 transition-all hover:bg-pink-400 active:scale-95"
+          class="flex items-center gap-2 rounded-lg bg-theme-menstrual px-4 py-2 text-sm font-medium text-zinc-950 transition-all hover:bg-theme-menstrual/90 active:scale-95"
         >
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -47,13 +47,13 @@
           :key="record.id"
           class="flex items-center gap-4 p-4 hover:bg-zinc-800/30 transition-colors"
         >
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-pink-500/20">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-theme-menstrual-light">
             <span class="text-xl">🩸</span>
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
               <p class="font-medium text-zinc-200">{{ formatRecordTime(record.record_time) }}</p>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-pink-500/20 text-pink-400">{{ getFlowLevelText(record.flow_level) }}</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-theme-menstrual-light text-theme-menstrual">{{ getFlowLevelText(record.flow_level) }}</span>
               <span v-if="record.pain_level !== 'none'" class="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400">
                 {{ getPainLevelText(record.pain_level) }}
               </span>
@@ -88,14 +88,14 @@
               <input
                 type="datetime-local"
                 v-model="newRecordDateTime"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
               />
             </div>
             <div>
               <label class="block text-sm font-medium text-zinc-300 mb-2">经期量</label>
               <select
                 v-model="newRecord.flow_level"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
               >
                 <option value="light">轻</option>
                 <option value="medium">中等</option>
@@ -106,7 +106,7 @@
               <label class="block text-sm font-medium text-zinc-300 mb-2">疼痛程度</label>
               <select
                 v-model="newRecord.pain_level"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
               >
                 <option value="none">无痛</option>
                 <option value="mild">轻微</option>
@@ -119,7 +119,7 @@
               <textarea
                 v-model="newRecord.notes"
                 rows="3"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
               ></textarea>
             </div>
             <div class="flex gap-3 pt-2">
@@ -132,7 +132,7 @@
               </button>
               <button
                 type="submit"
-                class="flex-1 rounded-lg bg-pink-500 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-pink-400 transition-colors"
+                class="flex-1 rounded-lg bg-theme-menstrual px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-theme-menstrual/90 transition-colors"
               >
                 保存
               </button>
@@ -154,14 +154,14 @@
             <input
               type="datetime-local"
               v-model="editRecordDateTime"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
             />
           </div>
           <div>
             <label class="block text-sm font-medium text-zinc-300 mb-2">经期量</label>
             <select
               v-model="editingRecord.flow_level"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
             >
               <option value="light">轻</option>
               <option value="medium">中等</option>
@@ -172,7 +172,7 @@
             <label class="block text-sm font-medium text-zinc-300 mb-2">疼痛程度</label>
             <select
               v-model="editingRecord.pain_level"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
             >
               <option value="none">无痛</option>
               <option value="mild">轻微</option>
@@ -185,13 +185,13 @@
             <textarea
               v-model="editingRecord.notes"
               rows="3"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
             ></textarea>
           </div>
         </div>
         <DialogFooter>
           <Button variant="outline" @click="isEditDialogOpen = false" class="bg-zinc-800 border-zinc-700 text-zinc-300">取消</Button>
-          <Button @click="updateRecord" class="bg-pink-500 hover:bg-pink-400 text-zinc-950">保存</Button>
+          <Button @click="updateRecord" class="bg-theme-menstrual hover:bg-theme-menstrual/90 text-zinc-950">保存</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

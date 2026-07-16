@@ -15,14 +15,14 @@
             :key="tab.value"
             @click="switchDataType(tab.value)"
             class="px-3 py-1.5 rounded-lg text-sm transition-all"
-            :class="dataType === tab.value ? 'bg-amber-500/20 text-amber-400' : 'text-zinc-400 hover:text-zinc-200'"
+            :class="dataType === tab.value ? 'bg-theme-stool-light text-theme-stool' : 'text-zinc-400 hover:text-zinc-200'"
           >
             {{ tab.label }}
           </button>
         </div>
         <button
           @click="openAddDialog"
-          class="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-zinc-950 transition-all hover:bg-amber-400 active:scale-95"
+          class="flex items-center gap-2 rounded-lg bg-theme-stool px-4 py-2 text-sm font-medium text-zinc-950 transition-all hover:bg-theme-stool/90 active:scale-95"
         >
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -87,14 +87,14 @@
               <input
                 type="datetime-local"
                 v-model="newRecordDateTime"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-stool focus:outline-none focus:ring-1 focus:ring-theme-stool"
               />
             </div>
             <div>
               <label class="block text-sm font-medium text-zinc-300 mb-2">舒适度</label>
               <select
                 v-model="newRecord.comfort_level"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-stool focus:outline-none focus:ring-1 focus:ring-theme-stool"
               >
                 <option value="uncomfortable">不适</option>
                 <option value="normal">正常</option>
@@ -105,7 +105,7 @@
               <label class="block text-sm font-medium text-zinc-300 mb-2">便便性状</label>
               <select
                 v-model="newRecord.consistency"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-stool focus:outline-none focus:ring-1 focus:ring-theme-stool"
               >
                 <option value="hard">硬</option>
                 <option value="normal">正常</option>
@@ -118,7 +118,7 @@
               <textarea
                 v-model="newRecord.notes"
                 rows="3"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-stool focus:outline-none focus:ring-1 focus:ring-theme-stool"
               ></textarea>
             </div>
             <div class="flex gap-3 pt-2">
@@ -131,7 +131,7 @@
               </button>
               <button
                 type="submit"
-                class="flex-1 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-amber-400 transition-colors"
+                class="flex-1 rounded-lg bg-theme-stool px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-theme-stool/90 transition-colors"
               >
                 保存
               </button>
@@ -153,14 +153,14 @@
             <input
               type="datetime-local"
               v-model="editRecordDateTime"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-stool focus:outline-none focus:ring-1 focus:ring-theme-stool"
             />
           </div>
           <div>
             <label class="block text-sm font-medium text-zinc-300 mb-2">舒适度</label>
             <select
               v-model="editingRecord.comfort_level"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-stool focus:outline-none focus:ring-1 focus:ring-theme-stool"
             >
               <option value="uncomfortable">不适</option>
               <option value="normal">正常</option>
@@ -171,7 +171,7 @@
             <label class="block text-sm font-medium text-zinc-300 mb-2">便便性状</label>
             <select
               v-model="editingRecord.consistency"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-stool focus:outline-none focus:ring-1 focus:ring-theme-stool"
             >
               <option value="hard">硬</option>
               <option value="normal">正常</option>
@@ -184,13 +184,13 @@
             <textarea
               v-model="editingRecord.notes"
               rows="3"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-stool focus:outline-none focus:ring-1 focus:ring-theme-stool"
             ></textarea>
           </div>
         </div>
         <DialogFooter>
           <Button variant="outline" @click="isEditDialogOpen = false" class="bg-zinc-800 border-zinc-700 text-zinc-300">取消</Button>
-          <Button @click="updateRecord" class="bg-amber-500 hover:bg-amber-400 text-zinc-950">保存</Button>
+          <Button @click="updateRecord" class="bg-theme-stool hover:bg-theme-stool/90 text-zinc-950">保存</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

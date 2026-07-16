@@ -150,35 +150,38 @@
         <form @submit.prevent="submitForm" class="space-y-4">
           <div class="grid w-full items-center gap-1.5">
             <Label>家庭</Label>
-            <Select v-model="form.group_id">
-              <SelectTrigger>
-                <SelectValue placeholder="选择家庭" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup v-for="group in groups" :key="group.id">
-                  <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <select
+              v-model="form.group_id"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.name }}</option>
+            </select>
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label>类型</Label>
             <div class="flex gap-4">
               <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="radio" v-model="form.type" value="expense" class="accent-primary" />
-                <span>支出</span>
+                <input type="radio" v-model="form.type" value="expense" class="hidden peer" />
+                <span class="px-3 py-1.5 rounded-lg text-sm border transition-all peer-checked:bg-destructive/20 peer-checked:text-destructive peer-checked:border-destructive border-border text-zinc-400 hover:text-zinc-200">支出</span>
               </label>
               <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="radio" v-model="form.type" value="income" class="accent-primary" />
-                <span>收入</span>
+                <input type="radio" v-model="form.type" value="income" class="hidden peer" />
+                <span class="px-3 py-1.5 rounded-lg text-sm border transition-all peer-checked:bg-green-500/20 peer-checked:text-green-400 peer-checked:border-green-500 border-border text-zinc-400 hover:text-zinc-200">收入</span>
               </label>
             </div>
           </div>
           
           <div class="grid w-full items-center gap-1.5">
             <Label for="category">分类</Label>
-            <Input id="category" v-model="form.category" placeholder="例如：酒席、装饰、礼金" list="categories" required />
+            <input
+              id="category"
+              v-model="form.category"
+              placeholder="例如：酒席、装饰、礼金"
+              list="categories"
+              required
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
             <datalist id="categories">
               <option value="礼金"></option>
               <option value="酒席"></option>
@@ -193,17 +196,34 @@
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="amount">金额</Label>
-            <Input id="amount" type="number" step="0.01" v-model.number="form.amount" required />
+            <input
+              id="amount"
+              type="number"
+              step="0.01"
+              v-model.number="form.amount"
+              required
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="date">日期</Label>
-            <Input id="date" type="date" v-model="form.record_date" required />
+            <input
+              id="date"
+              type="date"
+              v-model="form.record_date"
+              required
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="description">备注</Label>
-            <Textarea id="description" v-model="form.description" />
+            <textarea
+              id="description"
+              v-model="form.description"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[60px]"
+            ></textarea>
           </div>
 
           <DialogFooter>
@@ -247,7 +267,7 @@ interface Summary {
 }
 
 const groups = ref<any[]>([])
-const selectedGroupId = ref<string>('all')
+const selectedGroupId = ref<string>(localStorage.getItem('wedding_selectedGroupId') || 'all')
 const list = ref<FinanceItem[]>([])
 const summary = ref<Summary>({ total_income: 0, total_expense: 0, balance: 0 })
 const currentFilter = ref('all')
@@ -285,7 +305,7 @@ async function fetchGroups() {
       form.group_id = groups.value[0].id
     }
   } catch (e) {
-    console.error('获取群组失败', e)
+    console.error('获取家庭失败', e)
   }
 }
 
@@ -318,10 +338,18 @@ function openDialog(item?: FinanceItem) {
     form.amount = 0
     form.description = ''
     form.record_date = new Date().toISOString().split('T')[0]
-    form.group_id = groups.value.length > 0 ? groups.value[0].id : null
+    // Default to first family or cached selection
+    const cached = localStorage.getItem('wedding_selectedGroupId')
+    const cachedId = cached && cached !== 'all' ? Number(cached) : null
+    form.group_id = groups.value.length > 0 ? (cachedId || groups.value[0].id) : null
   }
   isDialogOpen.value = true
 }
+
+// Watch and cache selectedGroupId
+watch(selectedGroupId, (val) => {
+  localStorage.setItem('wedding_selectedGroupId', val)
+})
 
 async function submitForm() {
   if (isSubmitting.value) return

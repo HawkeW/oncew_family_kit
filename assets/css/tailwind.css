@@ -2,94 +2,140 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+@custom-variant dark (&:is(.dark *));
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+@import './theme.css';
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+:root {
+ --background: oklch(0.9232 0.0026 48.7171);
+ --foreground: oklch(0.2795 0.0368 260.0310);
+ --card: oklch(0.9699 0.0013 106.4238);
+ --card-foreground: oklch(0.2795 0.0368 260.0310);
+ --popover: oklch(0.9699 0.0013 106.4238);
+ --popover-foreground: oklch(0.2795 0.0368 260.0310);
+ --primary: oklch(0.5854 0.2041 277.1173);
+ --primary-foreground: oklch(1.0000 0 0);
+ --secondary: oklch(0.8687 0.0043 56.3660);
+ --secondary-foreground: oklch(0.4461 0.0263 256.8018);
+ --muted: oklch(0.9232 0.0026 48.7171);
+ --muted-foreground: oklch(0.5510 0.0234 264.3637);
+ --accent: oklch(0.9376 0.0260 321.9388);
+ --accent-foreground: oklch(0.3729 0.0306 259.7328);
+ --destructive: oklch(0.6368 0.2078 25.3313);
+ --destructive-foreground: oklch(1.0000 0 0);
+ --border: oklch(0.8687 0.0043 56.3660);
+ --input: oklch(0.8687 0.0043 56.3660);
+ --ring: oklch(0.5854 0.2041 277.1173);
+ --radius: 1.25rem;
+}
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --ring: 212.7 26.8% 83.9%;
-  }
+.dark {
+ --background: oklch(0.2244 0.0074 67.4370);
+ --foreground: oklch(0.9288 0.0126 255.5078);
+ --card: oklch(0.2801 0.0080 59.3379);
+ --card-foreground: oklch(0.9288 0.0126 255.5078);
+ --popover: oklch(0.2801 0.0080 59.3379);
+ --popover-foreground: oklch(0.9288 0.0126 255.5078);
+ --primary: oklch(0.6801 0.1583 276.9349);
+ --primary-foreground: oklch(0.2244 0.0074 67.4370);
+ --secondary: oklch(0.3359 0.0077 59.4197);
+ --secondary-foreground: oklch(0.8717 0.0093 258.3382);
+ --muted: oklch(0.2287 0.0074 67.4469);
+ --muted-foreground: oklch(0.7137 0.0192 261.3246);
+ --accent: oklch(0.3896 0.0074 59.4734);
+ --accent-foreground: oklch(0.8717 0.0093 258.3382);
+ --destructive: oklch(0.6368 0.2078 25.3313);
+ --destructive-foreground: oklch(0.2244 0.0074 67.4370);
+ --border: oklch(0.3359 0.0077 59.4197);
+ --input: oklch(0.3359 0.0077 59.4197);
+ --ring: oklch(0.6801 0.1583 276.9349);
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+ * {
+ @apply border-border outline-ring/50;
+ }
+ body {
+ @apply bg-background text-foreground;
+ }
 
-  /* 日期/时间输入框在深色模式下强制覆盖 UA 样式 */
-  .dark input[type="date"],
-  .dark input[type="time"],
-  .dark input[type="datetime-local"] {
-    background-color: #18181b;
-    color: #f4f4f5;
-    border-color: #3f3f46;
-    color-scheme: dark;
-  }
+ /* 主题色工具类 */
+ .text-theme-action { color: var(--theme-action); }
+ .bg-theme-action { background-color: var(--theme-action); }
+ .bg-theme-action-light { background-color: var(--theme-action-light); }
+ .border-theme-action { border-color: var(--theme-action); }
+ .hover\:bg-theme-action-hover:hover { background-color: var(--theme-action-hover); }
+ 
+ .text-theme-success { color: var(--theme-success); }
+ .bg-theme-success { background-color: var(--theme-success); }
+ .bg-theme-success-light { background-color: var(--theme-success-light); }
+ .border-theme-success { border-color: var(--theme-success); }
+ 
+ .text-theme-danger { color: var(--theme-danger); }
+ .bg-theme-danger { background-color: var(--theme-danger); }
+ .bg-theme-danger-light { background-color: var(--theme-danger-light); }
+ .border-theme-danger { border-color: var(--theme-danger); }
+ 
+ .text-theme-warning { color: var(--theme-warning); }
+ .bg-theme-warning { background-color: var(--theme-warning); }
+ .bg-theme-warning-light { background-color: var(--theme-warning-light); }
+ .border-theme-warning { border-color: var(--theme-warning); }
+ 
+ .text-theme-menstrual { color: var(--theme-menstrual); }
+ .bg-theme-menstrual { background-color: var(--theme-menstrual); }
+ .bg-theme-menstrual-light { background-color: var(--theme-menstrual-light); }
+ .border-theme-menstrual { border-color: var(--theme-menstrual); }
+ 
+ .text-theme-stool { color: var(--theme-stool); }
+ .bg-theme-stool { background-color: var(--theme-stool); }
+ .bg-theme-stool-light { background-color: var(--theme-stool-light); }
+ .border-theme-stool { border-color: var(--theme-stool); }
+ 
+ .text-theme-timeline { color: var(--theme-timeline); }
+ .bg-theme-timeline { background-color: var(--theme-timeline); }
+ .border-theme-timeline { border-color: var(--theme-timeline); }
+ 
+ .border-theme-border { border-color: var(--theme-border); }
+ .border-theme-border-light { border-color: var(--theme-border-light); }
+ 
+ /* 深色模式适配 */
+ .dark .text-theme-action { color: oklch(0.6801 0.1583 276.9349); }
+ .dark .bg-theme-action { background-color: oklch(0.6801 0.1583 276.9349); }
+ .dark .bg-theme-action-light { background-color: oklch(0.6801 0.1583 276.9349 / 20%); }
+ .dark .border-theme-action { border-color: oklch(0.6801 0.1583 276.9349); }
+ .dark .hover\:bg-theme-action-hover:hover { background-color: oklch(0.6101 0.1783 276.9349); }
+ 
+ .dark .text-theme-menstrual { color: oklch(0.3896 0.0074 59.4734); }
+ .dark .bg-theme-menstrual { background-color: oklch(0.3896 0.0074 59.4734); }
+ .dark .bg-theme-menstrual-light { background-color: oklch(0.3896 0.0074 59.4734 / 20%); }
+ .dark .border-theme-menstrual { border-color: oklch(0.3896 0.0074 59.4734); }
+ 
+ .dark .text-theme-stool { color: oklch(0.7681 0.1681 70.6757); }
+ .dark .bg-theme-stool { background-color: oklch(0.7681 0.1681 70.6757); }
+ .dark .bg-theme-stool-light { background-color: oklch(0.7681 0.1681 70.6757 / 20%); }
+ .dark .border-theme-stool { border-color: oklch(0.7681 0.1681 70.6757); }
+ 
+ .dark .text-theme-timeline { color: oklch(0.6801 0.1583 276.9349); }
+ .dark .bg-theme-timeline { background-color: oklch(0.6801 0.1583 276.9349); }
+ .dark .border-theme-timeline { border-color: oklch(0.6801 0.1583 276.9349); }
+ 
+ .dark .border-theme-border { border-color: oklch(0.3359 0.0077 59.4197); }
+ .dark .border-theme-border-light { border-color: oklch(0.3359 0.0077 59.4197); }
 
-  /* Select 下拉框深色覆盖 */
-  .dark select {
-    background-color: #27272a;
-    color: #f4f4f5;
-    border-color: #3f3f46;
-  }
+ /* 日期/时间输入框在深色模式下强制覆盖 UA 样式 */
+ .dark input[type="date"],
+ .dark input[type="time"],
+ .dark input[type="datetime-local"] {
+ background-color: #18181b;
+ color: #f4f4f5;
+ border-color: #3f3f46;
+ color-scheme: dark;
+ }
+
+ /* Select 下拉框深色覆盖 */
+ .dark select {
+ background-color: #27272a;
+ color: #f4f4f5;
+ border-color: #3f3f46;
+ }
 }

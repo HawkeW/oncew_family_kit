@@ -106,45 +106,58 @@
         <form @submit.prevent="submitForm" class="space-y-4">
           <div class="grid w-full items-center gap-1.5">
             <Label>家庭</Label>
-            <Select v-model="form.group_id">
-              <SelectTrigger>
-                <SelectValue placeholder="选择家庭" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup v-for="group in groups" :key="group.id">
-                  <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <select
+              v-model="form.group_id"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.name }}</option>
+            </select>
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="title">任务名称</Label>
-            <Input id="title" v-model="form.title" required placeholder="例如：预定酒店、联系摄影师" />
+            <input
+              id="title"
+              v-model="form.title"
+              required
+              placeholder="例如：预定酒店、联系摄影师"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label>分类</Label>
             <div class="flex gap-4">
               <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="radio" v-model="form.category" value="preparation" class="accent-primary" />
-                <span>筹备期</span>
+                <input type="radio" v-model="form.category" value="preparation" class="hidden peer" />
+                <span class="px-3 py-1.5 rounded-lg text-sm border transition-all peer-checked:bg-primary/20 peer-checked:text-primary peer-checked:border-primary border-border text-zinc-400 hover:text-zinc-200">筹备期</span>
               </label>
               <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="radio" v-model="form.category" value="wedding_day" class="accent-primary" />
-                <span>婚礼当天</span>
+                <input type="radio" v-model="form.category" value="wedding_day" class="hidden peer" />
+                <span class="px-3 py-1.5 rounded-lg text-sm border transition-all peer-checked:bg-primary/20 peer-checked:text-primary peer-checked:border-primary border-border text-zinc-400 hover:text-zinc-200">婚礼当天</span>
               </label>
             </div>
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="due_date">截止日期 (可选)</Label>
-            <Input id="due_date" type="date" v-model="form.due_date" />
+            <input
+              id="due_date"
+              type="date"
+              v-model="form.due_date"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="description">详细说明</Label>
-            <Textarea id="description" v-model="form.description" rows="4" placeholder="任务的具体细节..." />
+            <textarea
+              id="description"
+              v-model="form.description"
+              rows="4"
+              placeholder="任务的具体细节..."
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[80px]"
+            ></textarea>
           </div>
 
           <DialogFooter>
@@ -182,7 +195,7 @@ interface Task {
 }
 
 const groups = ref<any[]>([])
-const selectedGroupId = ref<string>('all')
+const selectedGroupId = ref<string>(localStorage.getItem('wedding_selectedGroupId') || 'all')
 const list = ref<Task[]>([])
 const currentCategory = ref('all')
 const isDialogOpen = ref(false)
@@ -227,7 +240,7 @@ async function fetchGroups() {
       form.group_id = groups.value[0].id
     }
   } catch (e) {
-    console.error('获取群组失败', e)
+    console.error('获取家庭失败', e)
   }
 }
 
@@ -259,10 +272,18 @@ function openDialog(item?: Task) {
     form.due_date = ''
     form.category = 'preparation'
     form.status = 'pending'
-    form.group_id = groups.value.length > 0 ? groups.value[0].id : null
+    // Default to first family or cached selection
+    const cached = localStorage.getItem('wedding_selectedGroupId')
+    const cachedId = cached && cached !== 'all' ? Number(cached) : null
+    form.group_id = groups.value.length > 0 ? (cachedId || groups.value[0].id) : null
   }
   isDialogOpen.value = true
 }
+
+// Watch and cache selectedGroupId
+watch(selectedGroupId, (val) => {
+  localStorage.setItem('wedding_selectedGroupId', val)
+})
 
 async function submitForm() {
   if (isSubmitting.value) return

@@ -1,0 +1,41 @@
+/**
+ * Nestory Theme - 语义化颜色变量
+ * 
+ * 使用方式: 
+ * - 主色调: text-primary bg-primary border-primary
+ * - 语义色: text-theme-success bg-theme-stool-light 等
+ */
+
+:root {
+  /* 主色调 - 紫色 */
+  --theme-action: oklch(0.5854 0.2041 277.1173);
+  --theme-action-hover: oklch(0.5254 0.2146 277.1173);
+  --theme-action-light: oklch(0.5854 0.2041 277.1173 / 20%);
+  
+  /* 成功/收入 - 绿色 */
+  --theme-success: oklch(0.6274 0.1944 145.9955);
+  --theme-success-light: oklch(0.6274 0.1944 145.9955 / 20%);
+  
+  /* 危险/支出/删除 - 红色 */
+  --theme-danger: oklch(0.6368 0.2078 25.3313);
+  --theme-danger-light: oklch(0.6368 0.2078 25.3313 / 20%);
+  
+  /* 警告/逾期 - 琥珀 */
+  --theme-warning: oklch(0.7681 0.1681 70.6757);
+  --theme-warning-light: oklch(0.7681 0.1681 70.6757 / 20%);
+  
+  /* 经期主题色 - 粉紫色 */
+  --theme-menstrual: oklch(0.6770 0.1821 321.4386);
+  --theme-menstrual-light: oklch(0.6770 0.1821 321.4386 / 20%);
+  
+  /* 便便主题色 - 琥珀 */
+  --theme-stool: oklch(0.7681 0.1681 70.6757);
+  --theme-stool-light: oklch(0.7681 0.1681 70.6757 / 20%);
+  
+  /* 时间轴强调色 - 紫色 */
+  --theme-timeline: oklch(0.6274 0.1944 276.9349);
+  
+  /* 边框 */
+  --theme-border: oklch(0.8687 0.0043 56.3660);
+  --theme-border-light: oklch(0.3359 0.0077 59.4197);
+}

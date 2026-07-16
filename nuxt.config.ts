@@ -2,9 +2,6 @@
 export default defineNuxtConfig({
   app: {
     head: {
-      htmlAttrs: {
-        class: 'dark',
-      },
       link: [
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' }
       ]
@@ -42,12 +39,7 @@ export default defineNuxtConfig({
     componentDir: './components/ui'
   },
   tailwindcss: {
-    config: {
-      content: [],
-      theme: {
-        extend: {}
-      }
-    }
+    cssPath: '~/assets/css/tailwind.css',
   },
   nitro: {
     esbuild: {

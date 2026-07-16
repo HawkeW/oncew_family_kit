@@ -118,32 +118,48 @@
         <form @submit.prevent="submitForm" class="space-y-4">
           <div class="grid w-full items-center gap-1.5">
             <Label>家庭</Label>
-            <Select v-model="form.group_id">
-              <SelectTrigger>
-                <SelectValue placeholder="选择家庭" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup v-for="group in groups" :key="group.id">
-                  <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+            <select
+              v-model="form.group_id"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            >
+              <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.name }}</option>
+            </select>
           </div>
           <div class="grid w-full items-center gap-1.5">
             <Label for="name">姓名</Label>
-            <Input id="name" v-model="form.name" required />
+            <input
+              id="name"
+              v-model="form.name"
+              required
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
           <div class="grid w-full items-center gap-1.5">
             <Label for="phone">手机号</Label>
-            <Input id="phone" v-model="form.phone" />
+            <input
+              id="phone"
+              v-model="form.phone"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
           <div class="grid w-full items-center gap-1.5">
             <Label for="count">人数</Label>
-            <Input id="count" type="number" v-model.number="form.count" min="1" required />
+            <input
+              id="count"
+              type="number"
+              v-model.number="form.count"
+              min="1"
+              required
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
           </div>
           <div class="grid w-full items-center gap-1.5">
             <Label for="remark">备注</Label>
-            <Textarea id="remark" v-model="form.remark" />
+            <textarea
+              id="remark"
+              v-model="form.remark"
+              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[60px]"
+            ></textarea>
           </div>
           <DialogFooter>
             <Button type="submit" :disabled="isSubmitting">
@@ -179,7 +195,7 @@ interface Rsvp {
 }
 
 const groups = ref<any[]>([])
-const selectedGroupId = ref<string>('all')
+const selectedGroupId = ref<string>(localStorage.getItem('wedding_selectedGroupId') || 'all')
 const list = ref<Rsvp[]>([])
 const total = ref(0)
 const isDialogOpen = ref(false)
@@ -202,7 +218,7 @@ async function fetchGroups() {
       form.group_id = groups.value[0].id
     }
   } catch (e) {
-    console.error('获取群组失败', e)
+    console.error('获取家庭失败', e)
   }
 }
 
@@ -242,10 +258,18 @@ function openDialog(rsvp?: Rsvp) {
     form.phone = ''
     form.count = 1
     form.remark = ''
-    form.group_id = groups.value.length > 0 ? groups.value[0].id : null
+    // Default to first family or cached selection
+    const cached = localStorage.getItem('wedding_selectedGroupId')
+    const cachedId = cached && cached !== 'all' ? Number(cached) : null
+    form.group_id = groups.value.length > 0 ? (cachedId || groups.value[0].id) : null
   }
   isDialogOpen.value = true
 }
+
+// Watch and cache selectedGroupId
+watch(selectedGroupId, (val) => {
+  localStorage.setItem('wedding_selectedGroupId', val)
+})
 
 async function submitForm() {
   if (isSubmitting.value) return
