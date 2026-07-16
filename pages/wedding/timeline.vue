@@ -5,17 +5,17 @@
     </div>
 
     <div class="flex gap-4 border-b pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-muted whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-muted whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-muted whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium whitespace-nowrap">
-        流程时间轴
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-muted bg-primary text-primary-foreground font-medium whitespace-nowrap">
+        流程时间�?
       </NuxtLink>
     </div>
 
@@ -27,8 +27,8 @@
 
     <!-- Timeline View -->
     <div class="space-y-4">
-      <div v-if="list.length === 0" class="text-center py-10 text-gray-500 bg-white rounded-lg shadow">
-        暂无流程安排，快去添加吧！
+      <div v-if="list.length === 0" class="text-center py-10 text-muted-foreground bg-card rounded-lg shadow">
+        暂无流程安排，快去添加吧�?
       </div>
 
       <div v-else class="relative border-l-2 border-primary/20 ml-4 md:ml-6 space-y-8 py-4">
@@ -36,29 +36,29 @@
           <!-- Dot -->
           <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-primary border-4 border-white shadow-sm"></div>
           
-          <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow">
+          <div class="bg-card p-4 rounded-lg shadow hover:shadow-md transition-shadow">
             <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div class="flex-1">
                 <div class="flex items-center gap-3 mb-1">
                   <span class="text-lg font-bold text-primary font-mono">
                     {{ item.start_time }}
-                    <span v-if="item.end_time" class="text-gray-400 font-normal text-sm">- {{ item.end_time }}</span>
+                    <span v-if="item.end_time" class="text-muted-foreground font-normal text-sm">- {{ item.end_time }}</span>
                   </span>
                   <h3 class="font-semibold text-lg">{{ item.title }}</h3>
                 </div>
                 
-                <div class="flex flex-wrap gap-y-1 gap-x-4 text-sm text-gray-600 mb-2">
+                <div class="flex flex-wrap gap-y-1 gap-x-4 text-sm text-muted-foreground mb-2">
                   <div v-if="item.location" class="flex items-center gap-1">
                     <span class="i-heroicons-map-pin w-4 h-4"></span>
                     📍 {{ item.location }}
                   </div>
                   <div v-if="item.owner" class="flex items-center gap-1">
                     <span class="i-heroicons-user w-4 h-4"></span>
-                    👤 负责人: {{ item.owner }}
+                    👤 负责�? {{ item.owner }}
                   </div>
                 </div>
 
-                <p v-if="item.description" class="text-gray-500 whitespace-pre-wrap text-sm">{{ item.description }}</p>
+                <p v-if="item.description" class="text-muted-foreground whitespace-pre-wrap text-sm">{{ item.description }}</p>
               </div>
 
               <div class="flex gap-2 self-end md:self-start">
@@ -80,38 +80,38 @@
         <form @submit.prevent="submitForm" class="space-y-4">
           <div class="flex gap-4">
             <div class="grid w-full items-center gap-1.5">
-              <Label for="start_time">开始时间</Label>
+              <Label for="start_time">开始时�?/Label>
               <Input id="start_time" type="time" v-model="form.start_time" required />
             </div>
             <div class="grid w-full items-center gap-1.5">
-              <Label for="end_time">结束时间 (可选)</Label>
+              <Label for="end_time">结束时间 (可�?</Label>
               <Input id="end_time" type="time" v-model="form.end_time" />
             </div>
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="title">环节名称</Label>
-            <Input id="title" v-model="form.title" required placeholder="例如：新郎接亲、仪式开始" />
+            <Input id="title" v-model="form.title" required placeholder="例如：新郎接亲、仪式开�? />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
-            <Label for="location">地点 (可选)</Label>
+            <Label for="location">地点 (可�?</Label>
             <Input id="location" v-model="form.location" placeholder="例如：新娘家、酒店宴会厅" />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
-            <Label for="owner">负责人 (可选)</Label>
-            <Input id="owner" v-model="form.owner" placeholder="例如：伴郎团、婚庆督导" />
+            <Label for="owner">负责�?(可�?</Label>
+            <Input id="owner" v-model="form.owner" placeholder="例如：伴郎团、婚庆督�? />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="description">详细说明</Label>
-            <Textarea id="description" v-model="form.description" rows="3" placeholder="具体的流程细节、注意事项..." />
+            <Textarea id="description" v-model="form.description" rows="3" placeholder="具体的流程细节、注意事�?.." />
           </div>
 
           <DialogFooter>
             <Button type="submit" :disabled="isSubmitting">
-              {{ isSubmitting ? '保存中...' : '保存' }}
+              {{ isSubmitting ? '保存�?..' : '保存' }}
             </Button>
           </DialogFooter>
         </form>
@@ -124,7 +124,7 @@
 import { ref, onMounted, reactive } from 'vue'
 
 useHead({
-  title: '婚礼流程时间轴'
+  title: '婚礼流程时间�?
 })
 
 definePageMeta({
@@ -215,7 +215,7 @@ async function submitForm() {
 }
 
 async function deleteItem(id: number) {
-  if (!confirm('确定要删除这个流程吗？')) return
+  if (!confirm('确定要删除这个流程吗�?)) return
 
   try {
     await $fetch(`/api/wedding/timeline/${id}`, {

@@ -31,7 +31,7 @@
     </div>
 
     <!-- Desktop Table View -->
-    <div class="hidden md:block bg-white rounded-lg shadow overflow-hidden">
+    <div class="hidden md:block bg-card rounded-lg shadow overflow-hidden">
       <Table>
         <TableCaption>婚礼出席名单</TableCaption>
         <TableHeader>

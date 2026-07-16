@@ -195,7 +195,7 @@
           <p class="text-sm text-gray-600">
             确定要删除这条记录吗？此操作无法撤销。
           </p>
-          <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+          <div class="mt-4 p-3 bg-muted rounded-lg">
             <p class="text-sm"><strong>记录时间：</strong>{{ formatRecordTime(recordToDelete?.record_time || '') }}</p>
             <p class="text-sm"><strong>舒适度：</strong>{{ getComfortLevelText(recordToDelete?.comfort_level || '') }}</p>
             <p class="text-sm"><strong>便便性状：</strong>{{ getConsistencyText(recordToDelete?.consistency || '') }}</p>

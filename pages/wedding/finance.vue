@@ -57,7 +57,7 @@
     </div>
 
     <!-- Desktop Table List -->
-    <div class="hidden md:block bg-white rounded-lg shadow overflow-hidden">
+    <div class="hidden md:block bg-card rounded-lg shadow overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow>
@@ -98,10 +98,10 @@
 
     <!-- Mobile Card List -->
     <div class="md:hidden space-y-4">
-      <div v-if="filteredList.length === 0" class="text-center py-8 text-gray-500 bg-white rounded-lg shadow">
+      <div v-if="filteredList.length === 0" class="text-center py-8 text-muted-foreground bg-card rounded-lg shadow">
         暂无数据
       </div>
-      <div v-else v-for="item in filteredList" :key="item.id" class="bg-white p-4 rounded-lg shadow space-y-3">
+      <div v-else v-for="item in filteredList" :key="item.id" class="bg-card p-4 rounded-lg shadow space-y-3">
         <div class="flex justify-between items-start">
            <div class="flex items-center gap-2">
               <span :class="item.type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" class="text-xs px-2 py-1 rounded font-medium">
@@ -114,7 +114,7 @@
            </div>
         </div>
 
-        <p v-if="item.description" class="text-sm text-gray-600 bg-gray-50 p-2 rounded">
+        <p v-if="item.description" class="text-sm text-muted-foreground bg-muted p-2 rounded">
           {{ item.description }}
         </p>
 

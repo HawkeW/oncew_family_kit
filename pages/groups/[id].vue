@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-zinc-950 py-8">
+  <div class="min-h-screen bg-background py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- 页面头部 -->
       <div class="mb-8">
@@ -7,7 +7,7 @@
           <div class="flex items-center space-x-4">
             <button
               @click="$router.back()"
-              class="text-zinc-400 hover:text-zinc-200 p-2 rounded-lg hover:bg-zinc-800/50"
+              class="text-muted-foreground hover:text-foreground p-2 rounded-lg hover:bg-muted"
               title="返回"
             >
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -15,8 +15,8 @@
               </svg>
             </button>
             <div>
-              <h1 class="text-3xl font-bold text-zinc-100">{{ group?.name || '群组详情' }}</h1>
-              <p class="text-zinc-400 mt-1">{{ members.length }} 名成员</p>
+              <h1 class="text-3xl font-bold">{{ group?.name || '群组详情' }}</h1>
+              <p class="text-muted-foreground mt-1">{{ members.length }} 名成员</p>
             </div>
           </div>
           
@@ -26,7 +26,7 @@
             <button
               v-if="isAdmin"
               @click="openInviteModal"
-              class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg flex items-center space-x-2 text-sm"
+              class="bg-primary hover:bg-primary/90 text-primary-foreground px-3 py-2 rounded-lg flex items-center space-x-2 text-sm"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -50,7 +50,7 @@
             <button
               v-if="group.created_by === currentUserId"
               @click="dissolveGroup"
-              class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center space-x-2 text-sm"
+              class="bg-destructive hover:bg-destructive/90 text-destructive-foreground px-3 py-2 rounded-lg flex items-center space-x-2 text-sm"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
@@ -60,7 +60,7 @@
             <button
               v-else
               @click="leaveGroup"
-              class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg flex items-center space-x-2 text-sm"
+              class="bg-destructive hover:bg-destructive/90 text-destructive-foreground px-3 py-2 rounded-lg flex items-center space-x-2 text-sm"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -72,12 +72,12 @@
       </div>
 
       <!-- 群成员列表 -->
-      <div class="bg-zinc-900/50 rounded-xl border border-zinc-800">
-        <div class="px-6 py-4 border-b border-zinc-800">
-          <h2 class="text-xl font-semibold text-zinc-100">群成员</h2>
+      <div class="bg-card rounded-xl border border-border">
+        <div class="px-6 py-4 border-b border-border">
+          <h2 class="text-xl font-semibold">群成员</h2>
         </div>
         
-        <div class="divide-y divide-zinc-800">
+        <div class="divide-y divide-border">
           <div
             v-for="member in sortedMembers"
             :key="member.user_id"

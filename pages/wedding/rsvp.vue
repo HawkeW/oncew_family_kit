@@ -1,21 +1,21 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-    <div class="max-w-md w-full space-y-8 bg-white p-6 rounded-lg shadow-lg">
+  <div class="min-h-screen flex items-center justify-center bg-background p-4">
+    <div class="max-w-md w-full space-y-8 bg-card p-6 rounded-lg shadow-lg">
       <div class="text-center">
-        <h2 class="text-3xl font-extrabold text-gray-900">婚礼邀请函</h2>
-        <p class="mt-2 text-sm text-gray-600">期待您的光临，请填写下方信息</p>
+        <h2 class="text-3xl font-extrabold text-foreground">婚礼邀请函</h2>
+        <p class="mt-2 text-sm text-muted-foreground">期待您的光临，请填写下方信息</p>
       </div>
 
       <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
         <div class="space-y-4">
           <div>
             <Label for="name">姓名 <span class="text-red-500">*</span></Label>
-            <Input id="name" v-model="form.name" type="text" placeholder="请输入您的姓名" required class="mt-1" />
+            <Input id="name" v-model="form.name" type="text" placeholder="请输入您的姓�? required class="mt-1" />
           </div>
 
           <div>
-            <Label for="phone">手机号</Label>
-            <Input id="phone" v-model="form.phone" type="tel" placeholder="方便我们联系您" class="mt-1" />
+            <Label for="phone">手机�?/Label>
+            <Input id="phone" v-model="form.phone" type="tel" placeholder="方便我们联系�? class="mt-1" />
           </div>
 
           <div>
@@ -25,13 +25,13 @@
 
           <div>
             <Label for="remark">备注</Label>
-            <Textarea id="remark" v-model="form.remark" placeholder="有什么想对我们说的..." class="mt-1" />
+            <Textarea id="remark" v-model="form.remark" placeholder="有什么想对我们说�?.." class="mt-1" />
           </div>
         </div>
 
         <div>
           <Button type="submit" class="w-full" :disabled="loading || !form.group_id">
-            {{ loading ? '提交中...' : '提交回复' }}
+            {{ loading ? '提交�?..' : '提交回复' }}
           </Button>
         </div>
       </form>
@@ -102,7 +102,7 @@ async function handleSubmit() {
 }
 
 onMounted(() => {
-  // 从 URL query 参数获取 group_id
+  // �?URL query 参数获取 group_id
   const groupId = route.query.group_id
   if (groupId) {
     form.value.group_id = Number(groupId)

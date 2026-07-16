@@ -1,28 +1,28 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
-      <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div class="bg-card py-8 px-4 shadow sm:rounded-lg sm:px-10">
         <!-- 加载状态 -->
         <div v-if="loading" class="text-center">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p class="mt-4 text-gray-600">加载中...</p>
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p class="mt-4 text-muted-foreground">加载中...</p>
         </div>
 
         <!-- 邀请已过期 -->
         <div v-else-if="invitation && invitation.expired" class="text-center">
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-            <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-destructive/20">
+            <svg class="h-6 w-6 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"></path>
             </svg>
           </div>
-          <h3 class="mt-4 text-lg font-medium text-gray-900">邀请已过期</h3>
-          <p class="mt-2 text-sm text-gray-500">
+          <h3 class="mt-4 text-lg font-medium text-foreground">邀请已过期</h3>
+          <p class="mt-2 text-sm text-muted-foreground">
             这个邀请链接已经过期，请联系群组管理员重新发送邀请。
           </p>
           <div class="mt-6">
             <NuxtLink
               to="/"
-              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
               返回首页
             </NuxtLink>
@@ -31,88 +31,94 @@
 
         <!-- 邀请已处理 -->
         <div v-else-if="invitation && invitation.current_user_response" class="text-center">
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full" :class="invitation.current_user_response.action === 'accept' ? 'bg-green-100' : 'bg-red-100'">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full" :class="invitation.current_user_response.action === 'accept' ? 'bg-green-500/20' : 'bg-destructive/20'">
             <svg v-if="invitation.current_user_response.action === 'accept'" class="h-6 w-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
-            <svg v-else class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg v-else class="h-6 w-6 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
           </div>
-          <h3 class="mt-4 text-lg font-medium text-gray-900">
+          <h3 class="mt-4 text-lg font-medium text-foreground">
             {{ invitation.current_user_response.action === 'accept' ? '已加入群组' : '已拒绝邀请' }}
           </h3>
-          <p class="mt-2 text-sm text-gray-500">
+          <p class="mt-2 text-sm text-muted-foreground">
             {{ invitation.current_user_response.action === 'accept' ? '您已经成功加入群组。' : '您已经拒绝了这个邀请。' }}
           </p>
-          <p class="mt-1 text-xs text-gray-400">
+          <p class="mt-1 text-xs text-muted-foreground">
             处理时间：{{ formatDate(invitation.current_user_response.responded_at) }}
           </p>
+
           <div class="mt-6">
             <NuxtLink
-              to="/groups"
-              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              to="/"
+              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
-              查看我的群组
+              返回首页
             </NuxtLink>
           </div>
         </div>
 
-        <!-- 有效的邀请 -->
-        <div v-else-if="invitation" class="text-center">
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100">
-            <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-            </svg>
+        <!-- 邀请详情 -->
+        <div v-else-if="invitation" class="space-y-6">
+          <div class="text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-primary/20">
+              <svg class="h-6 w-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+              </svg>
+            </div>
+            <h2 class="mt-4 text-2xl font-bold text-foreground">邀请您加入群组</h2>
+            <p class="mt-2 text-sm text-muted-foreground">
+              {{ invitation.group_name }}
+            </p>
           </div>
-          <h3 class="mt-4 text-lg font-medium text-gray-900">群组邀请</h3>
-          <div class="mt-4 bg-gray-50 rounded-lg p-4">
-            <h4 class="text-lg font-semibold text-gray-900">{{ invitation.group_name }}</h4>
-            <p v-if="invitation.group_description" class="mt-1 text-sm text-gray-600">{{ invitation.group_description }}</p>
-            <div class="mt-3 flex justify-between text-sm text-gray-500">
-              <span>{{ invitation.member_count }} 名成员</span>
-              <span>邀请人：{{ invitation.invited_by_name }}</span>
+
+          <div class="bg-muted rounded-lg p-4">
+            <div class="text-sm text-muted-foreground space-y-2">
+              <div class="flex justify-between">
+                <span>邀请人</span>
+                <span class="text-foreground font-medium">{{ invitation.invited_by_username || '未知' }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span>过期时间</span>
+                <span class="text-foreground font-medium">{{ formatDate(invitation.expires_at) }}</span>
+              </div>
             </div>
           </div>
-          <p class="mt-4 text-sm text-gray-600">
-            您被邀请加入上述群组，请选择：
-          </p>
-          <div class="mt-6 flex gap-3">
+
+          <div class="flex gap-4">
             <button
-              @click="handleInvitation('reject')"
-              :disabled="!!processing"
-              class="flex-1 py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              @click="handleResponse('accept')"
+              :disabled="processing"
+              class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md text-sm font-medium disabled:opacity-50"
             >
-              {{ processing === 'reject' ? '处理中...' : '拒绝' }}
+              {{ processing ? '处理中...' : '接受邀请' }}
             </button>
             <button
-              @click="handleInvitation('accept')"
-              :disabled="!!processing"
-              class="flex-1 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              @click="handleResponse('reject')"
+              :disabled="processing"
+              class="flex-1 bg-destructive hover:bg-destructive/90 text-destructive-foreground py-2 px-4 rounded-md text-sm font-medium disabled:opacity-50"
             >
-              {{ processing === 'accept' ? '处理中...' : '接受' }}
+              {{ processing ? '处理中...' : '拒绝邀请' }}
             </button>
           </div>
-          <p class="mt-4 text-xs text-gray-500">
-            邀请将于 {{ formatDate(invitation.expires_at) }} 过期
-          </p>
         </div>
 
-        <!-- 邀请不存在 -->
-        <div v-else-if="!loading" class="text-center">
-          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-            <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <!-- 错误状态 -->
+        <div v-else class="text-center">
+          <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-destructive/20">
+            <svg class="h-6 w-6 text-destructive" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16c-.77.833.192 2.5 1.732 2.5z"></path>
             </svg>
           </div>
-          <h3 class="mt-4 text-lg font-medium text-gray-900">邀请不存在</h3>
-          <p class="mt-2 text-sm text-gray-500">
-            找不到这个邀请，可能链接有误或邀请已被删除。
+          <h3 class="mt-4 text-lg font-medium text-foreground">邀请不存在</h3>
+          <p class="mt-2 text-sm text-muted-foreground">
+            找不到对应的邀请链接，请检查链接是否正确。
           </p>
           <div class="mt-6">
             <NuxtLink
               to="/"
-              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
             >
               返回首页
             </NuxtLink>
@@ -125,94 +131,77 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
+
+const loading = ref(true)
+const processing = ref(false)
+const invitation = ref<any>(null)
 
 definePageMeta({
-  middleware: 'auth'
+  layout: false
 })
 
 useHead({
   title: '群组邀请 - Nestory'
 })
 
-interface InvitationDetail {
-  id: number
-  group_id: number
-  invited_by: number
-  invite_token: string
-  status: 'pending' | 'accepted' | 'rejected'
-  expires_at: string
-  created_at: string
-  updated_at: string
-  group_name: string
-  group_description: string
-  invited_by_name: string
-  member_count: number
-  expired: boolean
-  current_user_response?: {
-    action: 'accept' | 'reject'
-    responded_at: string
-  } | null
-}
-
-const route = useRoute()
-const router = useRouter()
-const token = route.params.token as string
-
-const invitation = ref<InvitationDetail | null>(null)
-const loading = ref(true)
-const processing = ref<'accept' | 'reject' | null>(null)
-
-onMounted(async () => {
-  await loadInvitation()
-})
-
-const loadInvitation = async () => {
+async function fetchInvitation() {
   try {
-    const data = await $fetch<InvitationDetail>(`/api/invite/${token}`)
-    invitation.value = data
+    const token = route.params.token
+    const response = await fetch(`/api/groups/invitations/${token}`)
+    if (response.ok) {
+      invitation.value = await response.json()
+    }
   } catch (error) {
-    console.error('加载邀请详情失败:', error)
-    invitation.value = null
+    console.error('获取邀请信息失败:', error)
   } finally {
     loading.value = false
   }
 }
 
-const handleInvitation = async (action: 'accept' | 'reject') => {
-  if (!invitation.value) return
-  
-  processing.value = action
+async function handleResponse(action: 'accept' | 'reject') {
+  if (processing.value) return
+
+  processing.value = true
   try {
-    const result = await $fetch(`/api/group-invitations?token=${token}`, {
-      method: 'PUT',
-      body: { action }
+    const response = await fetch(`/api/groups/invitations/${route.params.token}/respond`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ action })
     })
-    
-    // 更新当前用户的响应状态
-    invitation.value.current_user_response = {
-      action: action,
-      responded_at: new Date().toISOString()
-    }
-    
-    // 显示成功消息
-    if (action === 'accept') {
-      alert('成功加入群组！')
-      // 可以选择跳转到群组页面
-      setTimeout(() => {
-        router.push('/groups')
-      }, 2000)
+
+    if (response.ok) {
+      await fetchInvitation()
     } else {
-      alert('已拒绝邀请')
+      const error = await response.json()
+      alert(error.message || '操作失败')
     }
   } catch (error) {
     console.error('处理邀请失败:', error)
-    alert('处理邀请失败，请重试')
+    alert('处理失败，请稍后重试')
   } finally {
-    processing.value = null
+    processing.value = false
   }
 }
 
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleString('zh-CN')
+function formatDate(dateString: string) {
+  if (!dateString) return '-'
+  const date = new Date(dateString)
+  return date.toLocaleDateString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 }
+
+onMounted(() => {
+  fetchInvitation()
+})
 </script>
