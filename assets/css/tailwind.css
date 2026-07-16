@@ -1,10 +1,10 @@
+@import './theme.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @custom-variant dark (&:is(.dark *));
-
-@import './theme.css';
 
 /* ==================== 主配色变量 ==================== */
 :root {

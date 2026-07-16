@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-background dark:bg-zinc-950">
-    <div class="max-w-md w-full space-y-8 p-8 bg-card dark:bg-zinc-900 rounded-lg shadow">
+  <div class="min-h-screen flex items-center justify-center bg-background">
+    <div class="max-w-md w-full space-y-8 p-8 bg-card rounded-lg shadow">
       <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-foreground dark:text-zinc-100">登录</h2>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-foreground">登录</h2>
       </div>
 
       <form class="mt-8 space-y-6" @submit.prevent="handleLogin">
@@ -11,7 +11,7 @@
             <FormItem>
               <FormControl>
                 <Input v-model="formData.login" type="text" placeholder="邮箱或用户名" required
-                  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-input dark:border-zinc-700 placeholder-muted-foreground dark:placeholder-zinc-500 text-foreground dark:text-zinc-100 rounded-t-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm" />
+                  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-input placeholder-muted-foreground text-foreground rounded-t-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm" />
               </FormControl>
             </FormItem>
           </FormField>
@@ -20,7 +20,7 @@
             <FormItem>
               <FormControl>
                 <Input v-model="formData.password" type="password" placeholder="密码" required
-                  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-input dark:border-zinc-700 placeholder-muted-foreground dark:placeholder-zinc-500 text-foreground dark:text-zinc-100 rounded-b-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm" />
+                  class="appearance-none rounded-none relative block w-full px-3 py-2 border border-input placeholder-muted-foreground text-foreground rounded-b-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm" />
               </FormControl>
             </FormItem>
           </FormField>
@@ -35,7 +35,7 @@
       </form>
 
       <div class="text-center mt-4">
-        <NuxtLink to="/register" class="text-sm text-primary hover:text-primary/90">没有账号？点击注�?/NuxtLink>
+        <NuxtLink to="/register" class="text-sm text-primary hover:text-primary/90">没有账号？点击注册</NuxtLink>
       </div>
     </div>
   </div>
@@ -76,10 +76,8 @@ async function handleLogin() {
 
     if (response.ok) {
       const userData = await response.json()
-      // 更新全局认证状�?
       setLoggedIn(true, userData)
 
-      // 检查是否有返回地址参数
       const redirectUrl = route.query.redirect as string
       if (redirectUrl) {
         router.push(redirectUrl)
