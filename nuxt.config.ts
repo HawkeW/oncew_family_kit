@@ -40,6 +40,58 @@ export default defineNuxtConfig({
   },
   tailwindcss: {
     cssPath: '~/assets/css/tailwind.css',
+    config: {
+      content: [],
+      theme: {
+        extend: {
+          colors: {
+            background: 'var(--background)',
+            foreground: 'var(--foreground)',
+            card: 'var(--card)',
+            'card-foreground': 'var(--card-foreground)',
+            popover: 'var(--popover)',
+            'popover-foreground': 'var(--popover-foreground)',
+            primary: {
+              DEFAULT: 'var(--primary)',
+              foreground: 'var(--primary-foreground)',
+            },
+            secondary: {
+              DEFAULT: 'var(--secondary)',
+              foreground: 'var(--secondary-foreground)',
+            },
+            muted: {
+              DEFAULT: 'var(--muted)',
+              foreground: 'var(--muted-foreground)',
+            },
+            accent: {
+              DEFAULT: 'var(--accent)',
+              foreground: 'var(--accent-foreground)',
+            },
+            destructive: {
+              DEFAULT: 'var(--destructive)',
+              foreground: 'var(--destructive-foreground)',
+            },
+            border: 'var(--border)',
+            input: 'var(--input)',
+            ring: 'var(--ring)',
+            // 语义化主题色
+            'theme-action': 'var(--theme-action)',
+            'theme-action-light': 'var(--theme-action-light)',
+            'theme-success': 'var(--theme-success)',
+            'theme-success-light': 'var(--theme-success-light)',
+            'theme-danger': 'var(--theme-danger)',
+            'theme-danger-light': 'var(--theme-danger-light)',
+            'theme-warning': 'var(--theme-warning)',
+            'theme-warning-light': 'var(--theme-warning-light)',
+            'theme-menstrual': 'var(--theme-menstrual)',
+            'theme-menstrual-light': 'var(--theme-menstrual-light)',
+            'theme-stool': 'var(--theme-stool)',
+            'theme-stool-light': 'var(--theme-stool-light)',
+            'theme-timeline': 'var(--theme-timeline)',
+          }
+        }
+      }
+    }
   },
   nitro: {
     esbuild: {

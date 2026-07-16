@@ -4,18 +4,18 @@
       <h1 class="text-3xl font-bold">婚礼管理后台</h1>
     </div>
 
-    <div class="flex gap-4 border-b border-zinc-800 pb-4 overflow-x-auto">
+    <div class="flex gap-4 border-b border-border pb-4 overflow-x-auto">
       <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg whitespace-nowrap font-medium bg-primary text-primary-foreground">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-zinc-800/50 text-zinc-400 whitespace-nowrap">
-        流程时间轴
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground whitespace-nowrap">
+        流程时间�?
       </NuxtLink>
     </div>
 
@@ -34,7 +34,7 @@
           </SelectContent>
         </Select>
         <div class="bg-rose-500/20 text-rose-400 px-3 py-2 rounded-lg font-medium flex items-center text-sm md:text-base">
-          总人数: {{ total }}
+          总人�? {{ total }}
         </div>
         <Button @click="openDialog()" size="sm" variant="secondary" class="md:hidden">添加</Button>
         <Button @click="openDialog()" variant="secondary" class="hidden md:inline-flex">添加 RSVP</Button>
@@ -42,13 +42,13 @@
     </div>
 
     <!-- Desktop Table View -->
-    <div class="hidden md:block bg-zinc-900/50 rounded-xl border border-zinc-800 overflow-hidden">
+    <div class="hidden md:block bg-muted rounded-xl border border-border overflow-hidden">
       <Table>
         <TableCaption>婚礼出席名单</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>姓名</TableHead>
-            <TableHead>手机号</TableHead>
+            <TableHead>手机�?/TableHead>
             <TableHead>人数</TableHead>
             <TableHead>备注</TableHead>
             <TableHead>提交时间</TableHead>
@@ -68,7 +68,7 @@
             </TableCell>
           </TableRow>
           <TableRow v-if="list.length === 0">
-            <TableCell colspan="6" class="text-center py-8 text-zinc-500">
+            <TableCell colspan="6" class="text-center py-8 text-muted-foreground">
               暂无数据
             </TableCell>
           </TableRow>
@@ -78,26 +78,26 @@
 
     <!-- Mobile Card View -->
     <div class="md:hidden space-y-4">
-      <div v-if="list.length === 0" class="text-center py-8 text-zinc-500 bg-zinc-900/50 rounded-xl border border-zinc-800">
+      <div v-if="list.length === 0" class="text-center py-8 text-muted-foreground bg-muted rounded-xl border border-border">
         暂无数据
       </div>
-      <div v-else v-for="rsvp in list" :key="rsvp.id" class="bg-zinc-900/50 p-4 rounded-xl border border-zinc-800 space-y-3">
+      <div v-else v-for="rsvp in list" :key="rsvp.id" class="bg-muted p-4 rounded-xl border border-border space-y-3">
         <div class="flex justify-between items-start">
           <div>
             <h3 class="font-semibold text-lg">{{ rsvp.name }}</h3>
-            <p class="text-sm text-zinc-500" v-if="rsvp.phone">{{ rsvp.phone }}</p>
+            <p class="text-sm text-muted-foreground" v-if="rsvp.phone">{{ rsvp.phone }}</p>
           </div>
           <div class="bg-rose-500/20 text-rose-400 px-2 py-1 rounded text-sm font-medium">
-            {{ rsvp.count }}人
+            {{ rsvp.count }}�?
           </div>
         </div>
         
-        <div v-if="rsvp.remark" class="text-sm text-zinc-400 bg-zinc-800/50 p-2 rounded">
+        <div v-if="rsvp.remark" class="text-sm text-muted-foreground bg-muted p-2 rounded">
           备注：{{ rsvp.remark }}
         </div>
         
         <div class="flex justify-between items-center pt-2 border-t mt-2">
-          <span class="text-xs text-zinc-400">{{ formatDate(rsvp.created_at) }}</span>
+          <span class="text-xs text-muted-foreground">{{ formatDate(rsvp.created_at) }}</span>
           <div class="flex gap-2">
             <Button variant="outline" size="sm" class="h-8" @click="openDialog(rsvp)">编辑</Button>
             <Button variant="destructive" size="sm" class="h-8" @click="deleteRsvp(rsvp.id)">删除</Button>
@@ -112,7 +112,7 @@
         <DialogHeader>
           <DialogTitle>{{ editingId ? '编辑 RSVP' : '添加 RSVP' }}</DialogTitle>
           <DialogDescription>
-            {{ editingId ? '修改现有的出席信息。' : '添加新的出席记录。' }}
+            {{ editingId ? '修改现有的出席信息�? : '添加新的出席记录�? }}
           </DialogDescription>
         </DialogHeader>
         <form @submit.prevent="submitForm" class="space-y-4">
@@ -120,7 +120,7 @@
             <Label>家庭</Label>
             <select
               v-model="form.group_id"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.name }}</option>
             </select>
@@ -131,15 +131,15 @@
               id="name"
               v-model="form.name"
               required
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
           <div class="grid w-full items-center gap-1.5">
-            <Label for="phone">手机号</Label>
+            <Label for="phone">手机�?/Label>
             <input
               id="phone"
               v-model="form.phone"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
           <div class="grid w-full items-center gap-1.5">
@@ -150,7 +150,7 @@
               v-model.number="form.count"
               min="1"
               required
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
           <div class="grid w-full items-center gap-1.5">
@@ -158,12 +158,12 @@
             <textarea
               id="remark"
               v-model="form.remark"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[60px]"
+              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[60px]"
             ></textarea>
           </div>
           <DialogFooter>
             <Button type="submit" :disabled="isSubmitting">
-              {{ isSubmitting ? '保存中...' : '保存' }}
+              {{ isSubmitting ? '保存�?..' : '保存' }}
             </Button>
           </DialogFooter>
         </form>
@@ -303,7 +303,7 @@ async function submitForm() {
 }
 
 async function deleteRsvp(id: number) {
-  if (!confirm('确定要删除这条记录吗？')) return
+  if (!confirm('确定要删除这条记录吗�?)) return
 
   try {
     await $fetch(`/api/wedding/rsvp/${id}`, {

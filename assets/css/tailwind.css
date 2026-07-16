@@ -6,6 +6,7 @@
 
 @import './theme.css';
 
+/* ==================== 主配色变量 ==================== */
 :root {
  --background: oklch(0.9232 0.0026 48.7171);
  --foreground: oklch(0.2795 0.0368 260.0310);
@@ -27,6 +28,8 @@
  --input: oklch(0.8687 0.0043 56.3660);
  --ring: oklch(0.5854 0.2041 277.1173);
  --radius: 1.25rem;
+ --theme-stool: oklch(0.7681 0.1681 70.6757);
+ --theme-stool-light: oklch(0.7681 0.1681 70.6757 / 20%);
 }
 
 .dark {
@@ -49,6 +52,8 @@
  --border: oklch(0.3359 0.0077 59.4197);
  --input: oklch(0.3359 0.0077 59.4197);
  --ring: oklch(0.6801 0.1583 276.9349);
+ --theme-stool: oklch(0.7681 0.1681 70.6757);
+ --theme-stool-light: oklch(0.7681 0.1681 70.6757 / 20%);
 }
 
 @layer base {
@@ -57,85 +62,5 @@
  }
  body {
  @apply bg-background text-foreground;
- }
-
- /* 主题色工具类 */
- .text-theme-action { color: var(--theme-action); }
- .bg-theme-action { background-color: var(--theme-action); }
- .bg-theme-action-light { background-color: var(--theme-action-light); }
- .border-theme-action { border-color: var(--theme-action); }
- .hover\:bg-theme-action-hover:hover { background-color: var(--theme-action-hover); }
- 
- .text-theme-success { color: var(--theme-success); }
- .bg-theme-success { background-color: var(--theme-success); }
- .bg-theme-success-light { background-color: var(--theme-success-light); }
- .border-theme-success { border-color: var(--theme-success); }
- 
- .text-theme-danger { color: var(--theme-danger); }
- .bg-theme-danger { background-color: var(--theme-danger); }
- .bg-theme-danger-light { background-color: var(--theme-danger-light); }
- .border-theme-danger { border-color: var(--theme-danger); }
- 
- .text-theme-warning { color: var(--theme-warning); }
- .bg-theme-warning { background-color: var(--theme-warning); }
- .bg-theme-warning-light { background-color: var(--theme-warning-light); }
- .border-theme-warning { border-color: var(--theme-warning); }
- 
- .text-theme-menstrual { color: var(--theme-menstrual); }
- .bg-theme-menstrual { background-color: var(--theme-menstrual); }
- .bg-theme-menstrual-light { background-color: var(--theme-menstrual-light); }
- .border-theme-menstrual { border-color: var(--theme-menstrual); }
- 
- .text-theme-stool { color: var(--theme-stool); }
- .bg-theme-stool { background-color: var(--theme-stool); }
- .bg-theme-stool-light { background-color: var(--theme-stool-light); }
- .border-theme-stool { border-color: var(--theme-stool); }
- 
- .text-theme-timeline { color: var(--theme-timeline); }
- .bg-theme-timeline { background-color: var(--theme-timeline); }
- .border-theme-timeline { border-color: var(--theme-timeline); }
- 
- .border-theme-border { border-color: var(--theme-border); }
- .border-theme-border-light { border-color: var(--theme-border-light); }
- 
- /* 深色模式适配 */
- .dark .text-theme-action { color: oklch(0.6801 0.1583 276.9349); }
- .dark .bg-theme-action { background-color: oklch(0.6801 0.1583 276.9349); }
- .dark .bg-theme-action-light { background-color: oklch(0.6801 0.1583 276.9349 / 20%); }
- .dark .border-theme-action { border-color: oklch(0.6801 0.1583 276.9349); }
- .dark .hover\:bg-theme-action-hover:hover { background-color: oklch(0.6101 0.1783 276.9349); }
- 
- .dark .text-theme-menstrual { color: oklch(0.3896 0.0074 59.4734); }
- .dark .bg-theme-menstrual { background-color: oklch(0.3896 0.0074 59.4734); }
- .dark .bg-theme-menstrual-light { background-color: oklch(0.3896 0.0074 59.4734 / 20%); }
- .dark .border-theme-menstrual { border-color: oklch(0.3896 0.0074 59.4734); }
- 
- .dark .text-theme-stool { color: oklch(0.7681 0.1681 70.6757); }
- .dark .bg-theme-stool { background-color: oklch(0.7681 0.1681 70.6757); }
- .dark .bg-theme-stool-light { background-color: oklch(0.7681 0.1681 70.6757 / 20%); }
- .dark .border-theme-stool { border-color: oklch(0.7681 0.1681 70.6757); }
- 
- .dark .text-theme-timeline { color: oklch(0.6801 0.1583 276.9349); }
- .dark .bg-theme-timeline { background-color: oklch(0.6801 0.1583 276.9349); }
- .dark .border-theme-timeline { border-color: oklch(0.6801 0.1583 276.9349); }
- 
- .dark .border-theme-border { border-color: oklch(0.3359 0.0077 59.4197); }
- .dark .border-theme-border-light { border-color: oklch(0.3359 0.0077 59.4197); }
-
- /* 日期/时间输入框在深色模式下强制覆盖 UA 样式 */
- .dark input[type="date"],
- .dark input[type="time"],
- .dark input[type="datetime-local"] {
- background-color: #18181b;
- color: #f4f4f5;
- border-color: #3f3f46;
- color-scheme: dark;
- }
-
- /* Select 下拉框深色覆盖 */
- .dark select {
- background-color: #27272a;
- color: #f4f4f5;
- border-color: #3f3f46;
  }
 }

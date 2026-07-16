@@ -1,9 +1,9 @@
 <template>
-  <div class="text-zinc-100">
+  <div class="text-foreground">
     <!-- 页面标题 -->
     <div class="mb-6">
       <h1 class="text-lg font-medium">经期记录</h1>
-      <p class="text-sm text-zinc-500">{{ records.length }} 条记录</p>
+      <p class="text-sm text-muted-foreground">{{ records.length }} 条记录</p>
     </div>
 
     <main class="max-w-4xl">
@@ -15,14 +15,14 @@
             :key="tab.value"
             @click="switchDataType(tab.value)"
             class="px-3 py-1.5 rounded-lg text-sm transition-all"
-            :class="dataType === tab.value ? 'bg-theme-menstrual-light text-theme-menstrual' : 'text-zinc-400 hover:text-zinc-200'"
+            :class="dataType === tab.value ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'"
           >
             {{ tab.label }}
           </button>
         </div>
         <button
           @click="openAddDialog"
-          class="flex items-center gap-2 rounded-lg bg-theme-menstrual px-4 py-2 text-sm font-medium text-zinc-950 transition-all hover:bg-theme-menstrual/90 active:scale-95"
+          class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:opacity-90 active:scale-95"
         >
           <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -32,41 +32,41 @@
       </div>
 
       <!-- 空状态 -->
-      <div v-if="records.length === 0" class="rounded-xl border border-zinc-800 bg-zinc-900/30 p-12 text-center">
-        <div class="mx-auto h-16 w-16 rounded-full bg-zinc-800/50 flex items-center justify-center mb-4">
+      <div v-if="records.length === 0" class="rounded-xl border border-border bg-muted/30 p-12 text-center">
+        <div class="mx-auto h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
           <span class="text-3xl">🩸</span>
         </div>
-        <h3 class="text-lg font-medium text-zinc-300">还没有记录</h3>
-        <p class="mt-2 text-sm text-zinc-500">点击右上角「添加」开始记录</p>
+        <h3 class="text-lg font-medium text-foreground">还没有记录</h3>
+        <p class="mt-2 text-sm text-muted-foreground">点击右上角「添加」开始记录</p>
       </div>
 
       <!-- 记录列表 -->
-      <div v-else class="rounded-xl border border-zinc-800/60 bg-zinc-900/30 divide-y divide-zinc-800/50">
+      <div v-else class="rounded-xl border border-border/60 bg-muted/30 divide-y divide-border/50">
         <div
           v-for="record in records"
           :key="record.id"
-          class="flex items-center gap-4 p-4 hover:bg-zinc-800/30 transition-colors"
+          class="flex items-center gap-4 p-4 hover:bg-muted/30 transition-colors"
         >
-          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-theme-menstrual-light">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary/20">
             <span class="text-xl">🩸</span>
           </div>
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
-              <p class="font-medium text-zinc-200">{{ formatRecordTime(record.record_time) }}</p>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-theme-menstrual-light text-theme-menstrual">{{ getFlowLevelText(record.flow_level) }}</span>
-              <span v-if="record.pain_level !== 'none'" class="text-xs px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-400">
+              <p class="font-medium">{{ formatRecordTime(record.record_time) }}</p>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-primary/20 text-primary">{{ getFlowLevelText(record.flow_level) }}</span>
+              <span v-if="record.pain_level !== 'none'" class="text-xs px-2 py-0.5 rounded-full bg-destructive/20 text-destructive">
                 {{ getPainLevelText(record.pain_level) }}
               </span>
             </div>
-            <p class="text-sm text-zinc-500 mt-0.5">{{ record.notes || '无备注' }}</p>
+            <p class="text-sm text-muted-foreground mt-0.5">{{ record.notes || '无备注' }}</p>
           </div>
           <div class="flex items-center gap-1">
-            <button @click="editRecord(record)" class="p-2 text-zinc-400 hover:text-zinc-200 transition-colors">
+            <button @click="editRecord(record)" class="p-2 text-muted-foreground hover:text-foreground transition-colors">
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
               </svg>
             </button>
-            <button @click="confirmDeleteRecord(record)" class="p-2 text-zinc-400 hover:text-red-400 transition-colors">
+            <button @click="confirmDeleteRecord(record)" class="p-2 text-muted-foreground hover:text-destructive transition-colors">
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
@@ -80,22 +80,22 @@
     <Transition name="modal">
       <div v-if="showAddDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-black/60" @click="showAddDialog = false"></div>
-        <div class="relative w-full max-w-md rounded-2xl bg-zinc-900 border border-zinc-800 p-6">
-          <h2 class="text-lg font-medium mb-4">添加经期记录</h2>
+        <div class="relative w-full max-w-md rounded-2xl bg-card border border-border p-6">
+          <h2 class="text-lg font-medium mb-4 text-foreground">添加经期记录</h2>
           <form @submit.prevent="addRecord" class="space-y-4">
             <div>
-              <label class="block text-sm font-medium text-zinc-300 mb-2">日期时间</label>
+              <label class="block text-sm font-medium text-muted-foreground mb-2">日期时间</label>
               <input
                 type="datetime-local"
                 v-model="newRecordDateTime"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
+                class="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-zinc-300 mb-2">经期量</label>
+              <label class="block text-sm font-medium text-muted-foreground mb-2">经期量</label>
               <select
                 v-model="newRecord.flow_level"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
+                class="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               >
                 <option value="light">轻</option>
                 <option value="medium">中等</option>
@@ -103,10 +103,10 @@
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-zinc-300 mb-2">疼痛程度</label>
+              <label class="block text-sm font-medium text-muted-foreground mb-2">疼痛程度</label>
               <select
                 v-model="newRecord.pain_level"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
+                class="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               >
                 <option value="none">无痛</option>
                 <option value="mild">轻微</option>
@@ -115,24 +115,24 @@
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-zinc-300 mb-2">备注</label>
+              <label class="block text-sm font-medium text-muted-foreground mb-2">备注</label>
               <textarea
                 v-model="newRecord.notes"
                 rows="3"
-                class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
+                class="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               ></textarea>
             </div>
             <div class="flex gap-3 pt-2">
               <button
                 type="button"
                 @click="showAddDialog = false"
-                class="flex-1 rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-300 hover:bg-zinc-800 transition-colors"
+                class="flex-1 rounded-lg border border-input px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-muted transition-colors"
               >
                 取消
               </button>
               <button
                 type="submit"
-                class="flex-1 rounded-lg bg-theme-menstrual px-4 py-2 text-sm font-medium text-zinc-950 hover:bg-theme-menstrual/90 transition-colors"
+                class="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:opacity-90 transition-colors"
               >
                 保存
               </button>
@@ -144,24 +144,24 @@
 
     <!-- 编辑记录对话框 -->
     <Dialog :open="isEditDialogOpen" @update:open="isEditDialogOpen = $event">
-      <DialogContent class="sm:max-w-[425px] bg-zinc-900 border-zinc-800">
+      <DialogContent class="sm:max-w-[425px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle class="text-zinc-100">编辑记录</DialogTitle>
+          <DialogTitle class="text-foreground">编辑记录</DialogTitle>
         </DialogHeader>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-2">日期时间</label>
+            <label class="block text-sm font-medium text-muted-foreground mb-2">日期时间</label>
             <input
               type="datetime-local"
               v-model="editRecordDateTime"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
+              class="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-2">经期量</label>
+            <label class="block text-sm font-medium text-muted-foreground mb-2">经期量</label>
             <select
               v-model="editingRecord.flow_level"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
+              class="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="light">轻</option>
               <option value="medium">中等</option>
@@ -169,10 +169,10 @@
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-2">疼痛程度</label>
+            <label class="block text-sm font-medium text-muted-foreground mb-2">疼痛程度</label>
             <select
               v-model="editingRecord.pain_level"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
+              class="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="none">无痛</option>
               <option value="mild">轻微</option>
@@ -181,32 +181,32 @@
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-zinc-300 mb-2">备注</label>
+            <label class="block text-sm font-medium text-muted-foreground mb-2">备注</label>
             <textarea
               v-model="editingRecord.notes"
               rows="3"
-              class="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2.5 text-white focus:border-theme-menstrual focus:outline-none focus:ring-1 focus:ring-theme-menstrual"
+              class="w-full rounded-lg border border-input bg-background px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             ></textarea>
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" @click="isEditDialogOpen = false" class="bg-zinc-800 border-zinc-700 text-zinc-300">取消</Button>
-          <Button @click="updateRecord" class="bg-theme-menstrual hover:bg-theme-menstrual/90 text-zinc-950">保存</Button>
+          <Button variant="outline" @click="isEditDialogOpen = false" class="border-input">取消</Button>
+          <Button @click="updateRecord" class="bg-primary text-primary-foreground hover:opacity-90">保存</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
 
     <!-- 删除确认对话框 -->
     <Dialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
-      <DialogContent class="sm:max-w-[425px] bg-zinc-900 border-zinc-800">
+      <DialogContent class="sm:max-w-[425px] bg-card border-border">
         <DialogHeader>
-          <DialogTitle class="text-zinc-100">确认删除</DialogTitle>
+          <DialogTitle class="text-foreground">确认删除</DialogTitle>
         </DialogHeader>
         <div class="py-4">
-          <p class="text-sm text-zinc-400">确定要删除这条记录吗？此操作无法撤销。</p>
+          <p class="text-sm text-muted-foreground">确定要删除这条记录吗？此操作无法撤销。</p>
         </div>
         <DialogFooter>
-          <Button variant="outline" @click="isDeleteDialogOpen = false" class="bg-zinc-800 border-zinc-700 text-zinc-300">取消</Button>
+          <Button variant="outline" @click="isDeleteDialogOpen = false" class="border-input">取消</Button>
           <Button variant="destructive" @click="deleteRecord">确认删除</Button>
         </DialogFooter>
       </DialogContent>
