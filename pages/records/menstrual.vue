@@ -36,7 +36,7 @@
         <div class="mx-auto h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
           <span class="text-3xl">🩸</span>
         </div>
-        <h3 class="text-lg font-medium text-foreground">还没有记录</h3>
+        <h3 class="text-lg font-medium">还没有记录</h3>
         <p class="mt-2 text-sm text-muted-foreground">点击右上角「添加」开始记录</p>
       </div>
 
@@ -144,9 +144,9 @@
 
     <!-- 编辑记录对话框 -->
     <Dialog :open="isEditDialogOpen" @update:open="isEditDialogOpen = $event">
-      <DialogContent class="sm:max-w-[425px] bg-card border-border">
+      <DialogContent class="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle class="text-foreground">编辑记录</DialogTitle>
+          <DialogTitle>编辑记录</DialogTitle>
         </DialogHeader>
         <div class="space-y-4">
           <div>
@@ -190,23 +190,23 @@
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" @click="isEditDialogOpen = false" class="border-input">取消</Button>
-          <Button @click="updateRecord" class="bg-primary text-primary-foreground hover:opacity-90">保存</Button>
+          <Button variant="outline" @click="isEditDialogOpen = false">取消</Button>
+          <Button @click="updateRecord">保存</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
 
     <!-- 删除确认对话框 -->
     <Dialog :open="isDeleteDialogOpen" @update:open="isDeleteDialogOpen = $event">
-      <DialogContent class="sm:max-w-[425px] bg-card border-border">
+      <DialogContent class="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle class="text-foreground">确认删除</DialogTitle>
+          <DialogTitle>确认删除</DialogTitle>
         </DialogHeader>
         <div class="py-4">
           <p class="text-sm text-muted-foreground">确定要删除这条记录吗？此操作无法撤销。</p>
         </div>
         <DialogFooter>
-          <Button variant="outline" @click="isDeleteDialogOpen = false" class="border-input">取消</Button>
+          <Button variant="outline" @click="isDeleteDialogOpen = false">取消</Button>
           <Button variant="destructive" @click="deleteRecord">确认删除</Button>
         </DialogFooter>
       </DialogContent>

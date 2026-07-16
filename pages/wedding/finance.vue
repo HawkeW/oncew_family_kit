@@ -4,53 +4,40 @@
       <h1 class="text-3xl font-bold">婚礼管理后台</h1>
     </div>
 
-    <div class="flex gap-4 border-b border-border pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground whitespace-nowrap">
+    <div class="flex gap-4 border-b pb-4 overflow-x-auto">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-muted whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg whitespace-nowrap font-medium bg-primary text-primary-foreground">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-muted bg-primary text-primary-foreground font-medium whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-muted whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground whitespace-nowrap">
-        流程时间�?
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-muted whitespace-nowrap">
+        流程时间轴
       </NuxtLink>
     </div>
 
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">财务概览</h2>
-      <div class="flex items-center gap-4">
-        <Select v-model="selectedGroupId" @update:modelValue="fetchData" class="w-[160px]">
-          <SelectTrigger>
-            <SelectValue placeholder="选择家庭" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">全部家庭</SelectItem>
-            <SelectGroup v-for="group in groups" :key="group.id">
-              <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Button @click="openDialog()" size="sm" variant="secondary" class="md:hidden">记一�?/Button>
-        <Button @click="openDialog()" variant="secondary" class="hidden md:inline-flex">记一�?/Button>
-      </div>
+      <Button @click="openDialog()" size="sm" class="md:hidden">记一笔</Button>
+      <Button @click="openDialog()" class="hidden md:inline-flex">记一笔</Button>
     </div>
 
     <!-- Summary Cards -->
     <div class="grid gap-4 grid-cols-1 md:grid-cols-3">
-      <div class="bg-muted p-6 rounded-xl border border-border space-y-2">
-        <h3 class="text-sm font-medium text-muted-foreground">总收�?(礼金�?</h3>
-        <div class="text-2xl font-bold text-green-400">+{{ formatMoney(summary.total_income) }}</div>
+      <div class="bg-card p-6 rounded-lg space-y-2">
+        <h3 class="text-sm font-medium text-muted-foreground">总收入 (礼金等)</h3>
+        <div class="text-2xl font-bold text-green-600">+{{ formatMoney(summary.total_income) }}</div>
       </div>
-      <div class="bg-muted p-6 rounded-xl border border-border space-y-2">
-        <h3 class="text-sm font-medium text-muted-foreground">总支�?/h3>
-        <div class="text-2xl font-bold text-red-400">-{{ formatMoney(summary.total_expense) }}</div>
+      <div class="bg-card p-6 rounded-lg space-y-2">
+        <h3 class="text-sm font-medium text-muted-foreground">总支出</h3>
+        <div class="text-2xl font-bold text-destructive">-{{ formatMoney(summary.total_expense) }}</div>
       </div>
-      <div class="bg-muted p-6 rounded-xl border border-border space-y-2">
+      <div class="bg-card p-6 rounded-lg space-y-2">
         <h3 class="text-sm font-medium text-muted-foreground">结余</h3>
-        <div class="text-2xl font-bold" :class="summary.balance >= 0 ? 'text-green-400' : 'text-red-400'">
+        <div class="text-2xl font-bold" :class="summary.balance >= 0 ? 'text-green-600' : 'text-destructive'">
           {{ summary.balance >= 0 ? '+' : '' }}{{ formatMoney(summary.balance) }}
         </div>
       </div>
@@ -61,7 +48,7 @@
       <Button 
         v-for="filter in ['all', 'income', 'expense']" 
         :key="filter"
-        :variant="currentFilter === filter ? 'secondary' : 'ghost'"
+        :variant="currentFilter === filter ? 'default' : 'outline'"
         @click="currentFilter = filter"
         class="capitalize whitespace-nowrap"
       >
@@ -70,7 +57,7 @@
     </div>
 
     <!-- Desktop Table List -->
-    <div class="hidden md:block bg-muted rounded-xl border border-border overflow-hidden">
+    <div class="hidden md:block bg-white rounded-lg shadow overflow-hidden">
       <Table>
         <TableHeader>
           <TableRow>
@@ -86,7 +73,7 @@
           <TableRow v-for="item in filteredList" :key="item.id">
             <TableCell>{{ formatDate(item.record_date) }}</TableCell>
             <TableCell>
-              <span :class="item.type === 'income' ? 'text-green-400 bg-green-900/50 px-2 py-1 rounded' : 'text-red-400 bg-red-900/50 px-2 py-1 rounded'">
+              <span :class="item.type === 'income' ? 'text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded' : 'text-destructive bg-destructive/10 px-2 py-1 rounded'">
                 {{ item.type === 'income' ? '收入' : '支出' }}
               </span>
             </TableCell>
@@ -101,7 +88,7 @@
             </TableCell>
           </TableRow>
           <TableRow v-if="filteredList.length === 0">
-            <TableCell colspan="6" class="text-center py-8 text-muted-foreground">
+            <TableCell colspan="6" class="text-center py-8 text-gray-500">
               暂无数据
             </TableCell>
           </TableRow>
@@ -111,28 +98,28 @@
 
     <!-- Mobile Card List -->
     <div class="md:hidden space-y-4">
-      <div v-if="filteredList.length === 0" class="text-center py-8 text-muted-foreground bg-muted rounded-xl border border-border">
+      <div v-if="filteredList.length === 0" class="text-center py-8 text-gray-500 bg-white rounded-lg shadow">
         暂无数据
       </div>
-      <div v-else v-for="item in filteredList" :key="item.id" class="bg-muted p-4 rounded-xl border border-border space-y-3">
+      <div v-else v-for="item in filteredList" :key="item.id" class="bg-white p-4 rounded-lg shadow space-y-3">
         <div class="flex justify-between items-start">
            <div class="flex items-center gap-2">
-              <span :class="item.type === 'income' ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'" class="text-xs px-2 py-1 rounded font-medium">
+              <span :class="item.type === 'income' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'" class="text-xs px-2 py-1 rounded font-medium">
                 {{ item.type === 'income' ? '收入' : '支出' }}
               </span>
               <span class="font-medium">{{ item.category }}</span>
            </div>
-           <div class="font-bold" :class="item.type === 'income' ? 'text-green-400' : 'text-red-400'">
+           <div class="font-bold" :class="item.type === 'income' ? 'text-green-600' : 'text-red-600'">
              {{ item.type === 'income' ? '+' : '-' }}{{ formatMoney(item.amount) }}
            </div>
         </div>
 
-        <p v-if="item.description" class="text-sm text-muted-foreground bg-muted p-2 rounded">
+        <p v-if="item.description" class="text-sm text-gray-600 bg-gray-50 p-2 rounded">
           {{ item.description }}
         </p>
 
         <div class="flex justify-between items-center pt-2 border-t mt-2">
-          <span class="text-xs text-muted-foreground">{{ formatDate(item.record_date) }}</span>
+          <span class="text-xs text-gray-400">{{ formatDate(item.record_date) }}</span>
           <div class="flex gap-2">
             <Button variant="outline" size="sm" class="h-8" @click="openDialog(item)">编辑</Button>
             <Button variant="destructive" size="sm" class="h-8" @click="deleteItem(item.id)">删除</Button>
@@ -149,39 +136,22 @@
         </DialogHeader>
         <form @submit.prevent="submitForm" class="space-y-4">
           <div class="grid w-full items-center gap-1.5">
-            <Label>家庭</Label>
-            <select
-              v-model="form.group_id"
-              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.name }}</option>
-            </select>
-          </div>
-
-          <div class="grid w-full items-center gap-1.5">
             <Label>类型</Label>
             <div class="flex gap-4">
               <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="radio" v-model="form.type" value="expense" class="hidden peer" />
-                <span class="px-3 py-1.5 rounded-lg text-sm border transition-all peer-checked:bg-destructive/20 peer-checked:text-destructive peer-checked:border-destructive border-border text-muted-foreground hover:text-foreground">支出</span>
+                <input type="radio" v-model="form.type" value="expense" class="accent-primary" />
+                <span>支出</span>
               </label>
               <label class="flex items-center space-x-2 cursor-pointer">
-                <input type="radio" v-model="form.type" value="income" class="hidden peer" />
-                <span class="px-3 py-1.5 rounded-lg text-sm border transition-all peer-checked:bg-green-500/20 peer-checked:text-green-400 peer-checked:border-green-500 border-border text-muted-foreground hover:text-foreground">收入</span>
+                <input type="radio" v-model="form.type" value="income" class="accent-primary" />
+                <span>收入</span>
               </label>
             </div>
           </div>
           
           <div class="grid w-full items-center gap-1.5">
             <Label for="category">分类</Label>
-            <input
-              id="category"
-              v-model="form.category"
-              placeholder="例如：酒席、装饰、礼�?
-              list="categories"
-              required
-              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
+            <Input id="category" v-model="form.category" placeholder="例如：酒席、装饰、礼金" list="categories" required />
             <datalist id="categories">
               <option value="礼金"></option>
               <option value="酒席"></option>
@@ -189,46 +159,29 @@
               <option value="婚庆"></option>
               <option value="服饰"></option>
               <option value="礼品"></option>
-              <option value="交�?></option>
+              <option value="交通"></option>
               <option value="其他"></option>
             </datalist>
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="amount">金额</Label>
-            <input
-              id="amount"
-              type="number"
-              step="0.01"
-              v-model.number="form.amount"
-              required
-              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
+            <Input id="amount" type="number" step="0.01" v-model.number="form.amount" required />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="date">日期</Label>
-            <input
-              id="date"
-              type="date"
-              v-model="form.record_date"
-              required
-              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
+            <Input id="date" type="date" v-model="form.record_date" required />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="description">备注</Label>
-            <textarea
-              id="description"
-              v-model="form.description"
-              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[60px]"
-            ></textarea>
+            <Textarea id="description" v-model="form.description" />
           </div>
 
           <DialogFooter>
             <Button type="submit" :disabled="isSubmitting">
-              {{ isSubmitting ? '保存�?..' : '保存' }}
+              {{ isSubmitting ? '保存中...' : '保存' }}
             </Button>
           </DialogFooter>
         </form>
@@ -257,7 +210,6 @@ interface FinanceItem {
   description: string
   record_date: string
   created_at: string
-  group_id?: number
 }
 
 interface Summary {
@@ -266,8 +218,6 @@ interface Summary {
   balance: number
 }
 
-const groups = ref<any[]>([])
-const selectedGroupId = ref<string>(localStorage.getItem('wedding_selectedGroupId') || 'all')
 const list = ref<FinanceItem[]>([])
 const summary = ref<Summary>({ total_income: 0, total_expense: 0, balance: 0 })
 const currentFilter = ref('all')
@@ -276,7 +226,6 @@ const isSubmitting = ref(false)
 const editingId = ref<number | null>(null)
 
 const form = reactive({
-  group_id: null as number | null,
   type: 'expense' as 'income' | 'expense',
   category: '',
   amount: 0,
@@ -297,24 +246,9 @@ function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('zh-CN')
 }
 
-async function fetchGroups() {
-  try {
-    const data = await $fetch<any[]>('/api/groups')
-    groups.value = data
-    if (groups.value.length > 0 && !form.group_id) {
-      form.group_id = groups.value[0].id
-    }
-  } catch (e) {
-    console.error('获取家庭失败', e)
-  }
-}
-
 async function fetchData() {
   try {
-    const url = selectedGroupId.value === 'all' 
-      ? '/api/wedding/finance' 
-      : `/api/wedding/finance?group_id=${selectedGroupId.value}`
-    const data = await $fetch<{ list: FinanceItem[], summary: Summary }>(url)
+    const data = await $fetch<{ list: FinanceItem[], summary: Summary }>('/api/wedding/finance')
     list.value = data.list
     summary.value = data.summary
   } catch (e) {
@@ -330,7 +264,6 @@ function openDialog(item?: FinanceItem) {
     form.amount = item.amount
     form.description = item.description || ''
     form.record_date = item.record_date
-    form.group_id = item.group_id || null
   } else {
     editingId.value = null
     form.type = 'expense'
@@ -338,25 +271,12 @@ function openDialog(item?: FinanceItem) {
     form.amount = 0
     form.description = ''
     form.record_date = new Date().toISOString().split('T')[0]
-    // Default to first family or cached selection
-    const cached = localStorage.getItem('wedding_selectedGroupId')
-    const cachedId = cached && cached !== 'all' ? Number(cached) : null
-    form.group_id = groups.value.length > 0 ? (cachedId || groups.value[0].id) : null
   }
   isDialogOpen.value = true
 }
 
-// Watch and cache selectedGroupId
-watch(selectedGroupId, (val) => {
-  localStorage.setItem('wedding_selectedGroupId', val)
-})
-
 async function submitForm() {
   if (isSubmitting.value) return
-  if (!form.group_id) {
-    alert('请选择家庭')
-    return
-  }
   isSubmitting.value = true
 
   try {
@@ -383,7 +303,7 @@ async function submitForm() {
 }
 
 async function deleteItem(id: number) {
-  if (!confirm('确定要删除这条记录吗�?)) return
+  if (!confirm('确定要删除这条记录吗？')) return
 
   try {
     await $fetch(`/api/wedding/finance/${id}`, {
@@ -396,8 +316,7 @@ async function deleteItem(id: number) {
   }
 }
 
-onMounted(async () => {
-  await fetchGroups()
-  await fetchData()
+onMounted(() => {
+  fetchData()
 })
 </script>

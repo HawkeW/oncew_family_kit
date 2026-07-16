@@ -4,79 +4,66 @@
       <h1 class="text-3xl font-bold">婚礼管理后台</h1>
     </div>
 
-    <div class="flex gap-4 border-b border-border pb-4 overflow-x-auto">
-      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground whitespace-nowrap">
+    <div class="flex gap-4 border-b pb-4 overflow-x-auto">
+      <NuxtLink to="/wedding/admin" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
         宾客名单 (RSVP)
       </NuxtLink>
-      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground whitespace-nowrap">
+      <NuxtLink to="/wedding/finance" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
         财务管理
       </NuxtLink>
-      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-muted text-muted-foreground whitespace-nowrap">
+      <NuxtLink to="/wedding/tasks" class="px-4 py-2 rounded-lg hover:bg-gray-100 whitespace-nowrap">
         任务清单
       </NuxtLink>
-      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg whitespace-nowrap font-medium bg-primary text-primary-foreground">
-        流程时间�?
+      <NuxtLink to="/wedding/timeline" class="px-4 py-2 rounded-lg hover:bg-gray-100 bg-primary text-primary-foreground font-medium whitespace-nowrap">
+        流程时间轴
       </NuxtLink>
     </div>
 
     <div class="flex items-center justify-between">
       <h2 class="text-xl font-semibold">婚礼当天流程</h2>
-      <div class="flex items-center gap-4">
-        <Select v-model="selectedGroupId" @update:modelValue="fetchData" class="w-[160px]">
-          <SelectTrigger>
-            <SelectValue placeholder="选择家庭" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">全部家庭</SelectItem>
-            <SelectGroup v-for="group in groups" :key="group.id">
-              <SelectItem :value="String(group.id)">{{ group.name }}</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Button @click="openDialog()" size="sm" variant="secondary" class="md:hidden">添加</Button>
-        <Button @click="openDialog()" variant="secondary" class="hidden md:inline-flex">添加环节</Button>
-      </div>
+      <Button @click="openDialog()" size="sm" class="md:hidden">添加</Button>
+      <Button @click="openDialog()" class="hidden md:inline-flex">添加环节</Button>
     </div>
 
     <!-- Timeline View -->
     <div class="space-y-4">
-      <div v-if="list.length === 0" class="text-center py-10 text-muted-foreground bg-muted rounded-xl border border-border">
-        暂无流程安排，快去添加吧�?
+      <div v-if="list.length === 0" class="text-center py-10 text-gray-500 bg-white rounded-lg shadow">
+        暂无流程安排，快去添加吧！
       </div>
 
       <div v-else class="relative border-l-2 border-primary/20 ml-4 md:ml-6 space-y-8 py-4">
         <div v-for="(item, index) in list" :key="item.id" class="relative pl-8 md:pl-10">
           <!-- Dot -->
-          <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-rose-500 border-4 border-zinc-950"></div>
+          <div class="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-primary border-4 border-white shadow-sm"></div>
           
-          <div class="bg-muted p-4 rounded-xl border border-border hover:border-input transition-shadow">
+          <div class="bg-white p-4 rounded-lg shadow hover:shadow-md transition-shadow">
             <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
               <div class="flex-1">
                 <div class="flex items-center gap-3 mb-1">
-                  <span class="text-lg font-bold text-theme-timeline font-mono">
+                  <span class="text-lg font-bold text-primary font-mono">
                     {{ item.start_time }}
-                    <span v-if="item.end_time" class="text-muted-foreground font-normal text-sm">- {{ item.end_time }}</span>
+                    <span v-if="item.end_time" class="text-gray-400 font-normal text-sm">- {{ item.end_time }}</span>
                   </span>
                   <h3 class="font-semibold text-lg">{{ item.title }}</h3>
                 </div>
                 
-                <div class="flex flex-wrap gap-y-1 gap-x-4 text-sm text-muted-foreground mb-2">
+                <div class="flex flex-wrap gap-y-1 gap-x-4 text-sm text-gray-600 mb-2">
                   <div v-if="item.location" class="flex items-center gap-1">
                     <span class="i-heroicons-map-pin w-4 h-4"></span>
                     📍 {{ item.location }}
                   </div>
                   <div v-if="item.owner" class="flex items-center gap-1">
                     <span class="i-heroicons-user w-4 h-4"></span>
-                    👤 负责�? {{ item.owner }}
+                    👤 负责人: {{ item.owner }}
                   </div>
                 </div>
 
-                <p v-if="item.description" class="text-muted-foreground whitespace-pre-wrap text-sm">{{ item.description }}</p>
+                <p v-if="item.description" class="text-gray-500 whitespace-pre-wrap text-sm">{{ item.description }}</p>
               </div>
 
               <div class="flex gap-2 self-end md:self-start">
                 <Button variant="ghost" size="sm" @click="openDialog(item)">编辑</Button>
-                <Button variant="ghost" size="sm" class="text-red-400 hover:text-red-300 hover:bg-red-900/50" @click="deleteItem(item.id)">删除</Button>
+                <Button variant="ghost" size="sm" class="text-red-600 hover:text-red-700 hover:bg-red-50" @click="deleteItem(item.id)">删除</Button>
               </div>
             </div>
           </div>
@@ -91,83 +78,40 @@
           <DialogTitle>{{ editingId ? '编辑流程' : '添加流程' }}</DialogTitle>
         </DialogHeader>
         <form @submit.prevent="submitForm" class="space-y-4">
-          <div class="grid w-full items-center gap-1.5">
-            <Label>家庭</Label>
-            <select
-              v-model="form.group_id"
-              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.name }}</option>
-            </select>
-          </div>
-
           <div class="flex gap-4">
             <div class="grid w-full items-center gap-1.5">
-              <Label for="start_time">开始时�?/Label>
-              <input
-                id="start_time"
-                type="time"
-                v-model="form.start_time"
-                required
-                class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-              />
+              <Label for="start_time">开始时间</Label>
+              <Input id="start_time" type="time" v-model="form.start_time" required />
             </div>
             <div class="grid w-full items-center gap-1.5">
-              <Label for="end_time">结束时间 (可�?</Label>
-              <input
-                id="end_time"
-                type="time"
-                v-model="form.end_time"
-                class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-              />
+              <Label for="end_time">结束时间 (可选)</Label>
+              <Input id="end_time" type="time" v-model="form.end_time" />
             </div>
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="title">环节名称</Label>
-            <input
-              id="title"
-              v-model="form.title"
-              required
-              placeholder="例如：新郎接亲、仪式开�?
-              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
+            <Input id="title" v-model="form.title" required placeholder="例如：新郎接亲、仪式开始" />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
-            <Label for="location">地点 (可�?</Label>
-            <input
-              id="location"
-              v-model="form.location"
-              placeholder="例如：新娘家、酒店宴会厅"
-              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
+            <Label for="location">地点 (可选)</Label>
+            <Input id="location" v-model="form.location" placeholder="例如：新娘家、酒店宴会厅" />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
-            <Label for="owner">负责�?(可�?</Label>
-            <input
-              id="owner"
-              v-model="form.owner"
-              placeholder="例如：伴郎团、婚庆督�?
-              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            />
+            <Label for="owner">负责人 (可选)</Label>
+            <Input id="owner" v-model="form.owner" placeholder="例如：伴郎团、婚庆督导" />
           </div>
 
           <div class="grid w-full items-center gap-1.5">
             <Label for="description">详细说明</Label>
-            <textarea
-              id="description"
-              v-model="form.description"
-              rows="3"
-              placeholder="具体的流程细节、注意事�?.."
-              class="w-full rounded-lg border border-input bg-muted px-4 py-2.5 text-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[80px]"
-            ></textarea>
+            <Textarea id="description" v-model="form.description" rows="3" placeholder="具体的流程细节、注意事项..." />
           </div>
 
           <DialogFooter>
             <Button type="submit" :disabled="isSubmitting">
-              {{ isSubmitting ? '保存�?..' : '保存' }}
+              {{ isSubmitting ? '保存中...' : '保存' }}
             </Button>
           </DialogFooter>
         </form>
@@ -180,7 +124,7 @@
 import { ref, onMounted, reactive } from 'vue'
 
 useHead({
-  title: '婚礼流程时间�?
+  title: '婚礼流程时间轴'
 })
 
 definePageMeta({
@@ -197,18 +141,14 @@ interface TimelineItem {
   location?: string;
   owner?: string;
   created_at: string
-  group_id?: number
 }
 
-const groups = ref<any[]>([])
-const selectedGroupId = ref<string>(localStorage.getItem('wedding_selectedGroupId') || 'all')
 const list = ref<TimelineItem[]>([])
 const isDialogOpen = ref(false)
 const isSubmitting = ref(false)
 const editingId = ref<number | null>(null)
 
 const form = reactive({
-  group_id: null as number | null,
   start_time: '',
   end_time: '',
   title: '',
@@ -217,24 +157,9 @@ const form = reactive({
   owner: ''
 })
 
-async function fetchGroups() {
-  try {
-    const data = await $fetch<any[]>('/api/groups')
-    groups.value = data
-    if (groups.value.length > 0 && !form.group_id) {
-      form.group_id = groups.value[0].id
-    }
-  } catch (e) {
-    console.error('获取家庭失败', e)
-  }
-}
-
 async function fetchData() {
   try {
-    const url = selectedGroupId.value === 'all' 
-      ? '/api/wedding/timeline' 
-      : `/api/wedding/timeline?group_id=${selectedGroupId.value}`
-    const data = await $fetch<{ list: TimelineItem[] }>(url)
+    const data = await $fetch<{ list: TimelineItem[] }>('/api/wedding/timeline')
     list.value = data.list
   } catch (e) {
     console.error('获取数据失败', e)
@@ -250,7 +175,6 @@ function openDialog(item?: TimelineItem) {
     form.description = item.description || ''
     form.location = item.location || ''
     form.owner = item.owner || ''
-    form.group_id = item.group_id || null
   } else {
     editingId.value = null
     form.start_time = ''
@@ -259,25 +183,12 @@ function openDialog(item?: TimelineItem) {
     form.description = ''
     form.location = ''
     form.owner = ''
-    // Default to first family or cached selection
-    const cached = localStorage.getItem('wedding_selectedGroupId')
-    const cachedId = cached && cached !== 'all' ? Number(cached) : null
-    form.group_id = groups.value.length > 0 ? (cachedId || groups.value[0].id) : null
   }
   isDialogOpen.value = true
 }
 
-// Watch and cache selectedGroupId
-watch(selectedGroupId, (val) => {
-  localStorage.setItem('wedding_selectedGroupId', val)
-})
-
 async function submitForm() {
   if (isSubmitting.value) return
-  if (!form.group_id) {
-    alert('请选择家庭')
-    return
-  }
   isSubmitting.value = true
 
   try {
@@ -304,7 +215,7 @@ async function submitForm() {
 }
 
 async function deleteItem(id: number) {
-  if (!confirm('确定要删除这个流程吗�?)) return
+  if (!confirm('确定要删除这个流程吗？')) return
 
   try {
     await $fetch(`/api/wedding/timeline/${id}`, {
@@ -317,8 +228,7 @@ async function deleteItem(id: number) {
   }
 }
 
-onMounted(async () => {
-  await fetchGroups()
-  await fetchData()
+onMounted(() => {
+  fetchData()
 })
 </script>
